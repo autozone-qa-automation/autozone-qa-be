@@ -190,3 +190,18 @@ This causes `HttpMessageNotReadableException` when the client sends fields not d
 - `@MockBean` is deprecated — use `@MockitoBean` from `org.springframework.test.context.bean.override.mockito`.
 - `HandlerMethodValidationException` replaces `ConstraintViolationException` for `@PathVariable` validation in Spring MVC controllers.
 - `MethodValidationException` is an internal base class — do not use it as an `@ExceptionHandler` target in MVC.
+## Configuration
+
+### Profiles
+
+The project uses Spring Boot profiles to manage environments:
+
+| Profile | When it activates | Database |
+|---|---|---|
+| `local` | default (set in `application.properties`) | MySQL local via `.env` |
+| `dev` | set by CI/CD env var `SPRING_PROFILES_ACTIVE=dev` | MySQL on GCP (dev DB) |
+| `uat` | set by CI/CD env var `SPRING_PROFILES_ACTIVE=uat` | MySQL on GCP (UAT DB) |
+
+### Local setup
+
+Requires a `.env` file at the project root (same level as `pom.xml`):

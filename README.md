@@ -25,6 +25,38 @@ Semestre Febrero – Junio 2025
 
 ---
 
+## Configuración local
+
+### 1. Crea la base de datos en MySQL
+
+Conéctate a tu instancia local de MySQL y ejecuta:
+
+```sql
+CREATE DATABASE az_qa_local;
+```
+
+### 2. Crea el archivo `.env`
+
+En la raíz del proyecto (al mismo nivel que `pom.xml`), crea un archivo llamado `.env` con el siguiente contenido:
+
+```
+DB_NAME=az_qa_local
+DB_USERNAME=tu_usuario
+DB_PASSWORD=tu_password
+```
+
+> **Nota:** El archivo `.env` está en `.gitignore` y nunca debe subirse al repositorio. Cada desarrollador tiene su propia copia local con sus credenciales.
+
+### 3. Verifica que MySQL esté corriendo
+
+```bash
+mysql -u tu_usuario -p -e "SHOW DATABASES;" | grep az_qa_local
+```
+
+Si ves `az_qa_local` en el output, estás listo para correr el proyecto.
+
+---
+
 ## Cómo correr el proyecto
 
 ```bash
