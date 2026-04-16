@@ -1,9 +1,8 @@
 package com.az_qa.backend.controller;
 
-import com.az_qa.backend.dto.request.UserRequest;
-import com.az_qa.backend.dto.request.UserUpdateRequest;
-import com.az_qa.backend.dto.response.UserResponse;
-import com.az_qa.backend.service.UserService;
+import com.az_qa.backend.dto.request.FeaturesRequest;
+import com.az_qa.backend.dto.response.FeaturesResponse;
+import com.az_qa.backend.service.FeaturesService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
@@ -13,38 +12,32 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * REST controller for user management endpoints.
- * Base path: /api/v1/users
+ * REST controller for features management endpoints.
+ * Base path: /api/v1/features
  */
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/features")
 @Validated
 public class FeaturesController {
-  private final UserService userService;
+  private final FeaturesService featuresService;
 
-  public UserController(UserService userService) {
-    this.userService = userService;
+  public FeaturesController(FeaturesService featuresService) {
+    this.featuresService = featuresService;
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<UserResponse> getUserById(@PathVariable @Positive long id) {
-    return ResponseEntity.ok(userService.getUserById(id));
+  public ResponseEntity<FeaturesResponse> getUserById(@PathVariable @Positive long id) {
+    return ResponseEntity.ok(featuresService.getFeatureById(id));
   }
 
   @GetMapping
-  public ResponseEntity<List<UserResponse>> getAll() {
-    return ResponseEntity.ok(userService.getAllUsers());
+  public ResponseEntity<List<FeaturesResponse>> getAll() {
+    return ResponseEntity.ok(featuresService.getAllFeatures());
   }
 
   @PostMapping
-  public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
-    UserResponse createdUser = userService.create(request);
+  public ResponseEntity<FeaturesResponse> createUser(@Valid @RequestBody FeaturesRequest request) {
+    FeaturesResponse createdUser = featuresService.create(request);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-  }
-
-  @PutMapping("/{id}")
-  public ResponseEntity<UserResponse> updateUser(
-      @PathVariable @Positive Long id, @Valid @RequestBody UserUpdateRequest request) {
-    return ResponseEntity.ok(userService.update(id, request));
   }
 }
