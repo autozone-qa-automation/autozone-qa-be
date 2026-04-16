@@ -1,3 +1,10 @@
+/*
+Tecnológico de Monterrey — Campus Chihuahua
+Desarrollo e Implantación de Sistemas de Software
+TC3005B GPO500 - 2026
+Autozone QA Automation
+*/
+
 package com.az_qa.backend.vo;
 
 import com.az_qa.backend.enumeration.ReleaseStatus;
@@ -29,7 +36,8 @@ public class ReleaseVO {
 
   private String releaseService;
 
-  public ReleaseVO() {}
+  public ReleaseVO() {
+  }
 
   public ReleaseVO(
       Long releaseId,
@@ -142,37 +150,58 @@ public class ReleaseVO {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
     ReleaseVO other = (ReleaseVO) obj;
     if (releaseId == null) {
-      if (other.releaseId != null) return false;
-    } else if (!releaseId.equals(other.releaseId)) return false;
+      if (other.releaseId != null)
+        return false;
+    } else if (!releaseId.equals(other.releaseId))
+      return false;
     if (releaseName == null) {
-      if (other.releaseName != null) return false;
-    } else if (!releaseName.equals(other.releaseName)) return false;
+      if (other.releaseName != null)
+        return false;
+    } else if (!releaseName.equals(other.releaseName))
+      return false;
     if (releaseDescription == null) {
-      if (other.releaseDescription != null) return false;
-    } else if (!releaseDescription.equals(other.releaseDescription)) return false;
+      if (other.releaseDescription != null)
+        return false;
+    } else if (!releaseDescription.equals(other.releaseDescription))
+      return false;
     if (releaseCreationDate == null) {
-      if (other.releaseCreationDate != null) return false;
-    } else if (!releaseCreationDate.equals(other.releaseCreationDate)) return false;
+      if (other.releaseCreationDate != null)
+        return false;
+    } else if (!releaseCreationDate.equals(other.releaseCreationDate))
+      return false;
     if (releaseLaunchDate == null) {
-      if (other.releaseLaunchDate != null) return false;
-    } else if (!releaseLaunchDate.equals(other.releaseLaunchDate)) return false;
+      if (other.releaseLaunchDate != null)
+        return false;
+    } else if (!releaseLaunchDate.equals(other.releaseLaunchDate))
+      return false;
     if (releaseVersion == null) {
-      if (other.releaseVersion != null) return false;
-    } else if (!releaseVersion.equals(other.releaseVersion)) return false;
+      if (other.releaseVersion != null)
+        return false;
+    } else if (!releaseVersion.equals(other.releaseVersion))
+      return false;
     if (releaseTags == null) {
-      if (other.releaseTags != null) return false;
-    } else if (!releaseTags.equals(other.releaseTags)) return false;
+      if (other.releaseTags != null)
+        return false;
+    } else if (!releaseTags.equals(other.releaseTags))
+      return false;
     if (releaseStatus == null) {
-      if (other.releaseStatus != null) return false;
-    } else if (!releaseStatus.equals(other.releaseStatus)) return false;
+      if (other.releaseStatus != null)
+        return false;
+    } else if (!releaseStatus.equals(other.releaseStatus))
+      return false;
     if (releaseService == null) {
-      if (other.releaseService != null) return false;
-    } else if (!releaseService.equals(other.releaseService)) return false;
+      if (other.releaseService != null)
+        return false;
+    } else if (!releaseService.equals(other.releaseService))
+      return false;
     return true;
   }
 
