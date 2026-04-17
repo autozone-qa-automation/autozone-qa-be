@@ -7,6 +7,13 @@ import jakarta.validation.constraints.Positive;
 import com.az_qa.backend.service.TestCasesService;
 import com.az_qa.backend.dto.response.TestCasesResponse;
 
+/*
+Tecnológico de Monterrey — Campus Chihuahua
+Desarrollo e Implantación de Sistemas de Software
+TC3005B GPO500 - 2026
+Autozone QA Automation
+*/
+
 @RestController
 @RequestMapping("/api/v1/testcases")
 @Validated
