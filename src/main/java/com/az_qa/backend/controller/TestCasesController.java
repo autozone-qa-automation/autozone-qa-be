@@ -1,11 +1,12 @@
 package com.az_qa.backend.controller;
+
+import com.az_qa.backend.dto.response.TestCasesResponse;
+import com.az_qa.backend.service.TestCasesService;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import jakarta.validation.constraints.Positive;
-import com.az_qa.backend.service.TestCasesService;
-import com.az_qa.backend.dto.response.TestCasesResponse;
+import org.springframework.web.bind.annotation.*;
 
 /*
 Tecnológico de Monterrey — Campus Chihuahua
@@ -19,24 +20,24 @@ Autozone QA Automation
 @Validated
 public class TestCasesController {
 
-    private final TestCasesService testCasesService;
+  private final TestCasesService testCasesService;
 
-    public TestCasesController(TestCasesService testCasesService) {
-        this.testCasesService = testCasesService;
-    }
+  public TestCasesController(TestCasesService testCasesService) {
+    this.testCasesService = testCasesService;
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TestCasesResponse> getTestCaseById(@PathVariable @Positive long id) {
-        return ResponseEntity.ok(testCasesService.getTestCaseById(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<TestCasesResponse> getTestCaseById(@PathVariable @Positive long id) {
+    return ResponseEntity.ok(testCasesService.getTestCaseById(id));
+  }
 
-    @GetMapping
-    public ResponseEntity<List<TestCasesResponse>> getAll() {
-        return ResponseEntity.ok(testCasesService.getAllTestCases());
-    }
+  @GetMapping
+  public ResponseEntity<List<TestCasesResponse>> getAll() {
+    return ResponseEntity.ok(testCasesService.getAllTestCases());
+  }
 
-    @GetMapping("/feature/{featureId}")
-    public ResponseEntity<List<TestCasesResponse>> getByFeatureId(@PathVariable Long featureId) {
-        return ResponseEntity.ok(testCasesService.getByFeatureId(featureId));
-    }
+  @GetMapping("/feature/{featureId}")
+  public ResponseEntity<List<TestCasesResponse>> getByFeatureId(@PathVariable Long featureId) {
+    return ResponseEntity.ok(testCasesService.getByFeatureId(featureId));
+  }
 }
