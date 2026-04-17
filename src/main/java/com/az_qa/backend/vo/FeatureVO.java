@@ -1,3 +1,9 @@
+/*
+Tecnológico de Monterrey — Campus Chihuahua
+Desarrollo e Implantación de Sistemas de Software
+TC3005B GPO500 - 2026
+Autozone QA Automation
+*/
 package com.az_qa.backend.vo;
 
 import jakarta.validation.constraints.NotBlank;
@@ -12,11 +18,11 @@ public class FeatureVO {
   private String featureDescription;
 
   @NotBlank(message = "Feature service is required")
-  private String featureService;
+  private Long featureService;
 
   public FeatureVO() {}
 
-  public FeatureVO(Long id, String featureName, String featureDescription, String featureService) {
+  public FeatureVO(Long id, String featureName, String featureDescription, Long featureService) {
     this.id = id;
     this.featureName = featureName;
     this.featureDescription = featureDescription;
@@ -47,11 +53,11 @@ public class FeatureVO {
     this.featureDescription = featureDescription;
   }
 
-  public String getFeatureService() {
+  public Long getFeatureService() {
     return featureService;
   }
 
-  public void setFeatureService(String featureService) {
+  public void setFeatureService(Long featureService) {
     this.featureService = featureService;
   }
 
@@ -93,9 +99,8 @@ public class FeatureVO {
         + ", featureDescription='"
         + featureDescription
         + '\''
-        + ", featureService='"
+        + ", featureService="
         + featureService
-        + '\''
         + '}';
   }
 }
