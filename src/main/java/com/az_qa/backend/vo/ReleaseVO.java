@@ -19,39 +19,29 @@ import java.time.LocalDate;
  * status, and associated service information.
  */
 public class ReleaseVO {
-  /** The unique identifier for the release. */
   private Long releaseId;
 
-  /** The name of the release. Required field. */
   @NotBlank(message = "Release name is required")
   private String releaseName;
 
-  /** A description of the release. Required field. */
   @NotBlank(message = "Release description is required")
   private String releaseDescription;
 
-  /** The date when the release was created. Required field. */
   @NotNull(message = "Release creation date is required")
   private LocalDate releaseCreationDate;
 
-  /** The planned launch date for the release. Optional field. */
   private LocalDate releaseLaunchDate;
 
-  /** The version number of the release. Required field. */
   @NotBlank(message = "Release version is required")
   private String releaseVersion;
 
-  /** Tags associated with the release for categorization. Optional field. */
   private String releaseTags;
 
-  /** The current status of the release. Required field. */
   @NotBlank(message = "Release status is required")
   private ReleaseStatus releaseStatus;
 
-  /** The service associated with the release. Optional field. */
   private String releaseService;
 
-  /** Default constructor. */
   public ReleaseVO() {}
 
   /**
