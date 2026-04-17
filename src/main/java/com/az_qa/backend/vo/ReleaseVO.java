@@ -12,32 +12,61 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+/**
+ * Value Object representing a software release in the Autozone QA system.
+ * This class encapsulates the data related to a release, including its
+ * metadata,
+ * status, and associated service information.
+ */
 public class ReleaseVO {
+  /** The unique identifier for the release. */
   private Long releaseId;
 
+  /** The name of the release. Required field. */
   @NotBlank(message = "Release name is required")
   private String releaseName;
 
+  /** A description of the release. Required field. */
   @NotBlank(message = "Release description is required")
   private String releaseDescription;
 
+  /** The date when the release was created. Required field. */
   @NotNull(message = "Release creation date is required")
   private LocalDate releaseCreationDate;
 
+  /** The planned launch date for the release. Optional field. */
   private LocalDate releaseLaunchDate;
 
+  /** The version number of the release. Required field. */
   @NotBlank(message = "Release version is required")
   private String releaseVersion;
 
+  /** Tags associated with the release for categorization. Optional field. */
   private String releaseTags;
 
+  /** The current status of the release. Required field. */
   @NotBlank(message = "Release status is required")
   private ReleaseStatus releaseStatus;
 
+  /** The service associated with the release. Optional field. */
   private String releaseService;
 
+  /** Default constructor. */
   public ReleaseVO() {}
 
+  /**
+   * Constructs a new ReleaseVO with the specified parameters.
+   *
+   * @param releaseId           the unique identifier for the release
+   * @param releaseName         the name of the release
+   * @param releaseDescription  the description of the release
+   * @param releaseCreationDate the creation date of the release
+   * @param releaseLaunchDate   the launch date of the release
+   * @param releaseVersion      the version number of the release
+   * @param releaseTags         the tags associated with the release
+   * @param releaseStatus       the status of the release
+   * @param releaseService      the service associated with the release
+   */
   public ReleaseVO(
       Long releaseId,
       String releaseName,
