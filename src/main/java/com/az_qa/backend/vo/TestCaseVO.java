@@ -22,8 +22,7 @@ public class TestCaseVO {
   private String inputs;
   private String steps;
 
-  public TestCaseVO() {
-  }
+  public TestCaseVO() {}
 
   public TestCaseVO(
       Long id,
@@ -153,35 +152,26 @@ public class TestCaseVO {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
 
     TestCaseVO that = (TestCaseVO) o;
 
-    if (id != null ? !id.equals(that.id) : that.id != null)
-      return false;
-    if (title != null ? !title.equals(that.title) : that.title != null)
-      return false;
+    if (id != null ? !id.equals(that.id) : that.id != null) return false;
+    if (title != null ? !title.equals(that.title) : that.title != null) return false;
     if (relatedFeature != null
         ? !relatedFeature.equals(that.relatedFeature)
-        : that.relatedFeature != null)
-      return false;
+        : that.relatedFeature != null) return false;
     if (description != null ? !description.equals(that.description) : that.description != null)
       return false;
-    if (type != null ? !type.equals(that.type) : that.type != null)
-      return false;
+    if (type != null ? !type.equals(that.type) : that.type != null) return false;
     if (preconditions != null
         ? !preconditions.equals(that.preconditions)
-        : that.preconditions != null)
-      return false;
+        : that.preconditions != null) return false;
     if (postconditions != null
         ? !postconditions.equals(that.postconditions)
-        : that.postconditions != null)
-      return false;
-    if (inputs != null ? !inputs.equals(that.inputs) : that.inputs != null)
-      return false;
+        : that.postconditions != null) return false;
+    if (inputs != null ? !inputs.equals(that.inputs) : that.inputs != null) return false;
     return steps != null ? steps.equals(that.steps) : that.steps == null;
   }
 
