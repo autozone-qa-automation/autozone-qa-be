@@ -8,11 +8,12 @@ Autozone QA Automation
 package com.az_qa.backend.service;
 
 import com.az_qa.backend.dao.FeatureDAO;
-import com.az_qa.backend.dto.request.FeaturesRequest;
 import com.az_qa.backend.dto.response.FeaturesResponse;
+import com.az_qa.backend.vo.FeatureVO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FeaturesService {
@@ -38,13 +39,8 @@ public class FeaturesService {
     return null;
   }
 
-  /**
-   * Creates a new feature.
-   *
-   * @param request the feature payload
-   * @return the created feature response
-   */
-  public FeaturesResponse create(FeaturesRequest request) {
-    return null;
+  @Transactional
+  public FeatureVO createFeature(FeatureVO featureVO) {
+    return featureDAO.createFeature(featureVO);
   }
 }

@@ -15,23 +15,23 @@ public class FeatureMapper {
   private FeatureMapper() {}
 
   public static FeatureVO toVO(FeatureEntity entity) {
-    if (entity == null) {
-      return null;
-    }
+    if (entity == null) return null;
 
     return new FeatureVO(
         entity.getId(), entity.getName(), entity.getDescription(), entity.getIdServices());
   }
 
   public static FeatureEntity toEntity(FeatureVO featureVO) {
-    if (featureVO == null) {
-      return null;
+    if (featureVO == null) return null;
+
+    FeatureEntity entity = new FeatureEntity();
+    entity.setName(featureVO.getFeatureName());
+    entity.setDescription(featureVO.getFeatureDescription());
+
+    if (featureVO.getIdService() != null) {
+      entity.setIdServices(featureVO.getIdService());
     }
 
-    return new FeatureEntity(
-        featureVO.getId(),
-        featureVO.getFeatureName(),
-        featureVO.getFeatureDescription(),
-        featureVO.getFeatureService());
+    return entity;
   }
 }

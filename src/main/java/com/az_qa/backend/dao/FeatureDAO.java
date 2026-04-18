@@ -13,7 +13,6 @@ import com.az_qa.backend.repository.FeaturesRepository;
 import com.az_qa.backend.vo.FeatureVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class FeatureDAO {
@@ -28,9 +27,9 @@ public class FeatureDAO {
     throw new UnsupportedOperationException("getAllFeatures not implemented yet");
   }
 
-  @Transactional
   public FeatureVO createFeature(FeatureVO featureVO) {
     FeatureEntity featureEntity = FeatureMapper.toEntity(featureVO);
-    return FeatureMapper.toVO(featuresRepository.save(featureEntity));
+    FeatureEntity savedEntity = featuresRepository.save(featureEntity);
+    return FeatureMapper.toVO(savedEntity);
   }
 }
