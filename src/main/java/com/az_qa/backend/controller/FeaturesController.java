@@ -6,9 +6,9 @@ Autozone QA Automation
 */
 package com.az_qa.backend.controller;
 
-import com.az_qa.backend.dto.request.FeaturesRequest;
 import com.az_qa.backend.dto.response.FeaturesResponse;
 import com.az_qa.backend.service.FeaturesService;
+import com.az_qa.backend.vo.FeatureVO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
@@ -47,9 +47,18 @@ public class FeaturesController {
   }
 
   @PostMapping
-  public ResponseEntity<FeaturesResponse> createFeature(
-      @Valid @RequestBody FeaturesRequest request) {
-    FeaturesResponse createdFeature = featuresService.create(request);
+  public ResponseEntity<FeatureVO> create(@Valid @RequestBody FeatureVO featureVO) {
+    FeatureVO createdFeature = featuresService.createFeature(featureVO);
+    if (createdFeature == null) {
+      return ResponseEntity.badRequest().build();
+    }
     return ResponseEntity.status(HttpStatus.CREATED).body(createdFeature);
   }
+
+  /*
+   * public ResponseEntity<FeaturesResponse> createFeature(@Valid @RequestBody
+   * FeaturesRequest request) {
+   * FeaturesResponse createdFeature = featuresService.create(request);
+   * return ResponseEntity.status(HttpStatus.CREATED).body(createdFeature);
+   */
 }

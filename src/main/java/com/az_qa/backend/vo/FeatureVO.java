@@ -7,6 +7,7 @@ Autozone QA Automation
 package com.az_qa.backend.vo;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class FeatureVO {
   private Long id;
@@ -17,11 +18,10 @@ public class FeatureVO {
   @NotBlank(message = "Feature description is required")
   private String featureDescription;
 
-  @NotBlank(message = "Feature service is required")
+  @NotNull(message = "Feature service is required")
   private Long idService;
 
-  public FeatureVO() {
-  }
+  public FeatureVO() {}
 
   public FeatureVO(Long id, String featureName, String featureDescription, Long idService) {
     this.id = id;
@@ -54,34 +54,28 @@ public class FeatureVO {
     this.featureDescription = featureDescription;
   }
 
-  public Long getidService() {
+  public Long getIdService() {
     return idService;
   }
 
-  public void setidService(Long idService) {
+  public void setIdService(Long idService) {
     this.idService = idService;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
 
     FeatureVO that = (FeatureVO) o;
 
-    if (id != null ? !id.equals(that.id) : that.id != null)
-      return false;
+    if (id != null ? !id.equals(that.id) : that.id != null) return false;
     if (featureName != null ? !featureName.equals(that.featureName) : that.featureName != null)
       return false;
     if (featureDescription != null
         ? !featureDescription.equals(that.featureDescription)
-        : that.featureDescription != null)
-      return false;
-    return idService != null
-        ? idService.equals(that.idService)
-        : that.idService == null;
+        : that.featureDescription != null) return false;
+    return idService != null ? idService.equals(that.idService) : that.idService == null;
   }
 
   @Override
