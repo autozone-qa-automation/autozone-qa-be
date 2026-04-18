@@ -1,12 +1,16 @@
 package com.az_qa.backend.controller;
-
-import com.az_qa.backend.dto.response.TestCasesResponse;
 import com.az_qa.backend.service.TestCasesService;
+import com.az_qa.backend.vo.TestCaseVO;
+
 import jakarta.validation.constraints.Positive;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 
 /*
 Tecnológico de Monterrey — Campus Chihuahua
@@ -27,17 +31,17 @@ public class TestCasesController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<TestCasesResponse> getTestCaseById(@PathVariable @Positive long id) {
+  ResponseEntity<TestCaseVO> getTestCaseById(@PathVariable @Positive long id) {
     return ResponseEntity.ok(testCasesService.getTestCaseById(id));
   }
 
   @GetMapping
-  public ResponseEntity<List<TestCasesResponse>> getAll() {
-    return ResponseEntity.ok(testCasesService.getAllTestCases());
+  ResponseEntity<List<TestCaseVO>> getAll() {
+    return ResponseEntity.ok(testCasesService.findAllTestCases());
   }
 
   @GetMapping("/feature/{featureId}")
-  public ResponseEntity<List<TestCasesResponse>> getByFeatureId(@PathVariable Long featureId) {
+  ResponseEntity<List<TestCaseVO>> getByFeatureId(@PathVariable Long featureId) {
     return ResponseEntity.ok(testCasesService.getByFeatureId(featureId));
   }
 }
