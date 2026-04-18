@@ -19,7 +19,7 @@ Autozone QA Automation
 */
 
 @RestController
-@RequestMapping("/api/v1/testcases")
+@RequestMapping("/api/v1/test-cases")
 @Validated
 public class TestCasesController {
 
