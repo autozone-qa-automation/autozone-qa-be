@@ -22,7 +22,7 @@ public class FeatureEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "idFeature")
-  long id;
+  private Long id;
 
   @Column(name = "name")
   private String name;
@@ -35,18 +35,17 @@ public class FeatureEntity {
 
   public FeatureEntity() {}
 
-  public FeatureEntity(Long id, String name, String description, long idServices) {
-    this.id = id;
+  public FeatureEntity(String name, String description, long idServices) {
     this.name = name;
     this.description = description;
     this.idServices = idServices;
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -78,7 +77,7 @@ public class FeatureEntity {
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
     FeatureEntity feature = (FeatureEntity) o;
-    return id == feature.id
+    return Objects.equals(id, feature.id)
         && Objects.equals(name, feature.name)
         && Objects.equals(description, feature.description)
         && idServices == feature.idServices;

@@ -12,6 +12,7 @@ import com.az_qa.backend.vo.FeatureVO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FeaturesService {
@@ -40,13 +41,14 @@ public class FeaturesService {
     return featureDAO.getAllFeatures();
   }
 
-  /**
-   * Creates a new feature.
-   *
-   * @param request the feature payload
-   * @return the created feature response
-   */
-  public FeatureVO create(FeatureVO request) {
-    return null;
+    /**
+     * Creates a new feature.
+     *
+     * @param featureVO the feature payload
+     * @return the created feature response
+     */
+  @Transactional
+  public FeatureVO createFeature(FeatureVO featureVO) {
+    return featureDAO.createFeature(featureVO);
   }
 }

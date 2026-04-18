@@ -24,14 +24,16 @@ public class FeatureMapper {
   }
 
   public static FeatureEntity toEntity(FeatureVO featureVO) {
-    if (featureVO == null) {
-      return null;
+    if (featureVO == null) return null;
+
+    FeatureEntity entity = new FeatureEntity();
+    entity.setName(featureVO.getFeatureName());
+    entity.setDescription(featureVO.getFeatureDescription());
+
+    if (featureVO.getIdService() != null) {
+      entity.setIdServices(featureVO.getIdService());
     }
 
-    return new FeatureEntity(
-        featureVO.getId(),
-        featureVO.getFeatureName(),
-        featureVO.getFeatureDescription(),
-        featureVO.getIdService());
+    return entity;
   }
 }

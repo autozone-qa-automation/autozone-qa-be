@@ -16,7 +16,6 @@ import java.awt.*;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class FeatureDAO {
@@ -45,9 +44,9 @@ public class FeatureDAO {
     return featuresRepository.findAll().stream().map(FeatureMapper::toVO).toList();
   }
 
-  @Transactional
   public FeatureVO createFeature(FeatureVO featureVO) {
     FeatureEntity featureEntity = FeatureMapper.toEntity(featureVO);
-    return FeatureMapper.toVO(featuresRepository.save(featureEntity));
+    FeatureEntity savedEntity = featuresRepository.save(featureEntity);
+    return FeatureMapper.toVO(savedEntity);
   }
 }
