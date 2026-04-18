@@ -8,8 +8,7 @@ Autozone QA Automation
 package com.az_qa.backend.service;
 
 import com.az_qa.backend.dao.FeatureDAO;
-import com.az_qa.backend.dto.request.FeaturesRequest;
-import com.az_qa.backend.dto.response.FeaturesResponse;
+import com.az_qa.backend.vo.FeatureVO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class FeaturesService {
 
+  /**
+   * DAO dependency used to access feature data.
+   */
   @Autowired private FeatureDAO featureDAO;
 
   /**
@@ -25,8 +27,8 @@ public class FeaturesService {
    * @param id the feature's ID
    * @return the matching feature response
    */
-  public FeaturesResponse getFeatureById(Long id) {
-    return null;
+  public FeatureVO getFeatureById(Long id) {
+    return featureDAO.getFeatureById(id);
   }
 
   /**
@@ -34,8 +36,8 @@ public class FeaturesService {
    *
    * @return a list of all features
    */
-  public List<FeaturesResponse> getAllFeatures() {
-    return null;
+  public List<FeatureVO> getAllFeatures() {
+    return featureDAO.getAllFeatures();
   }
 
   /**
@@ -44,7 +46,7 @@ public class FeaturesService {
    * @param request the feature payload
    * @return the created feature response
    */
-  public FeaturesResponse create(FeaturesRequest request) {
+  public FeatureVO create(FeatureVO request) {
     return null;
   }
 }

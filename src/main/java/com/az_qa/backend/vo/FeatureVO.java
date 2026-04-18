@@ -7,7 +7,6 @@ Autozone QA Automation
 package com.az_qa.backend.vo;
 
 import jakarta.validation.constraints.NotBlank;
-
 import java.util.Objects;
 
 public class FeatureVO {
@@ -22,8 +21,7 @@ public class FeatureVO {
   @NotBlank(message = "Feature service is required")
   private Long idService;
 
-  public FeatureVO() {
-  }
+  public FeatureVO() {}
 
   public FeatureVO(Long id, String featureName, String featureDescription, Long idService) {
     this.id = id;
@@ -66,19 +64,14 @@ public class FeatureVO {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
 
     FeatureVO that = (FeatureVO) o;
 
-    if (!Objects.equals(id, that.id))
-      return false;
-    if (!Objects.equals(featureName, that.featureName))
-      return false;
-    if (!Objects.equals(featureDescription, that.featureDescription))
-      return false;
+    if (!Objects.equals(id, that.id)) return false;
+    if (!Objects.equals(featureName, that.featureName)) return false;
+    if (!Objects.equals(featureDescription, that.featureDescription)) return false;
     return Objects.equals(idService, that.idService);
   }
 

@@ -36,6 +36,18 @@ public class GlobalExceptionHandler {
   }
 
   /**
+   * Handles {@link ItemNotFoundException}.
+   *
+   * @param ex the exception containing the not-found message
+   * @return 404 with the exception message as the error body
+   */
+  @ExceptionHandler(ItemNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleItemNotFound(ItemNotFoundException ex) {
+    ErrorResponse error = new ErrorResponse(404, ex.getMessage(), LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+  }
+
+  /**
    * Handles {@link MethodArgumentNotValidException}, triggered when {@code @Valid}
    * fails on a {@code @RequestBody} field.
    *
