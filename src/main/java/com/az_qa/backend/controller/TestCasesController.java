@@ -1,7 +1,7 @@
 package com.az_qa.backend.controller;
+
 import com.az_qa.backend.service.TestCasesService;
 import com.az_qa.backend.vo.TestCaseVO;
-
 import jakarta.validation.constraints.Positive;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 
 /*
 Tecnológico de Monterrey — Campus Chihuahua
@@ -37,7 +36,7 @@ public class TestCasesController {
 
   @GetMapping
   ResponseEntity<List<TestCaseVO>> getAll() {
-    return ResponseEntity.ok(testCasesService.findAllTestCases());
+    return ResponseEntity.ok(testCasesService.getAllTestCases());
   }
 
   @GetMapping("/feature/{featureId}")
