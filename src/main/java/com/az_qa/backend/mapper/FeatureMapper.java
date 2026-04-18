@@ -32,6 +32,6 @@ public class FeatureMapper {
         featureVO.getId(),
         featureVO.getFeatureName(),
         featureVO.getFeatureDescription(),
-        featureVO.getFeatureService());
+        featureVO.getIdService());
   }
 }

@@ -8,6 +8,8 @@ package com.az_qa.backend.vo;
 
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.Objects;
+
 public class FeatureVO {
   private Long id;
 
@@ -54,11 +56,11 @@ public class FeatureVO {
     this.featureDescription = featureDescription;
   }
 
-  public Long getidService() {
+  public Long getIdService() {
     return idService;
   }
 
-  public void setidService(Long idService) {
+  public void setIdService(Long idService) {
     this.idService = idService;
   }
 
@@ -71,17 +73,13 @@ public class FeatureVO {
 
     FeatureVO that = (FeatureVO) o;
 
-    if (id != null ? !id.equals(that.id) : that.id != null)
+    if (!Objects.equals(id, that.id))
       return false;
-    if (featureName != null ? !featureName.equals(that.featureName) : that.featureName != null)
+    if (!Objects.equals(featureName, that.featureName))
       return false;
-    if (featureDescription != null
-        ? !featureDescription.equals(that.featureDescription)
-        : that.featureDescription != null)
+    if (!Objects.equals(featureDescription, that.featureDescription))
       return false;
-    return idService != null
-        ? idService.equals(that.idService)
-        : that.idService == null;
+    return Objects.equals(idService, that.idService);
   }
 
   @Override
