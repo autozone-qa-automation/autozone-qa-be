@@ -18,15 +18,16 @@ public class FeatureVO {
   private String featureDescription;
 
   @NotBlank(message = "Feature service is required")
-  private Long featureService;
+  private Long idService;
 
-  public FeatureVO() {}
+  public FeatureVO() {
+  }
 
-  public FeatureVO(Long id, String featureName, String featureDescription, Long featureService) {
+  public FeatureVO(Long id, String featureName, String featureDescription, Long idService) {
     this.id = id;
     this.featureName = featureName;
     this.featureDescription = featureDescription;
-    this.featureService = featureService;
+    this.idService = idService;
   }
 
   public Long getId() {
@@ -53,30 +54,34 @@ public class FeatureVO {
     this.featureDescription = featureDescription;
   }
 
-  public Long getFeatureService() {
-    return featureService;
+  public Long getidService() {
+    return idService;
   }
 
-  public void setFeatureService(Long featureService) {
-    this.featureService = featureService;
+  public void setidService(Long idService) {
+    this.idService = idService;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
 
     FeatureVO that = (FeatureVO) o;
 
-    if (id != null ? !id.equals(that.id) : that.id != null) return false;
+    if (id != null ? !id.equals(that.id) : that.id != null)
+      return false;
     if (featureName != null ? !featureName.equals(that.featureName) : that.featureName != null)
       return false;
     if (featureDescription != null
         ? !featureDescription.equals(that.featureDescription)
-        : that.featureDescription != null) return false;
-    return featureService != null
-        ? featureService.equals(that.featureService)
-        : that.featureService == null;
+        : that.featureDescription != null)
+      return false;
+    return idService != null
+        ? idService.equals(that.idService)
+        : that.idService == null;
   }
 
   @Override
@@ -84,7 +89,7 @@ public class FeatureVO {
     int result = id != null ? id.hashCode() : 0;
     result = 31 * result + (featureName != null ? featureName.hashCode() : 0);
     result = 31 * result + (featureDescription != null ? featureDescription.hashCode() : 0);
-    result = 31 * result + (featureService != null ? featureService.hashCode() : 0);
+    result = 31 * result + (idService != null ? idService.hashCode() : 0);
     return result;
   }
 
@@ -99,8 +104,8 @@ public class FeatureVO {
         + ", featureDescription='"
         + featureDescription
         + '\''
-        + ", featureService="
-        + featureService
+        + ", idService="
+        + idService
         + '}';
   }
 }
