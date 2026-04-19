@@ -41,12 +41,12 @@ public class FeaturesService {
     return featureDAO.getAllFeatures();
   }
 
-    /**
-     * Creates a new feature.
-     *
-     * @param featureVO the feature payload
-     * @return the created feature response
-     */
+  /**
+   * Creates a new feature.
+   *
+   * @param featureVO the feature payload
+   * @return the created feature response
+   */
   @Transactional
   public FeatureVO createFeature(FeatureVO featureVO) {
     return featureDAO.createFeature(featureVO);
