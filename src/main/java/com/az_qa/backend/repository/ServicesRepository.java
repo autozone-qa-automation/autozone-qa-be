@@ -18,9 +18,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ServicesRepository extends JpaRepository<ServicesEntity, Long> {
 
-    @Query("SELECT DISTINCT s FROM ServicesEntity s LEFT JOIN FETCH s.urls")
-    List<ServicesEntity> findAllWithUrls();
+  @Query("SELECT DISTINCT s FROM ServicesEntity s LEFT JOIN FETCH s.urls")
+  List<ServicesEntity> findAllWithUrls();
 
-    @Query("SELECT s FROM ServicesEntity s LEFT JOIN FETCH s.urls WHERE s.id = :id")
-    Optional<ServicesEntity> findByIdWithUrls(@Param("id") Long id);
+  @Query("SELECT s FROM ServicesEntity s LEFT JOIN FETCH s.urls WHERE s.id = :id")
+  Optional<ServicesEntity> findByIdWithUrls(@Param("id") Long id);
 }

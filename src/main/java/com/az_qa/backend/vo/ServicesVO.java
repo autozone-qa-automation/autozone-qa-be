@@ -16,8 +16,7 @@ public class ServicesVO {
   private String description;
   private List<UrlVO> urls;
 
-  public ServicesVO() {
-  }
+  public ServicesVO() {}
 
   public ServicesVO(Long id, String name, String description, List<UrlVO> urls) {
     this.id = id;
@@ -76,17 +75,13 @@ public class ServicesVO {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
 
     ServicesVO that = (ServicesVO) o;
 
-    if (id != null ? !id.equals(that.id) : that.id != null)
-      return false;
-    if (name != null ? !name.equals(that.name) : that.name != null)
-      return false;
+    if (id != null ? !id.equals(that.id) : that.id != null) return false;
+    if (name != null ? !name.equals(that.name) : that.name != null) return false;
     if (description != null ? !description.equals(that.description) : that.description != null)
       return false;
     return urls != null ? urls.equals(that.urls) : that.urls == null;

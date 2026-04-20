@@ -20,8 +20,7 @@ import org.springframework.stereotype.Service;
 public class ServicesService {
 
   /** DAO dependency used for service data access operations. */
-  @Autowired
-  private ServicesDAO servicesDAO;
+  @Autowired private ServicesDAO servicesDAO;
 
   /**
    * Retrieves all existing services with their URLs.

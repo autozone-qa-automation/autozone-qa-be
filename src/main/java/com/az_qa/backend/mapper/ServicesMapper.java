@@ -21,8 +21,7 @@ import java.util.List;
 public final class ServicesMapper {
 
   /** Utility class constructor. */
-  private ServicesMapper() {
-  }
+  private ServicesMapper() {}
 
   /**
    * Converts a {@link ServicesEntity} into a {@link ServicesVO}.
@@ -36,9 +35,10 @@ public final class ServicesMapper {
       return null;
     }
 
-    List<UrlVO> urls = entity.getUrls() == null
-        ? Collections.emptyList()
-        : entity.getUrls().stream().map(ServicesMapper::urlToVO).toList();
+    List<UrlVO> urls =
+        entity.getUrls() == null
+            ? Collections.emptyList()
+            : entity.getUrls().stream().map(ServicesMapper::urlToVO).toList();
 
     return new ServicesVO(entity.getId(), entity.getName(), entity.getDescription(), urls);
   }

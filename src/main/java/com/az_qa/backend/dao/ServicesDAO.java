@@ -22,32 +22,32 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ServicesDAO {
 
-    /** Repository dependency used for service persistence operations. */
-    @Autowired
-    private ServicesRepository servicesRepository;
+  /** Repository dependency used for service persistence operations. */
+  @Autowired private ServicesRepository servicesRepository;
 
-    /**
-     * Finds a service by id with its URLs.
-     *
-     * @param id service identifier
-     * @return service representation with URLs
-     */
-    public ServicesVO findById(Long id) {
-        Optional<ServicesVO> servicesVO = servicesRepository.findByIdWithUrls(id).map(ServicesMapper::toVO);
+  /**
+   * Finds a service by id with its URLs.
+   *
+   * @param id service identifier
+   * @return service representation with URLs
+   */
+  public ServicesVO findById(Long id) {
+    Optional<ServicesVO> servicesVO =
+        servicesRepository.findByIdWithUrls(id).map(ServicesMapper::toVO);
 
-        if (servicesVO.isEmpty()) {
-            throw new ItemNotFoundException("Service with id " + id + " not found");
-        }
-
-        return servicesVO.get();
+    if (servicesVO.isEmpty()) {
+      throw new ItemNotFoundException("Service with id " + id + " not found");
     }
 
-    /**
-     * Retrieves all existing services with their URLs.
-     *
-     * @return list of all services found
-     */
-    public List<ServicesVO> findAll() {
-        return servicesRepository.findAllWithUrls().stream().map(ServicesMapper::toVO).toList();
-    }
+    return servicesVO.get();
+  }
+
+  /**
+   * Retrieves all existing services with their URLs.
+   *
+   * @return list of all services found
+   */
+  public List<ServicesVO> findAll() {
+    return servicesRepository.findAllWithUrls().stream().map(ServicesMapper::toVO).toList();
+  }
 }
