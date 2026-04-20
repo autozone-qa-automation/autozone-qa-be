@@ -1,23 +1,28 @@
 /*
-Tecnológico de Monterrey — Campus Chihuahua
-Desarrollo e Implantación de Sistemas de Software
-TC3005B GPO500 - 2026
-Autozone QA Automation
-*/
+ * Tecnológico de Monterrey — Campus Chihuahua
+ * Desarrollo e Implantación de Sistemas de Software
+ * TC3005B GPO500 - 2026
+ * Autozone QA Automation
+ */
+
 package com.az_qa.backend.vo;
+
+import java.util.List;
 
 public class ServicesVO {
 
   private Long id;
   private String name;
   private String description;
+  private List<UrlVO> urls;
 
   public ServicesVO() {}
 
-  public ServicesVO(Long id, String name, String description) {
+  public ServicesVO(Long id, String name, String description, List<UrlVO> urls) {
     this.id = id;
     this.name = name;
     this.description = description;
+    this.urls = urls;
   }
 
   public Long getId() {
@@ -32,16 +37,24 @@ public class ServicesVO {
     return name;
   }
 
-  public String getDescription() {
-    return description;
-  }
-
   public void setName(String name) {
     this.name = name;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public List<UrlVO> getUrls() {
+    return urls;
+  }
+
+  public void setUrls(List<UrlVO> urls) {
+    this.urls = urls;
   }
 
   @Override
@@ -55,6 +68,8 @@ public class ServicesVO {
         + ", description='"
         + description
         + '\''
+        + ", urls="
+        + urls
         + '}';
   }
 
@@ -67,7 +82,9 @@ public class ServicesVO {
 
     if (id != null ? !id.equals(that.id) : that.id != null) return false;
     if (name != null ? !name.equals(that.name) : that.name != null) return false;
-    return description != null ? description.equals(that.description) : that.description == null;
+    if (description != null ? !description.equals(that.description) : that.description != null)
+      return false;
+    return urls != null ? urls.equals(that.urls) : that.urls == null;
   }
 
   @Override
@@ -75,6 +92,7 @@ public class ServicesVO {
     int result = id != null ? id.hashCode() : 0;
     result = 31 * result + (name != null ? name.hashCode() : 0);
     result = 31 * result + (description != null ? description.hashCode() : 0);
+    result = 31 * result + (urls != null ? urls.hashCode() : 0);
     return result;
   }
 }

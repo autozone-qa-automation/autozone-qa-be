@@ -9,12 +9,17 @@ package com.az_qa.backend.controller;
 
 import com.az_qa.backend.service.ServicesService;
 import com.az_qa.backend.vo.ServicesVO;
+import com.az_qa.backend.vo.UrlVO;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/services")
@@ -31,11 +36,22 @@ public class ServiceController {
 
   @GetMapping("/{id}")
   public ResponseEntity<ServicesVO> getServiceById(@PathVariable Long id) {
-    ServicesVO service = servicesService.getServiceById(id);
-    if (service != null) {
+    try {
+      ServicesVO service = servicesService.getServiceById(id);
       return new ResponseEntity<>(service, HttpStatus.OK);
-    } else {
+    } catch (RuntimeException e) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+  }
+
+  @GetMapping("/test/{id}")
+  public ResponseEntity<ServicesVO> getServiceByIdTest(@PathVariable Long id) {
+    List<UrlVO> urls = new ArrayList<>();
+    urls.add(new UrlVO(1L, "Produccion", "https://prod.autozone.com"));
+    urls.add(new UrlVO(2L, "QA", "https://qa.autozone.com"));
+    urls.add(new UrlVO(3L, "Dev", "https://dev.autozone.com"));
+
+    ServicesVO service = new ServicesVO(id, "Service Test", "Description Test", urls);
+    return new ResponseEntity<>(service, HttpStatus.OK);
   }
 }

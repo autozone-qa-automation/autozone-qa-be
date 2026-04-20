@@ -1,39 +1,43 @@
 /*
-Tecnológico de Monterrey — Campus Chihuahua
-Desarrollo e Implantación de Sistemas de Software
-TC3005B GPO500 - 2026
-Autozone QA Automation
-*/
+ * Tecnológico de Monterrey — Campus Chihuahua
+ * Desarrollo e Implantación de Sistemas de Software
+ * TC3005B GPO500 - 2026
+ * Autozone QA Automation
+ */
 
 package com.az_qa.backend.service;
 
+import com.az_qa.backend.dao.ServicesDAO;
 import com.az_qa.backend.vo.ServicesVO;
-import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service component that handles business logic for services.
+ */
 @Service
 public class ServicesService {
-  // Implement the logic to retrieve all services from the database
+
+  /** DAO dependency used for service data access operations. */
+  @Autowired private ServicesDAO servicesDAO;
+
+  /**
+   * Retrieves all existing services with their URLs.
+   *
+   * @return list of all services found
+   */
   public List<ServicesVO> getAllServices() {
-    // This is a placeholder implementation. You should replace it with actual
-    // database retrieval logic.
-    List<ServicesVO> services = new ArrayList<>();
-    services.add(new ServicesVO(1L, "Service 1", "Description of Service 1"));
-    services.add(new ServicesVO(2L, "Service 2", "Description of Service 2"));
-    return services;
+    return servicesDAO.findAll();
   }
 
-  // Implement the logic to retrieve a service by its ID from the database
+  /**
+   * Finds a service by id with its URLs.
+   *
+   * @param id service identifier
+   * @return service representation with URLs
+   */
   public ServicesVO getServiceById(Long id) {
-    // This is a placeholder implementation. You should replace it with actual
-    // database retrieval logic.
-    if (id == 1L) {
-      return new ServicesVO(1L, "Service 1", "Description of Service 1");
-    } else if (id == 2L) {
-      return new ServicesVO(2L, "Service 2", "Description of Service 2");
-    } else {
-      return null; // Return null if the service is not found
-    }
+    return servicesDAO.findById(id);
   }
 }
