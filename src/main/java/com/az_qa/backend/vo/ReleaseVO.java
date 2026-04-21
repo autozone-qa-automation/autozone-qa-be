@@ -7,10 +7,12 @@ Autozone QA Automation
 
 package com.az_qa.backend.vo;
 
+import java.time.LocalDate;
+
 import com.az_qa.backend.enumeration.ReleaseStatus;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
 
 /**
  * Value Object representing a software release in the Autozone QA system.

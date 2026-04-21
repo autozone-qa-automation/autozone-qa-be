@@ -45,10 +45,9 @@ public class ReleaseController {
     }
   }
 
-  /*@PostMapping
+  @PostMapping
   public ResponseEntity<ReleaseVO> createRelease(@RequestBody ReleaseVO releaseVO) {
     ReleaseVO createdRelease = releaseService.createRelease(releaseVO);
     return new ResponseEntity<>(createdRelease, HttpStatus.CREATED);
   }
-    */
 }
