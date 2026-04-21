@@ -12,6 +12,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+/**
+ * Value Object representing a software release in the Autozone QA system.
+ * This class encapsulates the data related to a release, including its
+ * metadata,
+ * status, and associated service information.
+ */
 public class ReleaseVO {
   private Long releaseId;
 
@@ -38,6 +44,19 @@ public class ReleaseVO {
 
   public ReleaseVO() {}
 
+  /**
+   * Constructs a new ReleaseVO with the specified parameters.
+   *
+   * @param releaseId           the unique identifier for the release
+   * @param releaseName         the name of the release
+   * @param releaseDescription  the description of the release
+   * @param releaseCreationDate the creation date of the release
+   * @param releaseLaunchDate   the launch date of the release
+   * @param releaseVersion      the version number of the release
+   * @param releaseTags         the tags associated with the release
+   * @param releaseStatus       the status of the release
+   * @param releaseService      the service associated with the release
+   */
   public ReleaseVO(
       Long releaseId,
       String releaseName,
