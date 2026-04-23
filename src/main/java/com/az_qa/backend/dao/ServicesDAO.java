@@ -43,6 +43,20 @@ public class ServicesDAO {
   }
 
   /**
+   * Finds the service information by id.
+   * @param id Service id.
+   * @return Service information.
+   */
+  public ServicesVO findServiceById(Long id) {
+    Optional<ServicesVO> servicesVO = servicesRepository.findById(id).map(ServicesMapper::toVO);
+
+    if (servicesVO.isEmpty()) {
+      throw new ItemNotFoundException("Service with id " + id + " not found");
+    }
+    return servicesVO.get();
+  }
+
+  /**
    * Retrieves all existing services with their URLs.
    *
    * @return list of all services found

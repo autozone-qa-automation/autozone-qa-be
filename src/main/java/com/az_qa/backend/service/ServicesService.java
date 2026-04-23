@@ -40,4 +40,14 @@ public class ServicesService {
   public ServicesVO getServiceById(Long id) {
     return servicesDAO.findById(id);
   }
+
+  /**
+   * Retrieves the name of service using its id.
+   * @param id Service id.
+   * @return Service name.
+   */
+  public String getServiceNameById(Long id) {
+    ServicesVO servicesVO = servicesDAO.findServiceById(id);
+    return servicesVO.getName();
+  }
 }

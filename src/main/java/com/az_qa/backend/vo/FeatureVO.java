@@ -22,6 +22,16 @@ public class FeatureVO {
   @NotNull(message = "Feature service is required")
   private Long idService;
 
+  private String serviceName;
+
+  public String getServiceName() {
+    return serviceName;
+  }
+
+  public void setServiceName(String serviceName) {
+    this.serviceName = serviceName;
+  }
+
   public FeatureVO() {}
 
   public FeatureVO(Long id, String featureName, String featureDescription, Long idService) {
