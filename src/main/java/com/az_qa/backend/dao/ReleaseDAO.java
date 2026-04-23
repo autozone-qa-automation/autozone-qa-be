@@ -7,15 +7,17 @@ Autozone QA Automation
 
 package com.az_qa.backend.dao;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.az_qa.backend.entity.ReleaseEntity;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.mapper.ReleaseMapper;
 import com.az_qa.backend.repository.ReleaseRepository;
 import com.az_qa.backend.vo.ReleaseVO;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 /**
  * Data Access Object (DAO) for Release persistence operations.
@@ -44,6 +46,24 @@ public class ReleaseDAO {
     }
 
     return releaseVO.get();
+  }
+
+  /**
+   * Finds releases based on filter criteria.
+   *
+   * @param releaseStatus the status to filter by
+   * @param releaseTags the tags to filter by
+   * @return a list of filtered releases
+   */
+  public List<ReleaseVO> findFiltered(String releaseStatus, String releaseTags) {
+    return releaseRepository.findAll().stream()
+      .filter(release -> {
+        boolean matchesStatus = (releaseStatus == null || release.getReleaseStatus().name().equalsIgnoreCase(releaseStatus));
+        boolean matchesTags = (releaseTags == null || release.getReleaseTags() != null && release.getReleaseTags().toLowerCase().contains(releaseTags.toLowerCase()));
+        return matchesStatus && matchesTags;
+      })
+      .map(ReleaseMapper::toVO)
+      .toList();
   }
 
   /**

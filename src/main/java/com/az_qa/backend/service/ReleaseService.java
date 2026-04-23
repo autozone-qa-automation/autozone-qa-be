@@ -7,13 +7,15 @@ Autozone QA Automation
 
 package com.az_qa.backend.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.az_qa.backend.dao.ReleaseDAO;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.vo.ReleaseVO;
-import java.util.List;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReleaseService {
@@ -35,6 +37,17 @@ public class ReleaseService {
     } catch (ItemNotFoundException e) {
       throw new ResourceNotFoundException("Release with id {" + id + "} not found.");
     }
+  }
+
+  /**
+   * Retrieves releases based on filter criteria.
+   *
+   * @param releaseStatus the status to filter by
+   * @param releaseTags the tags to filter by
+   * @return a list of filtered releases
+   */
+  public List<ReleaseVO> getReleasesFiltered(String releaseStatus, String releaseTags) {
+    return releaseDAO.findFiltered(releaseStatus, releaseTags);
   }
 
   /**

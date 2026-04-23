@@ -7,9 +7,13 @@ Autozone QA Automation
 
 package com.az_qa.backend.repository;
 
-import com.az_qa.backend.entity.ReleaseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.az_qa.backend.entity.ReleaseEntity;
+
 @Repository
-public interface ReleaseRepository extends JpaRepository<ReleaseEntity, Long> {}
+public interface ReleaseRepository extends JpaRepository<ReleaseEntity, Long> {
+
+
+}
