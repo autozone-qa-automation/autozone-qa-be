@@ -10,7 +10,7 @@ import com.az_qa.backend.entity.ReleaseEntity;
 import com.az_qa.backend.mapper.ReleaseMapper;
 import com.az_qa.backend.repository.ReleaseRepository;
 import com.az_qa.backend.vo.ReleaseVO;
-import com.az_qa.backend.exception.ItemNotFoundException;;
+import com.az_qa.backend.exception.ItemNotFoundException;
 
 @Repository
 public class ReleaseDAO {
@@ -23,11 +23,11 @@ public class ReleaseDAO {
     public ReleaseVO findById(Long id) {
         Optional<ReleaseVO> releaseVO = releaseRepository.findById(id).map(ReleaseMapper::toVO);
 
-        if (ReleaseVO.isEmpty()) {
+        if (releaseVO.isEmpty()) {
             throw new ItemNotFoundException("Release with id " + id + " not found");
         }
 
-        return ReleaseVO.get();
+        return releaseVO.get();
     }
 
     public List<ReleaseVO> findAll() {

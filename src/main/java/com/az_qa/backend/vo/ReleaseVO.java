@@ -254,8 +254,4 @@ public class ReleaseVO {
     throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
   }
 
-  public static ReleaseVO get() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'get'");
-  }
 }
