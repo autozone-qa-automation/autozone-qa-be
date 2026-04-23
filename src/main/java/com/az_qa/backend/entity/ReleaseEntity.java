@@ -51,7 +51,10 @@ public class ReleaseEntity {
   @Column(name = "release_service")
   private String releaseService;
 
-  public ReleaseEntity() {}
+  private boolean isNew;
+
+  public ReleaseEntity() {
+  }
 
   /**
    * Constructs a new {@code ReleaseEntity} with the specified values.
@@ -86,6 +89,20 @@ public class ReleaseEntity {
 
   public Long getReleaseId() {
     return releaseId;
+  }
+
+  public boolean isNew() {
+    return isNew();
+  }
+
+  public void setNew(boolean isNew) {
+    this.isNew = isNew;
+  }
+
+  @PostPersist
+  @PostLoad
+  public void markNotNew() {
+    this.isNew = false;
   }
 
   public void setReleaseId(Long releaseId) {
@@ -168,8 +185,10 @@ public class ReleaseEntity {
    */
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
     ReleaseEntity that = (ReleaseEntity) o;
     return Objects.equals(releaseId, that.releaseId)
         && Objects.equals(releaseName, that.releaseName)
