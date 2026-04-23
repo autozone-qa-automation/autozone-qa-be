@@ -51,6 +51,7 @@ public class ReleaseEntity {
   @Column(name = "release_service")
   private String releaseService;
 
+  @Transient
   private boolean isNew;
 
   public ReleaseEntity() {
