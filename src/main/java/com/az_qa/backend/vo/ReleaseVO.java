@@ -248,10 +248,4 @@ public class ReleaseVO {
         + releaseService
         + "]";
   }
-
-  public static boolean isEmpty() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
-  }
-
 }
