@@ -35,11 +35,30 @@ public class FeaturesController {
     this.featuresService = featuresService;
   }
 
+  /**
+   * Endpoint used to get a feature by id.
+   * @param id Feature identifier.
+   * @return Feature.
+   */
   @GetMapping("/{id}")
-  public ResponseEntity<FeatureVO> getUserById(@PathVariable @Positive long id) {
+  public ResponseEntity<FeatureVO> getFeatureById(@PathVariable @Positive long id) {
     return ResponseEntity.ok(featuresService.getFeatureById(id));
   }
 
+  /**
+   * Endpoint used to get a feature linked to a service by id.
+   * @param id Service identifier.
+   * @return Feature.
+   */
+  @GetMapping("/service/{id}")
+  public ResponseEntity<FeatureVO> getFeatureByServiceId(@PathVariable @Positive long id) {
+    return ResponseEntity.ok(featuresService.getFeatureByServiceId(id));
+  }
+
+  /**
+   * Endpoint used to get all features found in db.
+   * @return List of features.
+   */
   @GetMapping
   public ResponseEntity<List<FeatureVO>> getAll() {
     return ResponseEntity.ok(featuresService.getAllFeatures());

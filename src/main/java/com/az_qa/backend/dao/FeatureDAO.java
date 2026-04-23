@@ -12,7 +12,6 @@ import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.mapper.FeatureMapper;
 import com.az_qa.backend.repository.FeaturesRepository;
 import com.az_qa.backend.vo.FeatureVO;
-import java.awt.*;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -32,6 +31,21 @@ public class FeatureDAO {
 
     if (featureVO.isEmpty()) {
       throw new ItemNotFoundException("Feature with id {" + id + "} not found.");
+    }
+    return featureVO.get();
+  }
+
+  /**
+   * Finds the feature that contains the service id received.
+   * @param id Service id.
+   * @return Feature.
+   */
+  public FeatureVO getFeatureByServiceId(Long id) {
+    Optional<FeatureVO> featureVO =
+        featuresRepository.findByIdServices(id).map(FeatureMapper::toVO);
+
+    if (featureVO.isEmpty()) {
+      throw new ItemNotFoundException("No feature found for service identifier {" + id + "}.");
     }
     return featureVO.get();
   }

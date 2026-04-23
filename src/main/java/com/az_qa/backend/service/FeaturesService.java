@@ -33,6 +33,15 @@ public class FeaturesService {
   }
 
   /**
+   * Retrieves a feature by the service id on it.
+   * @param id Service id.
+   * @return Feature.
+   */
+  public FeatureVO getFeatureByServiceId(Long id) {
+    return featureDAO.getFeatureByServiceId(id);
+  }
+
+  /**
    * Retrieves all registered features.
    *
    * @return a list of all features
