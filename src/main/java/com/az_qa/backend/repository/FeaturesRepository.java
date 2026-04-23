@@ -7,8 +7,17 @@ Autozone QA Automation
 package com.az_qa.backend.repository;
 
 import com.az_qa.backend.entity.FeatureEntity;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface FeaturesRepository extends JpaRepository<FeatureEntity, Long> {}
+public interface FeaturesRepository extends JpaRepository<FeatureEntity, Long> {
+
+  /**
+   * Interface used to find the feature that contains the service id.
+   * @param id service id.
+   * @return FeatureEntity.
+   */
+  Optional<FeatureEntity> findByIdServices(Long id);
+}
