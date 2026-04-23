@@ -51,11 +51,9 @@ public class ReleaseEntity {
   @Column(name = "release_service")
   private String releaseService;
 
-  @Transient
-  private boolean isNew;
+  @Transient private boolean isNew;
 
-  public ReleaseEntity() {
-  }
+  public ReleaseEntity() {}
 
   /**
    * Constructs a new {@code ReleaseEntity} with the specified values.
@@ -186,10 +184,8 @@ public class ReleaseEntity {
    */
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
     ReleaseEntity that = (ReleaseEntity) o;
     return Objects.equals(releaseId, that.releaseId)
         && Objects.equals(releaseName, that.releaseName)

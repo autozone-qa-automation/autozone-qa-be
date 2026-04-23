@@ -1,9 +1,15 @@
+/*
+Tecnológico de Monterrey — Campus Chihuahua
+Desarrollo e Implantación de Sistemas de Software
+TC3005B GPO500 - 2026
+Autozone QA Automation
+*/
+
 package com.az_qa.backend.mapper;
 
 public class ReleaseMapper {
 
-  private ReleaseMapper() {
-  }
+  private ReleaseMapper() {}
 
   public static com.az_qa.backend.vo.ReleaseVO toVO(com.az_qa.backend.entity.ReleaseEntity entity) {
     if (entity == null) {
@@ -40,5 +46,4 @@ public class ReleaseMapper {
 
     return entity;
   }
-
 }
