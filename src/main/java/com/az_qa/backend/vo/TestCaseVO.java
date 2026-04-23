@@ -9,23 +9,37 @@ Autozone QA Automation
 package com.az_qa.backend.vo;
 
 import com.az_qa.backend.enumeration.TestCaseType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class TestCaseVO {
 
   private Long id;
-  private String title;
-  private Long relatedFeature;
+  private String code;
+
+  @NotBlank private String title;
+
+  @NotNull private Long relatedFeature;
+
   private String description;
-  private TestCaseType type;
+
+  @NotNull private TestCaseType type;
+
   private String preconditions;
   private String postconditions;
   private String inputs;
-  private String steps;
+
+  @NotBlank private String steps;
+
+  @NotBlank private String expectedOutput;
+
+  private Boolean active;
 
   public TestCaseVO() {}
 
   public TestCaseVO(
       Long id,
+      String code,
       String title,
       Long relatedFeature,
       String description,
@@ -33,41 +47,12 @@ public class TestCaseVO {
       String preconditions,
       String postconditions,
       String inputs,
-      String steps) {
-
-    if (title == null || title.isEmpty()) {
-      throw new IllegalArgumentException("Title cannot be null or empty");
-    }
-
-    if (relatedFeature == null) {
-      throw new IllegalArgumentException("Related feature cannot be null");
-    }
-
-    if (description == null || description.isEmpty()) {
-      throw new IllegalArgumentException("Description cannot be null or empty");
-    }
-
-    if (type == null) {
-      throw new IllegalArgumentException("Test case type cannot be null");
-    }
-
-    if (preconditions == null || preconditions.isEmpty()) {
-      throw new IllegalArgumentException("Preconditions cannot be null or empty");
-    }
-
-    if (postconditions == null || postconditions.isEmpty()) {
-      throw new IllegalArgumentException("Postconditions cannot be null or empty");
-    }
-
-    if (inputs == null || inputs.isEmpty()) {
-      throw new IllegalArgumentException("Inputs cannot be null or empty");
-    }
-
-    if (steps == null || steps.isEmpty()) {
-      throw new IllegalArgumentException("Steps cannot be null or empty");
-    }
+      String steps,
+      String expectedOutput,
+      Boolean active) {
 
     this.id = id;
+    this.code = code;
     this.title = title;
     this.relatedFeature = relatedFeature;
     this.description = description;
@@ -76,6 +61,8 @@ public class TestCaseVO {
     this.postconditions = postconditions;
     this.inputs = inputs;
     this.steps = steps;
+    this.expectedOutput = expectedOutput;
+    this.active = active;
   }
 
   public Long getId() {
@@ -84,6 +71,10 @@ public class TestCaseVO {
 
   public String getTitle() {
     return title;
+  }
+
+  public String getCode() {
+    return code;
   }
 
   public Long getRelatedFeature() {
@@ -114,8 +105,20 @@ public class TestCaseVO {
     return steps;
   }
 
+  public String getExpectedOutput() {
+    return expectedOutput;
+  }
+
+  public Boolean getActive() {
+    return active;
+  }
+
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
   }
 
   public void setTitle(String title) {
@@ -150,6 +153,14 @@ public class TestCaseVO {
     this.steps = steps;
   }
 
+  public void setExpectedOutput(String expectedOutput) {
+    this.expectedOutput = expectedOutput;
+  }
+
+  public void setActive(Boolean active) {
+    this.active = active;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -172,7 +183,10 @@ public class TestCaseVO {
         ? !postconditions.equals(that.postconditions)
         : that.postconditions != null) return false;
     if (inputs != null ? !inputs.equals(that.inputs) : that.inputs != null) return false;
-    return steps != null ? steps.equals(that.steps) : that.steps == null;
+    if (steps != null ? !steps.equals(that.steps) : that.steps != null) return false;
+    return expectedOutput != null
+        ? expectedOutput.equals(that.expectedOutput)
+        : that.expectedOutput == null;
   }
 
   @Override
@@ -185,6 +199,7 @@ public class TestCaseVO {
     result = 31 * result + (postconditions != null ? postconditions.hashCode() : 0);
     result = 31 * result + (inputs != null ? inputs.hashCode() : 0);
     result = 31 * result + (steps != null ? steps.hashCode() : 0);
+    result = 31 * result + (expectedOutput != null ? expectedOutput.hashCode() : 0);
     return result;
   }
 
@@ -193,6 +208,9 @@ public class TestCaseVO {
     return "TestCaseVO{"
         + "id="
         + id
+        + ", code='"
+        + code
+        + '\''
         + ", title='"
         + title
         + '\''
@@ -212,8 +230,12 @@ public class TestCaseVO {
         + ", inputs='"
         + inputs
         + '\''
-        + ", steps="
+        + ", steps='"
         + steps
+        + '\''
+        + ", expectedOutput='"
+        + expectedOutput
+        + '\''
         + '}';
   }
 }

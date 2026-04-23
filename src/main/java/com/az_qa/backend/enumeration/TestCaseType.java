@@ -11,6 +11,4 @@ package com.az_qa.backend.enumeration;
 public enum TestCaseType {
   REGRESSION,
   ON_DEMAND,
-  SMOKE,
-  E2E
 }
