@@ -46,13 +46,13 @@ public class FeaturesController {
   }
 
   /**
-   * Endpoint used to get a feature linked to a service by id.
+   * Endpoint used to get the features linked to a service by id.
    * @param id Service identifier.
-   * @return Feature.
+   * @return Features.
    */
   @GetMapping("/service/{id}")
-  public ResponseEntity<FeatureVO> getFeatureByServiceId(@PathVariable @Positive long id) {
-    return ResponseEntity.ok(featuresService.getFeatureByServiceId(id));
+  public ResponseEntity<List<FeatureVO>> getFeaturesByServiceId(@PathVariable @Positive long id) {
+    return ResponseEntity.ok(featuresService.getFeaturesByServiceId(id));
   }
 
   /**

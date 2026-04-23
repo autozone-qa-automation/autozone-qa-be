@@ -37,8 +37,8 @@ public class FeaturesService {
    * @param id Service id.
    * @return Feature.
    */
-  public FeatureVO getFeatureByServiceId(Long id) {
-    return featureDAO.getFeatureByServiceId(id);
+  public List<FeatureVO> getFeaturesByServiceId(Long id) {
+    return featureDAO.getFeaturesByServiceId(id);
   }
 
   /**
