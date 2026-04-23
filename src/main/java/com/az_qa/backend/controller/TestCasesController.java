@@ -47,18 +47,16 @@ public class TestCasesController {
     return ResponseEntity.noContent().build();
   }
 
-  /*
-   * @GetMapping("/{id}")
-   * public ResponseEntity<TestCaseVO> getTestCaseById(@PathVariable @Positive
-   * long id) {
-   * return ResponseEntity.ok(testCasesService.getTestCaseById(id));
-   * }
-   *
-   * @GetMapping
-   * public ResponseEntity<List<TestCaseVO>> getAll() {
-   * return ResponseEntity.ok(testCasesService.getAllTestCases());
-   * }
-   */
+  @GetMapping("/{id}")
+  public ResponseEntity<TestCaseVO> getTestCaseById(@PathVariable @Positive long id) {
+    return ResponseEntity.ok(testCasesService.getTestCaseById(id));
+  }
+
+  @GetMapping
+  public ResponseEntity<List<TestCaseVO>> getAll() {
+    return ResponseEntity.ok(testCasesService.getAllTestCases());
+  }
+
   @GetMapping("/feature/{featureId}")
   public ResponseEntity<List<TestCaseVO>> getByFeature(@PathVariable Long featureId) {
     return ResponseEntity.ok(testCasesService.getByFeature(featureId));

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TestCasesRepository extends JpaRepository<TestCasesEntity, Long> {
 
-  Optional<TestCasesEntity> findByIdAndActiveTrue(Long id);
+  List<TestCasesEntity> findByActive(boolean active);
 
-  List<TestCasesEntity> findByActiveTrue();
+  Optional<TestCasesEntity> findByIdAndActive(long id, boolean active);
 }

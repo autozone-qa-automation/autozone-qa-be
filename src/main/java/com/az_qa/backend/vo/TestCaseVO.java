@@ -34,6 +34,7 @@ public class TestCaseVO {
   @NotBlank private String expectedOutput;
 
   private Boolean active;
+  private String featureName;
 
   public TestCaseVO() {}
 
@@ -159,6 +160,14 @@ public class TestCaseVO {
 
   public void setActive(Boolean active) {
     this.active = active;
+  }
+
+  public String getFeatureName() {
+    return featureName;
+  }
+
+  public void setFeatureName(String featureName) {
+    this.featureName = featureName;
   }
 
   @Override
