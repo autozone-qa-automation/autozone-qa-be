@@ -1,5 +1,3 @@
 package com.az_qa.backend.service;
 
-public class FeaturesServiceTests {
-
-}
+public class FeaturesServiceTests {}
