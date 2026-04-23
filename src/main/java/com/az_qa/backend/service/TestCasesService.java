@@ -10,7 +10,13 @@ package com.az_qa.backend.service;
 
 import com.az_qa.backend.dao.TestCasesDAO;
 import com.az_qa.backend.vo.TestCaseVO;
+
+import com.az_qa.backend.exception.ResourceNotFoundException;
+
+import jakarta.validation.constraints.Positive;
+
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,17 +36,14 @@ public class TestCasesService {
     dao.deactivate(id);
   }
 
-  /*
-   * public TestCaseVO getTestCaseById(@Positive long id) {
-   * return dao.findById(id)
-   * .orElseThrow(() -> new RuntimeException("Test case not found with id: " +
-   * id));
-   * }
-   *
-   * public List<TestCaseVO> getAllTestCases() {
-   * return dao.findAll();
-   * }
-   */
+  public TestCaseVO getTestCaseById(@Positive long id) {
+    return dao.findById(id)
+      .orElseThrow(() -> new ResourceNotFoundException("Test case not found with id: " + id));
+  }
+
+  public List<TestCaseVO> getAllTestCases() {
+   return dao.findAll();
+   }
   public List<TestCaseVO> getByFeature(Long featureId) {
     return dao.findByFeature(featureId);
   }
