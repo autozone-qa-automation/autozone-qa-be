@@ -14,12 +14,10 @@ import com.az_qa.backend.mapper.TestCasesMapper;
 import com.az_qa.backend.repository.FeaturesRepository;
 import com.az_qa.backend.repository.TestCasesRepository;
 import com.az_qa.backend.vo.TestCaseVO;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,8 +51,10 @@ public class TestCasesDAO {
 
   @Transactional
   public void deactivate(Long id) {
-    TestCasesEntity entity = repository.findByIdAndActive(id, true)
-        .orElseThrow(() -> new ResourceNotFoundException("TestCase not found with id: " + id));
+    TestCasesEntity entity =
+        repository
+            .findByIdAndActive(id, true)
+            .orElseThrow(() -> new ResourceNotFoundException("TestCase not found with id: " + id));
     entity.setActive(false);
     repository.save(entity);
   }
@@ -67,27 +67,26 @@ public class TestCasesDAO {
   }
 
   public Optional<TestCaseVO> findById(long id) {
-    return repository.findByIdAndActive(id, true)
-        .map(mapper::toVO);
+    return repository.findByIdAndActive(id, true).map(mapper::toVO);
   }
 
   public List<TestCaseVO> findAll() {
     List<TestCasesEntity> entities = repository.findByActive(true);
 
-    List<Long> featureIds = entities.stream()
-        .map(TestCasesEntity::getRelatedFeature)
-        .distinct()
-        .toList();
+    List<Long> featureIds =
+        entities.stream().map(TestCasesEntity::getRelatedFeature).distinct().toList();
 
-    Map<Long, String> featureNames = featuresRepository.findAllById(featureIds).stream()
-        .collect(Collectors.toMap(f -> f.getId(), f -> f.getName()));
+    Map<Long, String> featureNames =
+        featuresRepository.findAllById(featureIds).stream()
+            .collect(Collectors.toMap(f -> f.getId(), f -> f.getName()));
 
     return entities.stream()
-        .map(e -> {
-          TestCaseVO vo = mapper.toVO(e);
-          vo.setFeatureName(featureNames.get(e.getRelatedFeature()));
-          return vo;
-        })
+        .map(
+            e -> {
+              TestCaseVO vo = mapper.toVO(e);
+              vo.setFeatureName(featureNames.get(e.getRelatedFeature()));
+              return vo;
+            })
         .toList();
   }
 }
