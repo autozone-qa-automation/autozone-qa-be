@@ -7,61 +7,20 @@ Autozone QA Automation
 
 package com.az_qa.backend.service;
 
-import com.az_qa.backend.enumeration.ReleaseStatus;
+import com.az_qa.backend.dao.ReleaseDAO;
+import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.vo.ReleaseVO;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReleaseService {
+  private final ReleaseDAO releaseDAO;
 
-  // Mock data storage
-  private final List<ReleaseVO> mockReleases = new ArrayList<>();
-  private Long nextId = 1L;
-
-  // Initialize with mock data
-  {
-    mockReleases.add(
-        new ReleaseVO(
-            1L,
-            "Release 1.0.0",
-            "Initial release with core features",
-            LocalDate.of(2024, 1, 15),
-            LocalDate.of(2024, 2, 1),
-            "1.0.0",
-            "production,stable",
-            ReleaseStatus.Active,
-            "UserService"));
-
-    mockReleases.add(
-        new ReleaseVO(
-            2L,
-            "Release 1.1.0",
-            "Feature enhancement release",
-            LocalDate.of(2024, 3, 1),
-            LocalDate.of(2024, 3, 15),
-            "1.1.0",
-            "enhancement,minor",
-            ReleaseStatus.Active,
-            "FeatureService"));
-
-    mockReleases.add(
-        new ReleaseVO(
-            3L,
-            "Release 2.0.0",
-            "Major release with breaking changes",
-            LocalDate.of(2024, 6, 1),
-            null,
-            "2.0.0",
-            "major,breaking",
-            ReleaseStatus.Draft,
-            "TestService"));
-
-    nextId = 4L;
+  public ReleaseService(ReleaseDAO releaseDAO) {
+    this.releaseDAO = releaseDAO;
   }
 
   /**
@@ -71,11 +30,11 @@ public class ReleaseService {
    * @return the matching release
    */
   public ReleaseVO getReleaseById(Long id) {
-    return mockReleases.stream()
-        .filter(release -> release.getReleaseId().equals(id))
-        .findFirst()
-        .orElseThrow(
-            () -> new ResourceNotFoundException("Release with id {" + id + "} not found."));
+    try {
+      return releaseDAO.findById(id);
+    } catch (ItemNotFoundException e) {
+      throw new ResourceNotFoundException("Release with id {" + id + "} not found.");
+    }
   }
 
   /**
@@ -84,7 +43,7 @@ public class ReleaseService {
    * @return a list of all releases
    */
   public List<ReleaseVO> getAllReleases() {
-    return new ArrayList<>(mockReleases);
+    return releaseDAO.findAll();
   }
 
   /**
@@ -95,19 +54,7 @@ public class ReleaseService {
    */
   @Transactional
   public ReleaseVO createRelease(ReleaseVO releaseVO) {
-    ReleaseVO newRelease =
-        new ReleaseVO(
-            nextId++,
-            releaseVO.getReleaseName(),
-            releaseVO.getReleaseDescription(),
-            releaseVO.getReleaseCreationDate(),
-            releaseVO.getReleaseLaunchDate(),
-            releaseVO.getReleaseVersion(),
-            releaseVO.getReleaseTags(),
-            releaseVO.getReleaseStatus(),
-            releaseVO.getReleaseService());
-
-    mockReleases.add(newRelease);
-    return newRelease;
+    releaseVO.setReleaseId(null);
+    return releaseDAO.save(releaseVO);
   }
 }
