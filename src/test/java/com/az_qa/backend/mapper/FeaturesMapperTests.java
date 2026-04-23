@@ -1,5 +1,3 @@
 package com.az_qa.backend.mapper;
 
-public class FeaturesMapperTests {
-
-}
+public class FeaturesMapperTests {}
