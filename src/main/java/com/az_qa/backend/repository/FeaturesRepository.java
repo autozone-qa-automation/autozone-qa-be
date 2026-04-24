@@ -19,5 +19,5 @@ public interface FeaturesRepository extends JpaRepository<FeatureEntity, Long> {
    * @param id service id.
    * @return FeatureEntity.
    */
-  List<FeatureEntity> findByIdServices(Long id);
+  List<FeatureEntity> findByServiceId(Long id);
 }

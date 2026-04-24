@@ -8,9 +8,11 @@ Autozone QA Automation
 package com.az_qa.backend.dao;
 
 import com.az_qa.backend.entity.FeatureEntity;
+import com.az_qa.backend.entity.ServicesEntity;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.mapper.FeatureMapper;
 import com.az_qa.backend.repository.FeaturesRepository;
+import com.az_qa.backend.repository.ServicesRepository;
 import com.az_qa.backend.vo.FeatureVO;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Repository;
 public class FeatureDAO {
 
   @Autowired private FeaturesRepository featuresRepository;
+  @Autowired private ServicesRepository servicesRepository;
 
   /**
    * Find features by id.
@@ -44,7 +47,7 @@ public class FeatureDAO {
    */
   public List<FeatureVO> getFeaturesByServiceId(Long id) {
     List<FeatureVO> featureVO =
-        featuresRepository.findByIdServices(id).stream()
+        featuresRepository.findByServiceId(id).stream()
             .map(FeatureMapper::toVO)
             .collect(Collectors.toList());
 
@@ -64,6 +67,13 @@ public class FeatureDAO {
 
   public FeatureVO createFeature(FeatureVO featureVO) {
     FeatureEntity featureEntity = FeatureMapper.toEntity(featureVO);
+    
+    if (featureVO.getIdService() != null) {
+      ServicesEntity service = servicesRepository.findById(featureVO.getIdService())
+          .orElseThrow(() -> new ItemNotFoundException("Service with id {" + featureVO.getIdService() + "} not found."));
+      featureEntity.setService(service);
+    }
+    
     FeatureEntity savedEntity = featuresRepository.save(featureEntity);
     return FeatureMapper.toVO(savedEntity);
   }

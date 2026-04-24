@@ -9,13 +9,17 @@ Autozone QA Automation
 package com.az_qa.backend.entity;
 
 import com.az_qa.backend.enumeration.TestCaseType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -31,9 +35,21 @@ public class TestCasesEntity {
 
   @Column(nullable = false)
   private String title;
+  
 
-  @Column(name = "feature_id", nullable = false)
-  private Long relatedFeature;
+
+  //Relationships
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "feature_id", nullable = false)
+  private FeatureEntity feature;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "release_id")
+  private ReleaseEntity release;
+
+  //End of relationships
+
 
   @Column(columnDefinition = "TEXT")
   private String description;
@@ -86,12 +102,20 @@ public class TestCasesEntity {
     this.title = title;
   }
 
-  public Long getRelatedFeature() {
-    return relatedFeature;
+  public FeatureEntity getFeature() {
+    return feature;
   }
 
-  public void setRelatedFeature(Long relatedFeature) {
-    this.relatedFeature = relatedFeature;
+  public void setFeature(FeatureEntity feature) {
+    this.feature = feature;
+  }
+
+  public ReleaseEntity getRelease() {
+    return release;
+  }
+
+  public void setRelease(ReleaseEntity release) {
+    this.release = release;
   }
 
   public String getDescription() {

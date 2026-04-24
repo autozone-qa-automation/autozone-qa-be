@@ -7,10 +7,25 @@ Autozone QA Automation
 
 package com.az_qa.backend.entity;
 
-import com.az_qa.backend.enumeration.ReleaseStatus;
-import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
+
+import com.az_qa.backend.enumeration.ReleaseStatus;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 /**
  * JPA entity representing a software release in the Autozone QA system.
@@ -20,14 +35,17 @@ import java.util.Objects;
 @Entity
 @Table(name = "releases")
 public class ReleaseEntity {
-  @ManyToMany()
-  @JoinTable(
-      name = "ReleasedFeatures",
-      joinColumns = @JoinColumn(name = "release_id"),
-      inverseJoinColumns = @JoinColumn(name = "feature_id"))
-  )
-  private List<FeatureEntity> releasedFeatures;
 
+  //Relationships
+
+
+  @OneToMany(mappedBy = "release", fetch = FetchType.LAZY)
+  private List<TestCasesEntity> testCases;
+
+  @OneToMany(mappedBy = "release", fetch = FetchType.LAZY)
+  private List<ReleasedFeaturesEntity> features;
+
+  //End of relationships
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,9 +74,6 @@ public class ReleaseEntity {
   @Column(name = "release_status", nullable = false)
   private ReleaseStatus releaseStatus;
 
-  @Column(name = "release_service")
-  private String releaseService;
-
   @Transient private boolean isNew;
 
   public ReleaseEntity() {}
@@ -73,7 +88,6 @@ public class ReleaseEntity {
    * @param releaseVersion      the release version
    * @param releaseTags         optional release tags
    * @param releaseStatus       the release status
-   * @param releaseService      optional service associated with the release
    */
   public ReleaseEntity(
       String releaseName,
@@ -82,8 +96,7 @@ public class ReleaseEntity {
       LocalDate releaseLaunchDate,
       String releaseVersion,
       String releaseTags,
-      ReleaseStatus releaseStatus,
-      String releaseService) {
+      ReleaseStatus releaseStatus) {
     this.releaseName = releaseName;
     this.releaseDescription = releaseDescription;
     this.releaseCreationDate = releaseCreationDate;
@@ -91,7 +104,6 @@ public class ReleaseEntity {
     this.releaseVersion = releaseVersion;
     this.releaseTags = releaseTags;
     this.releaseStatus = releaseStatus;
-    this.releaseService = releaseService;
   }
 
   public Long getReleaseId() {
@@ -99,7 +111,7 @@ public class ReleaseEntity {
   }
 
   public boolean isNew() {
-    return isNew();
+    return isNew;
   }
 
   public void setNew(boolean isNew) {
@@ -173,11 +185,51 @@ public class ReleaseEntity {
   }
 
   public String getReleaseService() {
-    return releaseService;
+    if (features == null) {
+      return null;
+    }
+
+    return features.stream()
+        .map(ReleasedFeaturesEntity::getFeature)
+        .filter(java.util.Objects::nonNull)
+        .map(FeatureEntity::getService)
+        .filter(java.util.Objects::nonNull)
+        .map(ServicesEntity::getName)
+        .filter(java.util.Objects::nonNull)
+        .findFirst()
+        .orElse(null);
   }
 
-  public void setReleaseService(String releaseService) {
-    this.releaseService = releaseService;
+  public List<String> getReleaseServices() {
+    if (features == null) {
+      return List.of();
+    }
+
+    return features.stream()
+        .map(ReleasedFeaturesEntity::getFeature)
+        .filter(Objects::nonNull)
+        .map(FeatureEntity::getService)
+        .filter(Objects::nonNull)
+        .map(ServicesEntity::getName)
+        .filter(Objects::nonNull)
+        .distinct()
+        .toList();
+  }
+
+  public List<Long> getReleaseServiceIds() {
+    if (features == null) {
+      return List.of();
+    }
+
+    return features.stream()
+        .map(ReleasedFeaturesEntity::getFeature)
+        .filter(Objects::nonNull)
+        .map(FeatureEntity::getService)
+        .filter(Objects::nonNull)
+        .map(ServicesEntity::getId)
+        .filter(Objects::nonNull)
+        .distinct()
+        .toList();
   }
 
   /**
@@ -202,8 +254,7 @@ public class ReleaseEntity {
         && Objects.equals(releaseLaunchDate, that.releaseLaunchDate)
         && Objects.equals(releaseVersion, that.releaseVersion)
         && Objects.equals(releaseTags, that.releaseTags)
-        && releaseStatus == that.releaseStatus
-        && Objects.equals(releaseService, that.releaseService);
+        && releaseStatus == that.releaseStatus;
   }
 
   /**
@@ -221,8 +272,7 @@ public class ReleaseEntity {
         releaseLaunchDate,
         releaseVersion,
         releaseTags,
-        releaseStatus,
-        releaseService);
+        releaseStatus);
   }
 
   /**
@@ -253,9 +303,6 @@ public class ReleaseEntity {
         + '\''
         + ", releaseStatus="
         + releaseStatus
-        + ", releaseService='"
-        + releaseService
-        + '\''
         + '}';
   }
 }

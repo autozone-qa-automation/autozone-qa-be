@@ -37,7 +37,7 @@ public class ReleaseService {
   public ReleaseVO getReleaseById(Long id) {
     try {
         ReleaseVO vo = releaseDAO.findById(id);
-        vo.setNombresServicios(releaseRepository.findNombresServiciosByReleaseId(id));
+        vo.setReleaseServices(releaseRepository.findNombresServiciosByReleaseId(id));
         return vo;
     } catch (ItemNotFoundException e) {
         throw new ResourceNotFoundException("Release with id {" + id + "} not found.");
