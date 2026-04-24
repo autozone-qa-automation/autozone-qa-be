@@ -9,16 +9,23 @@ Autozone QA Automation
 package com.az_qa.backend.mapper;
 
 import com.az_qa.backend.entity.TestCasesEntity;
+import com.az_qa.backend.repository.FeaturesRepository;
 import com.az_qa.backend.vo.TestCaseVO;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TestCasesMapper {
 
+  private final FeaturesRepository featuresRepository;
+
+  public TestCasesMapper(FeaturesRepository featuresRepository) {
+    this.featuresRepository = featuresRepository;
+  }
+
   public TestCasesEntity toEntity(TestCaseVO vo) {
     TestCasesEntity e = new TestCasesEntity();
     e.setTitle(vo.getTitle());
-    e.setRelatedFeature(vo.getRelatedFeature());
+    e.setFeature(featuresRepository.getReferenceById(vo.getRelatedFeature()));
     e.setDescription(vo.getDescription());
     e.setType(vo.getType());
     e.setPreconditions(vo.getPreconditions());
@@ -34,7 +41,8 @@ public class TestCasesMapper {
     vo.setId(e.getId());
     vo.setCode(e.getCode());
     vo.setTitle(e.getTitle());
-    vo.setRelatedFeature(e.getRelatedFeature());
+    vo.setRelatedFeature(e.getFeature().getId());
+    vo.setReleaseId(e.getRelease() != null ? e.getRelease().getReleaseId() : null);
     vo.setDescription(e.getDescription());
     vo.setType(e.getType());
     vo.setPreconditions(e.getPreconditions());
