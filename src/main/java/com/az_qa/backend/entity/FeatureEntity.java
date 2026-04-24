@@ -7,12 +7,19 @@ Autozone QA Automation
 
 package com.az_qa.backend.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -32,6 +39,16 @@ public class FeatureEntity {
 
   @Column(name = "idServices")
   private long idServices;
+
+  @OneToMany(mappedBy = "feature", cascade = CascadeType.ALL)
+  private List<TestCasesEntity> testCases = new ArrayList<>();
+
+  @ManyToMany
+  @JoinTable(
+      name = "ReleasedFeatures",
+      joinColumns = @JoinColumn(name = "feature_id"),
+      inverseJoinColumns = @JoinColumn(name = "release_id"))
+  private List<ReleaseEntity> releases = new ArrayList<>();
 
   public FeatureEntity() {}
 
@@ -71,6 +88,22 @@ public class FeatureEntity {
 
   public void setIdServices(long idServices) {
     this.idServices = idServices;
+  }
+
+  public List<TestCasesEntity> getTestCases() {
+    return testCases;
+  }
+
+  public void setTestCases(List<TestCasesEntity> testCases) {
+    this.testCases = testCases;
+  }
+
+  public List<ReleaseEntity> getReleases() {
+    return releases;
+  }
+
+  public void setReleases(List<ReleaseEntity> releases) {
+    this.releases = releases;
   }
 
   @Override

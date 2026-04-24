@@ -20,4 +20,6 @@ public interface TestCasesRepository extends JpaRepository<TestCasesEntity, Long
   List<TestCasesEntity> findByActive(boolean active);
 
   Optional<TestCasesEntity> findByIdAndActive(long id, boolean active);
+
+  List<TestCasesEntity> findByFeature_IdAndActiveTrue(Long featureId);
 }
