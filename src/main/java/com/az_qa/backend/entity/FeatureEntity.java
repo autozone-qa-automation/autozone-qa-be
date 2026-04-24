@@ -7,8 +7,6 @@ Autozone QA Automation
 
 package com.az_qa.backend.entity;
 
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,15 +17,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.Objects;
+
 @Entity
 @Table(name = "features")
 public class FeatureEntity {
 
-  
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "idServices")
   private ServicesEntity service;
-
 
   @OneToMany(mappedBy = "feature", fetch = FetchType.LAZY)
   private java.util.List<TestCasesEntity> testCases;

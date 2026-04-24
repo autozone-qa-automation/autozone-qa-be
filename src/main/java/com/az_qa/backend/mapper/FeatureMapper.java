@@ -20,7 +20,9 @@ public class FeatureMapper {
     }
 
     return new FeatureVO(
-        entity.getId(), entity.getName(), entity.getDescription(), 
+        entity.getId(),
+        entity.getName(),
+        entity.getDescription(),
         entity.getService() != null ? entity.getService().getId() : null);
   }
 

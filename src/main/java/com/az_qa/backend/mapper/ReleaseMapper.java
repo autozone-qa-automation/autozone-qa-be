@@ -26,7 +26,8 @@ public class ReleaseMapper {
         entity.getReleaseTags(),
         entity.getReleaseStatus(),
         entity.getReleaseServices(),
-        entity.getReleaseServiceIds());
+        entity.getReleaseServiceIds(),
+        entity.getReleaseFeatureIds());
   }
 
   public static com.az_qa.backend.entity.ReleaseEntity toEntity(com.az_qa.backend.vo.ReleaseVO vo) {

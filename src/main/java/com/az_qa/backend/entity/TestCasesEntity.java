@@ -9,7 +9,6 @@ Autozone QA Automation
 package com.az_qa.backend.entity;
 
 import com.az_qa.backend.enumeration.TestCaseType;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -35,10 +34,8 @@ public class TestCasesEntity {
 
   @Column(nullable = false)
   private String title;
-  
 
-
-  //Relationships
+  // Relationships
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "feature_id", nullable = false)
@@ -48,8 +45,7 @@ public class TestCasesEntity {
   @JoinColumn(name = "release_id")
   private ReleaseEntity release;
 
-  //End of relationships
-
+  // End of relationships
 
   @Column(columnDefinition = "TEXT")
   private String description;

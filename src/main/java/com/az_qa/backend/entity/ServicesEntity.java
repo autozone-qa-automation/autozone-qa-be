@@ -7,11 +7,6 @@
 
 package com.az_qa.backend.entity;
 
-import java.io.Serializable;
-import java.util.List;
-
-import org.springframework.data.domain.Persistable;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,6 +18,9 @@ import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import java.io.Serializable;
+import java.util.List;
+import org.springframework.data.domain.Persistable;
 
 /**
  * Persistence entity that represents a service record stored in the database.
@@ -36,9 +34,6 @@ public class ServicesEntity implements Serializable, Persistable<Long> {
 
   @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
   private List<FeatureEntity> features;
-
-  
-
 
   /** Database identifier for the service. */
   @Id

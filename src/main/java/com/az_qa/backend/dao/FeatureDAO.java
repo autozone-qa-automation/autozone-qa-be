@@ -67,13 +67,18 @@ public class FeatureDAO {
 
   public FeatureVO createFeature(FeatureVO featureVO) {
     FeatureEntity featureEntity = FeatureMapper.toEntity(featureVO);
-    
+
     if (featureVO.getIdService() != null) {
-      ServicesEntity service = servicesRepository.findById(featureVO.getIdService())
-          .orElseThrow(() -> new ItemNotFoundException("Service with id {" + featureVO.getIdService() + "} not found."));
+      ServicesEntity service =
+          servicesRepository
+              .findById(featureVO.getIdService())
+              .orElseThrow(
+                  () ->
+                      new ItemNotFoundException(
+                          "Service with id {" + featureVO.getIdService() + "} not found."));
       featureEntity.setService(service);
     }
-    
+
     FeatureEntity savedEntity = featuresRepository.save(featureEntity);
     return FeatureMapper.toVO(savedEntity);
   }

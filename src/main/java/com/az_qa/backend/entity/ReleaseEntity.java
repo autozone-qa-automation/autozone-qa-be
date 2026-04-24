@@ -7,12 +7,7 @@ Autozone QA Automation
 
 package com.az_qa.backend.entity;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-
 import com.az_qa.backend.enumeration.ReleaseStatus;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,6 +21,9 @@ import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * JPA entity representing a software release in the Autozone QA system.
@@ -36,8 +34,7 @@ import jakarta.persistence.Transient;
 @Table(name = "releases")
 public class ReleaseEntity {
 
-  //Relationships
-
+  // Relationships
 
   @OneToMany(mappedBy = "release", fetch = FetchType.LAZY)
   private List<TestCasesEntity> testCases;
@@ -45,7 +42,7 @@ public class ReleaseEntity {
   @OneToMany(mappedBy = "release", fetch = FetchType.LAZY)
   private List<ReleasedFeaturesEntity> features;
 
-  //End of relationships
+  // End of relationships
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -227,6 +224,20 @@ public class ReleaseEntity {
         .map(FeatureEntity::getService)
         .filter(Objects::nonNull)
         .map(ServicesEntity::getId)
+        .filter(Objects::nonNull)
+        .distinct()
+        .toList();
+  }
+
+  public List<Long> getReleaseFeatureIds() {
+    if (features == null) {
+      return List.of();
+    }
+
+    return features.stream()
+        .map(ReleasedFeaturesEntity::getFeature)
+        .filter(Objects::nonNull)
+        .map(FeatureEntity::getId)
         .filter(Objects::nonNull)
         .distinct()
         .toList();
