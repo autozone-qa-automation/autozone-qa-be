@@ -22,8 +22,6 @@ public class FeaturesService {
    */
   @Autowired private FeatureDAO featureDAO;
 
-  @Autowired private ServicesService servicesService;
-
   /**
    * Retrieves a feature by its ID.
    *
@@ -31,9 +29,7 @@ public class FeaturesService {
    * @return the matching feature response
    */
   public FeatureVO getFeatureById(Long id) {
-    FeatureVO featureVO = featureDAO.getFeatureById(id);
-    featureVO.setServiceName(servicesService.getServiceNameById(featureVO.getIdService()));
-    return featureVO;
+    return featureDAO.getFeatureById(id);
   }
 
   /**
@@ -51,13 +47,7 @@ public class FeaturesService {
    * @return a list of all features
    */
   public List<FeatureVO> getAllFeatures() {
-    List<FeatureVO> featureVOList = featureDAO.getAllFeatures();
-    List<FeatureVO> featuresList = new java.util.ArrayList<>(List.of());
-    for (FeatureVO featureVO : featureVOList) {
-      featureVO.setServiceName(servicesService.getServiceNameById(featureVO.getIdService()));
-      featuresList.add(featureVO);
-    }
-    return featuresList;
+    return featureDAO.getAllFeatures();
   }
 
   /**

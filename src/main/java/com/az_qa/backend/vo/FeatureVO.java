@@ -19,7 +19,7 @@ public class FeatureVO {
   @NotBlank(message = "Feature description is required")
   private String featureDescription;
 
-  @NotNull(message = "Feature service is required")
+  @NotNull(message = "Feature service id required")
   private Long idService;
 
   private String serviceName;

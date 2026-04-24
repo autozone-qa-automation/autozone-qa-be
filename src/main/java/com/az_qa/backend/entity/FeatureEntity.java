@@ -42,7 +42,7 @@ public class FeatureEntity {
   @Column(name = "idServices", insertable = false, updatable = false)
   private long idServices;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "idServices")
   private ServicesEntity services;
 
@@ -94,6 +94,14 @@ public class FeatureEntity {
 
   public void setIdServices(long idServices) {
     this.idServices = idServices;
+  }
+
+  public ServicesEntity getServices() {
+    return services;
+  }
+
+  public void setServices(ServicesEntity services) {
+    this.services = services;
   }
 
   public List<TestCasesEntity> getTestCases() {
