@@ -39,7 +39,7 @@ public class FeatureEntity {
   @Column(name = "description")
   private String description;
 
-  @Column(name = "idServices")
+  @Column(name = "idServices", insertable = false, updatable = false)
   private long idServices;
 
   @ManyToOne(fetch = FetchType.LAZY)
