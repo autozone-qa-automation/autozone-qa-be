@@ -35,6 +35,8 @@ public class TestCasesEntity {
   @Column(nullable = false)
   private String title;
 
+  // Relationships
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "feature_id", nullable = false)
   private FeatureEntity feature;
@@ -42,6 +44,8 @@ public class TestCasesEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "release_id")
   private ReleaseEntity release;
+
+  // End of relationships
 
   @Column(columnDefinition = "TEXT")
   private String description;

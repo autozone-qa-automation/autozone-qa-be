@@ -32,6 +32,9 @@ public class ServicesEntity implements Serializable, Persistable<Long> {
   /** Serializable version identifier. */
   private static final long serialVersionUID = 1739356800001L;
 
+  @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
+  private List<FeatureEntity> features;
+
   /** Database identifier for the service. */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
