@@ -60,10 +60,7 @@ public class TestCasesDAO {
   }
 
   public List<TestCaseVO> findByFeature(Long featureId) {
-    return repository.findByActive(true).stream()
-        .filter(tc -> tc.getRelatedFeature().equals(featureId))
-        .map(mapper::toVO)
-        .toList();
+    return repository.findByFeature_IdAndActiveTrue(featureId).stream().map(mapper::toVO).toList();
   }
 
   public Optional<TestCaseVO> findById(long id) {
@@ -73,8 +70,7 @@ public class TestCasesDAO {
   public List<TestCaseVO> findAll() {
     List<TestCasesEntity> entities = repository.findByActive(true);
 
-    List<Long> featureIds =
-        entities.stream().map(TestCasesEntity::getRelatedFeature).distinct().toList();
+    List<Long> featureIds = entities.stream().map(e -> e.getFeature().getId()).distinct().toList();
 
     Map<Long, String> featureNames =
         featuresRepository.findAllById(featureIds).stream()
@@ -84,7 +80,7 @@ public class TestCasesDAO {
         .map(
             e -> {
               TestCaseVO vo = mapper.toVO(e);
-              vo.setFeatureName(featureNames.get(e.getRelatedFeature()));
+              vo.setFeatureName(featureNames.get(e.getFeature().getId()));
               return vo;
             })
         .toList();
