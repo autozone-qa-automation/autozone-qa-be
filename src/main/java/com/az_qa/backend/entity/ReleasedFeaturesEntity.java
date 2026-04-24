@@ -9,6 +9,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+/**
+ * JPA entity that links a release with one of the features included in it.
+ * This entity maps the many-to-many release-feature relationship through the
+ * {@code released_features} table.
+ */
 @Entity
 @Table(name = "released_features")
 public class ReleasedFeaturesEntity {
@@ -27,6 +32,13 @@ public class ReleasedFeaturesEntity {
 
   public ReleasedFeaturesEntity() {}
 
+  /**
+   * Constructs a released-feature relationship with the specified release and
+   * feature.
+   *
+   * @param release the release that includes the feature
+   * @param feature the feature included in the release
+   */
   public ReleasedFeaturesEntity(ReleaseEntity release, FeatureEntity feature) {
     this.release = release;
     this.feature = feature;

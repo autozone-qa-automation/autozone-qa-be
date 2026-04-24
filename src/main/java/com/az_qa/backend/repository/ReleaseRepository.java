@@ -14,8 +14,20 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Repository for accessing and managing release records.
+ * Provides the standard JPA operations for {@link ReleaseEntity} and custom
+ * release queries.
+ */
 @Repository
 public interface ReleaseRepository extends JpaRepository<ReleaseEntity, Long> {
+
+  /**
+   * Finds the service names associated with the features included in a release.
+   *
+   * @param releaseId the release identifier
+   * @return a list of service names linked to the release features
+   */
   @Query(
       "SELECT s.name FROM ReleaseEntity r "
           + "JOIN r.features rf "
