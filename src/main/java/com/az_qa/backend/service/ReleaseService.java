@@ -15,14 +15,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.az_qa.backend.dao.ReleaseDAO;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.ResourceNotFoundException;
+import com.az_qa.backend.repository.ReleaseRepository;
 import com.az_qa.backend.vo.ReleaseVO;
 
 @Service
 public class ReleaseService {
   private final ReleaseDAO releaseDAO;
+  private final ReleaseRepository releaseRepository;
 
-  public ReleaseService(ReleaseDAO releaseDAO) {
+  public ReleaseService(ReleaseDAO releaseDAO, ReleaseRepository releaseRepository) {
     this.releaseDAO = releaseDAO;
+    this.releaseRepository = releaseRepository;
   }
 
   /**
@@ -33,13 +36,14 @@ public class ReleaseService {
    */
   public ReleaseVO getReleaseById(Long id) {
     try {
-      return releaseDAO.findById(id);
+        ReleaseVO vo = releaseDAO.findById(id);
+        vo.setNombresServicios(releaseRepository.findNombresServiciosByReleaseId(id));
+        return vo;
     } catch (ItemNotFoundException e) {
-      throw new ResourceNotFoundException("Release with id {" + id + "} not found.");
+        throw new ResourceNotFoundException("Release with id {" + id + "} not found.");
     }
   }
-
-  /**
+    /**
    * Retrieves releases based on filter criteria.
    *
    * @param releaseStatus the status to filter by
@@ -71,3 +75,6 @@ public class ReleaseService {
     return releaseDAO.save(releaseVO);
   }
 }
+
+
+

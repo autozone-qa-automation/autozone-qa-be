@@ -11,6 +11,7 @@ import com.az_qa.backend.enumeration.ReleaseStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Value Object representing a software release in the Autozone QA system.
@@ -39,6 +40,8 @@ public class ReleaseVO {
 
   @NotBlank(message = "Release status is required")
   private ReleaseStatus releaseStatus;
+  
+  private List<String> nameServicios;
 
   private String releaseService;
 
@@ -66,7 +69,9 @@ public class ReleaseVO {
       String releaseVersion,
       String releaseTags,
       ReleaseStatus releaseStatus,
-      String releaseService) {
+      String releaseService
+    
+    ) {
     this.releaseId = releaseId;
     this.releaseName = releaseName;
     this.releaseDescription = releaseDescription;
@@ -76,6 +81,13 @@ public class ReleaseVO {
     this.releaseTags = releaseTags;
     this.releaseStatus = releaseStatus;
     this.releaseService = releaseService;
+  }
+  public List<String> getNombresServicios() {
+      return nameServicios;
+  }
+
+  public void setNombresServicios(List<String> nombresServicios) {
+      this.nameServicios = nombresServicios;
   }
 
   public Long getReleaseId() {

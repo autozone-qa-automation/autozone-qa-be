@@ -20,6 +20,14 @@ import java.util.Objects;
 @Entity
 @Table(name = "releases")
 public class ReleaseEntity {
+  @ManyToMany()
+  @JoinTable(
+      name = "ReleasedFeatures",
+      joinColumns = @JoinColumn(name = "release_id"),
+      inverseJoinColumns = @JoinColumn(name = "feature_id"))
+  )
+  private List<FeatureEntity> releasedFeatures;
+
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

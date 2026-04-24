@@ -8,12 +8,17 @@ Autozone QA Automation
 package com.az_qa.backend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
+import java.util.List;
 import com.az_qa.backend.entity.ReleaseEntity;
 
 @Repository
 public interface ReleaseRepository extends JpaRepository<ReleaseEntity, Long> {
-
-
+    @Query("SELECT s.name FROM ReleaseEntity r " +
+       "JOIN r.Features f " +   
+       "JOIN f.service s " +       
+       "WHERE r.releaseId = :releaseId")
+    List<String> findNombresServiciosByReleaseId(@Param("releaseId") Long releaseId);
 }

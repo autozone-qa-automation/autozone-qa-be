@@ -7,14 +7,16 @@ Autozone QA Automation
 
 package com.az_qa.backend.exception;
 
+/**
+ * Exception thrown when a requested item cannot be found in the data source.
+ */
 public class ItemNotFoundException extends RuntimeException {
 
-  public ItemNotFoundException(final String message, final Throwable cause) {
+  public ItemNotFoundException(String message, Throwable cause) {
     super(message, cause);
-    // TODO: Log the exception
   }
 
-  public ItemNotFoundException(final String message) {
+  public ItemNotFoundException(String message) {
     this(message, null);
   }
 
