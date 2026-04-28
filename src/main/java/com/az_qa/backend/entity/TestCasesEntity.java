@@ -38,7 +38,7 @@ public class TestCasesEntity {
   // Relationships
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "feature_id", nullable = false)
+  @JoinColumn(name = "idFeature", nullable = false)
   private FeatureEntity feature;
 
   @ManyToOne(fetch = FetchType.LAZY)
