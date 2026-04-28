@@ -3,7 +3,7 @@ package com.az_qa.backend.service.impl;
 import com.az_qa.backend.dto.request.UserRequest;
 import com.az_qa.backend.dto.request.UserUpdateRequest;
 import com.az_qa.backend.dto.response.UserResponse;
-import com.az_qa.backend.entity.User;
+import com.az_qa.backend.entity.UserEntity;
 import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.mapper.UserMapper;
 import com.az_qa.backend.repository.UserRepository;
@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserResponse getUserById(Long id) {
-    User user =
+    UserEntity user =
         userRepository
             .findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
@@ -33,26 +33,26 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public List<UserResponse> getAllUsers() {
-    List<User> users = userRepository.findAll();
+    List<UserEntity> users = userRepository.findAll();
     return userMapper.toResponseList(users);
   }
 
   @Override
   public UserResponse create(UserRequest request) {
-    User saved = userRepository.save(userMapper.toEntity(request));
+    UserEntity saved = userRepository.save(userMapper.toEntity(request));
     return userMapper.toResponse(saved);
   }
 
   @Override
   public UserResponse update(Long id, UserUpdateRequest request) {
-    User user =
+    UserEntity user =
         userRepository
             .findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
 
     userMapper.updateFromRequest(request, user);
 
-    User updatedUser = userRepository.save(user);
+    UserEntity updatedUser = userRepository.save(user);
     return userMapper.toResponse(updatedUser);
   }
 }
