@@ -7,7 +7,6 @@ Autozone QA Automation
 package com.az_qa.backend.vo;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**

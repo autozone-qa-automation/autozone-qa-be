@@ -16,43 +16,43 @@ import com.az_qa.backend.vo.RoleVO;
  */
 public class RoleMapper {
 
-    /**
-     * Converts a RoleEntity to a RoleVO.
-     *
-     * @param entity the RoleEntity to convert
-     * @return the converted RoleVO
-     */
-    public static RoleVO toVO(RoleEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-
-        RoleVO vo = new RoleVO();
-        vo.setId(entity.getId());
-        if (entity.getPermission() != null) {
-            vo.setPermission(UserRole.valueOf(entity.getPermission()));
-        }
-
-        return vo;
+  /**
+   * Converts a RoleEntity to a RoleVO.
+   *
+   * @param entity the RoleEntity to convert
+   * @return the converted RoleVO
+   */
+  public static RoleVO toVO(RoleEntity entity) {
+    if (entity == null) {
+      return null;
     }
 
-    /**
-     * Converts a RoleVO to a RoleEntity.
-     *
-     * @param vo the RoleVO to convert
-     * @return the converted RoleEntity
-     */
-    public static RoleEntity toEntity(RoleVO vo) {
-        if (vo == null) {
-            return null;
-        }
-
-        RoleEntity entity = new RoleEntity();
-        entity.setId(vo.getId());
-        if (vo.getPermission() != null) {
-            entity.setPermission(vo.getPermission().name());
-        }
-
-        return entity;
+    RoleVO vo = new RoleVO();
+    vo.setId(entity.getId());
+    if (entity.getPermission() != null) {
+      vo.setPermission(UserRole.valueOf(entity.getPermission()));
     }
+
+    return vo;
+  }
+
+  /**
+   * Converts a RoleVO to a RoleEntity.
+   *
+   * @param vo the RoleVO to convert
+   * @return the converted RoleEntity
+   */
+  public static RoleEntity toEntity(RoleVO vo) {
+    if (vo == null) {
+      return null;
+    }
+
+    RoleEntity entity = new RoleEntity();
+    entity.setId(vo.getId());
+    if (vo.getPermission() != null) {
+      entity.setPermission(vo.getPermission().name());
+    }
+
+    return entity;
+  }
 }

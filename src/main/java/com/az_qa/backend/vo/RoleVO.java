@@ -7,8 +7,8 @@ Autozone QA Automation
 
 package com.az_qa.backend.vo;
 
-import jakarta.validation.constraints.NotBlank;
 import com.az_qa.backend.enumeration.UserRole;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 
 /**

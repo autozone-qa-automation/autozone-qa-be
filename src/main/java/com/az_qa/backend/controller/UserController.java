@@ -1,4 +1,3 @@
 package com.az_qa.backend.controller;
 
-public class UserController {
-}
+public class UserController {}
