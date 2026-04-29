@@ -1,19 +1,20 @@
 /*
-Tecnológico de Monterrey — Campus Chihuahua
-Desarrollo e Implantación de Sistemas de Software
-TC3005B GPO500 - 2026
-Autozone QA Automation
-*/
+ * Tecnológico de Monterrey — Campus Chihuahua
+ * Desarrollo e Implantación de Sistemas de Software
+ * TC3005B GPO500 - 2026
+ * Autozone QA Automation
+ */
 
 package com.az_qa.backend.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.az_qa.backend.entity.ServicesEntity;
 import com.az_qa.backend.repository.FeaturesRepository;
+import com.az_qa.backend.repository.ServicesRepository;
 import com.az_qa.backend.vo.FeatureVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,19 +38,32 @@ public class FeaturesControllerIntegrationTests {
 
   @Autowired private FeaturesRepository featuresRepository;
 
-  // CAMBIO CLAVE: Instancia manual para evitar el UnsatisfiedDependency
+  @Autowired private ServicesRepository servicesRepository;
+
   private ObjectMapper objectMapper = new ObjectMapper();
 
   private FeatureVO featureVO;
 
+  private Long validServiceId;
+
   @BeforeEach
   void setUp() {
     featuresRepository.deleteAll();
+    servicesRepository.deleteAll();
+
+    ServicesEntity testService = new ServicesEntity();
+    testService.setName("Servicio de Integracion");
+    testService.setDescription("Descripción del servicio de prueba");
+    testService.setNew(true);
+
+    testService = servicesRepository.save(testService);
+
+    validServiceId = testService.getId();
 
     featureVO = new FeatureVO();
     featureVO.setFeatureName("Integration Test Feature");
     featureVO.setFeatureDescription("Esta es una descripcion valida para pasar el test");
-    featureVO.setIdService(1L);
+    featureVO.setIdService(validServiceId);
   }
 
   @Test
@@ -61,11 +75,10 @@ public class FeaturesControllerIntegrationTests {
             post("/api/v1/features")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(featureVO)))
-        .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").exists())
         .andExpect(jsonPath("$.featureName").value("Integration Test Feature"))
-        .andExpect(jsonPath("$.idService").value(1L));
+        .andExpect(jsonPath("$.idService").value(validServiceId)); // Verificamos con el ID dinámico
 
     assertNotNull(featuresRepository.findAll().get(0));
   }
