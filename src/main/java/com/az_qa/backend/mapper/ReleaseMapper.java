@@ -7,6 +7,12 @@ Autozone QA Automation
 
 package com.az_qa.backend.mapper;
 
+import com.az_qa.backend.entity.ReleasedFeaturesEntity;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 /**
  * Utility mapper for converting release persistence entities and value objects.
  * This class contains only static conversion methods.
@@ -26,6 +32,23 @@ public class ReleaseMapper {
       return null;
     }
 
+    List<com.az_qa.backend.vo.FeatureVO> features =
+        entity.getFeatures() == null
+            ? List.of()
+            : entity.getFeatures().stream()
+                .map(ReleasedFeaturesEntity::getFeature)
+                .filter(java.util.Objects::nonNull)
+                .map(com.az_qa.backend.mapper.FeatureMapper::toVO)
+                .toList();
+
+    List<String> tags =
+        entity.getReleaseTags() == null
+            ? List.of()
+            : Arrays.stream(entity.getReleaseTags().split(","))
+                .map(String::trim)
+                .filter(tag -> !tag.isEmpty())
+                .toList();
+
     return new com.az_qa.backend.vo.ReleaseVO(
         entity.getReleaseId(),
         entity.getReleaseName(),
@@ -33,11 +56,12 @@ public class ReleaseMapper {
         entity.getReleaseCreationDate(),
         entity.getReleaseLaunchDate(),
         entity.getReleaseVersion(),
-        entity.getReleaseTags(),
+        tags,
         entity.getReleaseStatus(),
         entity.getReleaseServices(),
-        entity.getReleaseServiceIds(),
-        entity.getReleaseFeatureIds());
+        entity.getReleaseServiceIds().stream().findFirst().orElse(null),
+        entity.getReleaseFeatureIds(),
+        features);
   }
 
   /**
@@ -58,7 +82,13 @@ public class ReleaseMapper {
     entity.setReleaseCreationDate(vo.getReleaseCreationDate());
     entity.setReleaseLaunchDate(vo.getReleaseLaunchDate());
     entity.setReleaseVersion(vo.getReleaseVersion());
-    entity.setReleaseTags(vo.getReleaseTags());
+    entity.setReleaseTags(
+        vo.getReleaseTags() == null
+            ? null
+            : vo.getReleaseTags().stream()
+                .filter(Objects::nonNull)
+                .map(String::valueOf)
+                .collect(Collectors.joining(",")));
     entity.setReleaseStatus(vo.getReleaseStatus());
 
     return entity;
