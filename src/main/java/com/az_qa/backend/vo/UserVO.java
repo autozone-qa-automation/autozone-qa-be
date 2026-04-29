@@ -26,12 +26,13 @@ public class UserVO {
   private String email;
 
   @NotBlank(message = "User password is required")
-  private String hashPassword;
+  private String password;
 
   private Boolean isActive;
 
-  @NotNull(message = "User role is required")
-  private RoleVO role;
+  private long roleId;
+
+  private String rolePermission;
 
   public UserVO() {}
 
@@ -40,16 +41,16 @@ public class UserVO {
       String name,
       String lastName,
       String email,
-      String hashPassword,
+      String password,
       Boolean isActive,
-      RoleVO role) {
+      Long roleId) {
     this.id = id;
     this.name = name;
     this.lastName = lastName;
     this.email = email;
-    this.hashPassword = hashPassword;
+    this.password = password;
     this.isActive = isActive;
-    this.role = role;
+    this.roleId = roleId;
   }
 
   public Long getId() {
@@ -84,12 +85,12 @@ public class UserVO {
     this.email = email;
   }
 
-  public String getHashPassword() {
-    return hashPassword;
+  public String getPassword() {
+    return password;
   }
 
-  public void setHashPassword(String hashPassword) {
-    this.hashPassword = hashPassword;
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   public Boolean getIsActive() {
@@ -100,12 +101,20 @@ public class UserVO {
     this.isActive = isActive;
   }
 
-  public RoleVO getRole() {
-    return role;
+  public Long getRoleId() {
+    return roleId;
   }
 
-  public void setRole(RoleVO role) {
-    this.role = role;
+  public void setRoleId(Long roleId) {
+    this.roleId = roleId;
+  }
+
+  public String getRolePermission() {
+    return rolePermission;
+  }
+
+  public void setRolePermission(String rolePermission) {
+    this.rolePermission = rolePermission;
   }
 
   @Override
@@ -131,13 +140,16 @@ public class UserVO {
     if (!Objects.equals(email, that.email)) {
       return false;
     }
-    if (!Objects.equals(hashPassword, that.hashPassword)) {
+    if (!Objects.equals(password, that.password)) {
       return false;
     }
     if (!Objects.equals(isActive, that.isActive)) {
       return false;
     }
-    return Objects.equals(role, that.role);
+    if (!Objects.equals(roleId, that.roleId)) {
+      return false;
+    }
+    return Objects.equals(rolePermission, that.rolePermission);
   }
 
   @Override
@@ -146,9 +158,9 @@ public class UserVO {
     result = 31 * result + (name != null ? name.hashCode() : 0);
     result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
     result = 31 * result + (email != null ? email.hashCode() : 0);
-    result = 31 * result + (hashPassword != null ? hashPassword.hashCode() : 0);
+    result = 31 * result + (password != null ? password.hashCode() : 0);
     result = 31 * result + (isActive != null ? isActive.hashCode() : 0);
-    result = 31 * result + (role != null ? role.hashCode() : 0);
+    result = 31 * result + (rolePermission != null ? rolePermission.hashCode() : 0);
     return result;
   }
 
@@ -166,13 +178,16 @@ public class UserVO {
         + ", email='"
         + email
         + '\''
-        + ", hashPassword='"
-        + hashPassword
+        + ", password='"
+        + password
         + '\''
         + ", isActive="
         + isActive
-        + ", role="
-        + role
+        + ", roleId="
+        + roleId
+        + ", rolePermission='"
+        + rolePermission
+        + '\''
         + '}';
   }
 }

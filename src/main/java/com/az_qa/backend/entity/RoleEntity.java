@@ -23,7 +23,7 @@ public class RoleEntity {
   @Column(name = "idRole")
   private Long id;
 
-  @Column(name = "permission")
+  @Column(name = "permission", nullable = false)
   private String permission;
 
   @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)

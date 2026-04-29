@@ -21,17 +21,17 @@ public class UserEntity {
   @Column(name = "idUser")
   private Long id;
 
-  @Column(name = "name")
+  @Column(name = "name", nullable = false)
   private String name;
 
-  @Column(name = "lastName")
+  @Column(name = "lastName", nullable = false)
   private String lastName;
 
-  @Column(name = "email")
+  @Column(name = "email", nullable = false)
   private String email;
 
-  @Column(name = "hashPassword")
-  private String hashPassword;
+  @Column(name = "hashPassword", nullable = false)
+  private String password;
 
   @Column(name = "isActive")
   private Boolean isActive;
@@ -46,13 +46,13 @@ public class UserEntity {
       String name,
       String lastName,
       String email,
-      String hashPassword,
+      String password,
       Boolean isActive,
       RoleEntity role) {
     this.name = name;
     this.lastName = lastName;
     this.email = email;
-    this.hashPassword = hashPassword;
+    this.password = password;
     this.isActive = isActive;
     this.role = role;
   }
@@ -81,12 +81,12 @@ public class UserEntity {
     this.email = email;
   }
 
-  public String getHashPassword() {
-    return hashPassword;
+  public String getPassword() {
+    return password;
   }
 
-  public void setHashPassword(String hashPassword) {
-    this.hashPassword = hashPassword;
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   public Boolean getIsActive() {
@@ -121,14 +121,14 @@ public class UserEntity {
         && Objects.equals(name, user.name)
         && Objects.equals(lastName, user.lastName)
         && Objects.equals(email, user.email)
-        && Objects.equals(hashPassword, user.hashPassword)
+        && Objects.equals(password, user.password)
         && Objects.equals(isActive, user.isActive)
         && Objects.equals(role, user.role);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, lastName, email, hashPassword, isActive, role);
+    return Objects.hash(id, name, lastName, email, password, isActive, role);
   }
 
   @Override
@@ -145,8 +145,8 @@ public class UserEntity {
         + ", email='"
         + email
         + '\''
-        + ", hashPassword='"
-        + hashPassword
+        + ", password='"
+        + password
         + '\''
         + ", isActive="
         + isActive

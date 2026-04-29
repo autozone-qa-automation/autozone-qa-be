@@ -8,6 +8,7 @@ Autozone QA Automation
 package com.az_qa.backend.vo;
 
 import jakarta.validation.constraints.NotBlank;
+import com.az_qa.backend.enumeration.UserRole;
 import java.util.Objects;
 
 /**
@@ -18,11 +19,11 @@ public class RoleVO {
   private Long id;
 
   @NotBlank(message = "Role permission is required")
-  private String permission;
+  private UserRole permission;
 
   public RoleVO() {}
 
-  public RoleVO(Long id, String permission) {
+  public RoleVO(Long id, UserRole permission) {
     this.id = id;
     this.permission = permission;
   }
@@ -35,11 +36,11 @@ public class RoleVO {
     this.id = id;
   }
 
-  public String getPermission() {
+  public UserRole getPermission() {
     return permission;
   }
 
-  public void setPermission(String permission) {
+  public void setPermission(UserRole permission) {
     this.permission = permission;
   }
 
