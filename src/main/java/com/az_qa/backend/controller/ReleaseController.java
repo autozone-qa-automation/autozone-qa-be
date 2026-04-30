@@ -9,6 +9,7 @@ package com.az_qa.backend.controller;
 import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.service.ReleaseService;
 import com.az_qa.backend.vo.ReleaseVO;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,7 +75,7 @@ public class ReleaseController {
    *         CREATED
    */
   @PostMapping
-  public ResponseEntity<ReleaseVO> createRelease(@RequestBody ReleaseVO releaseVO) {
+  public ResponseEntity<ReleaseVO> createRelease(@Valid @RequestBody ReleaseVO releaseVO) {
     ReleaseVO createdRelease = releaseService.createRelease(releaseVO);
     return new ResponseEntity<>(createdRelease, HttpStatus.CREATED);
   }

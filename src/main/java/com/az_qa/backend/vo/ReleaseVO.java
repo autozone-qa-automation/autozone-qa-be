@@ -8,11 +8,12 @@ Autozone QA Automation
 package com.az_qa.backend.vo;
 
 import com.az_qa.backend.enumeration.ReleaseStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Value Object representing a software release in the Autozone QA system.
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
  * status, and associated service information.
  */
 public class ReleaseVO {
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Long releaseId;
 
   @NotBlank(message = "Release name is required")
@@ -37,16 +40,25 @@ public class ReleaseVO {
   @NotBlank(message = "Release version is required")
   private String releaseVersion;
 
-  private String releaseTags;
+  private List<String> releaseTags;
 
   @NotNull(message = "Release status is required")
   private ReleaseStatus releaseStatus;
 
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private List<String> releaseServices;
 
-  private List<Long> releaseServiceIds;
+  @NotNull(message = "Release service id is required")
+  private Long releaseServiceId;
 
-  private List<Long> releaseFeatures;
+  @Schema(accessMode = Schema.AccessMode.WRITE_ONLY)
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  private List<Long> releaseFeatureIds;
+
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  private List<FeatureVO> releaseFeatures;
 
   public ReleaseVO() {}
 
@@ -69,11 +81,12 @@ public class ReleaseVO {
       LocalDate releaseCreationDate,
       LocalDate releaseLaunchDate,
       String releaseVersion,
-      String releaseTags,
+      List<String> releaseTags,
       ReleaseStatus releaseStatus,
       List<String> releaseServices,
-      List<Long> releaseServiceIds,
-      List<Long> releaseFeatures) {
+      Long releaseServiceId,
+      List<Long> releaseFeatureIds,
+      List<FeatureVO> releaseFeatures) {
     this.releaseId = releaseId;
     this.releaseName = releaseName;
     this.releaseDescription = releaseDescription;
@@ -83,7 +96,8 @@ public class ReleaseVO {
     this.releaseTags = releaseTags;
     this.releaseStatus = releaseStatus;
     this.releaseServices = releaseServices;
-    this.releaseServiceIds = releaseServiceIds;
+    this.releaseServiceId = releaseServiceId;
+    this.releaseFeatureIds = releaseFeatureIds;
     this.releaseFeatures = releaseFeatures;
   }
 
@@ -94,10 +108,10 @@ public class ReleaseVO {
       LocalDate releaseCreationDate,
       LocalDate releaseLaunchDate,
       String releaseVersion,
-      String releaseTags,
+      List<String> releaseTags,
       ReleaseStatus releaseStatus,
       List<String> releaseServices,
-      List<Long> releaseServiceIds) {
+      Long releaseServiceId) {
     this(
         releaseId,
         releaseName,
@@ -108,7 +122,8 @@ public class ReleaseVO {
         releaseTags,
         releaseStatus,
         releaseServices,
-        releaseServiceIds,
+        releaseServiceId,
+        null,
         null);
   }
 
@@ -120,31 +135,27 @@ public class ReleaseVO {
     this.releaseServices = releaseServices;
   }
 
-  public List<Long> getReleaseServiceIds() {
-    return releaseServiceIds;
+  public Long getReleaseServiceId() {
+    return releaseServiceId;
   }
 
-  public void setReleaseServiceIds(List<Long> releaseServiceIds) {
-    this.releaseServiceIds = releaseServiceIds;
-  }
-
-  public void setReleaseService(List<Long> releaseServiceIds) {
-    this.releaseServiceIds = releaseServiceIds;
-  }
-
-  public List<Long> getReleaseFeatures() {
-    return releaseFeatures;
-  }
-
-  public void setReleaseFeatures(List<Long> releaseFeatures) {
-    this.releaseFeatures = releaseFeatures;
+  public void setReleaseServiceId(Long releaseServiceId) {
+    this.releaseServiceId = releaseServiceId;
   }
 
   public List<Long> getReleaseFeatureIds() {
+    return releaseFeatureIds;
+  }
+
+  public void setReleaseFeatureIds(List<Long> releaseFeatureIds) {
+    this.releaseFeatureIds = releaseFeatureIds;
+  }
+
+  public List<FeatureVO> getReleaseFeatures() {
     return releaseFeatures;
   }
 
-  public void setReleaseFeatureIds(List<Long> releaseFeatures) {
+  public void setReleaseFeatures(List<FeatureVO> releaseFeatures) {
     this.releaseFeatures = releaseFeatures;
   }
 
@@ -196,16 +207,12 @@ public class ReleaseVO {
     this.releaseVersion = releaseVersion;
   }
 
-  public String getReleaseTags() {
+  public List<String> getReleaseTags() {
     return releaseTags;
   }
 
-  public void setReleaseTags(Object releaseTags) {
-    if (releaseTags instanceof List<?> tags) {
-      this.releaseTags = tags.stream().map(String::valueOf).collect(Collectors.joining(","));
-      return;
-    }
-    this.releaseTags = releaseTags == null ? null : String.valueOf(releaseTags);
+  public void setReleaseTags(List<String> releaseTags) {
+    this.releaseTags = releaseTags;
   }
 
   public ReleaseStatus getReleaseStatus() {
@@ -229,7 +236,7 @@ public class ReleaseVO {
     result = prime * result + ((releaseTags == null) ? 0 : releaseTags.hashCode());
     result = prime * result + ((releaseStatus == null) ? 0 : releaseStatus.hashCode());
     result = prime * result + ((releaseServices == null) ? 0 : releaseServices.hashCode());
-    result = prime * result + ((releaseServiceIds == null) ? 0 : releaseServiceIds.hashCode());
+    result = prime * result + ((releaseServiceId == null) ? 0 : releaseServiceId.hashCode());
     result = prime * result + ((releaseFeatures == null) ? 0 : releaseFeatures.hashCode());
     return result;
   }
@@ -267,9 +274,9 @@ public class ReleaseVO {
     if (releaseServices == null) {
       if (other.releaseServices != null) return false;
     } else if (!releaseServices.equals(other.releaseServices)) return false;
-    if (releaseServiceIds == null) {
-      if (other.releaseServiceIds != null) return false;
-    } else if (!releaseServiceIds.equals(other.releaseServiceIds)) return false;
+    if (releaseServiceId == null) {
+      if (other.releaseServiceId != null) return false;
+    } else if (!releaseServiceId.equals(other.releaseServiceId)) return false;
     if (releaseFeatures == null) {
       if (other.releaseFeatures != null) return false;
     } else if (!releaseFeatures.equals(other.releaseFeatures)) return false;
@@ -296,8 +303,8 @@ public class ReleaseVO {
         + releaseStatus
         + ", releaseServices="
         + releaseServices
-        + ", releaseServiceIds="
-        + releaseServiceIds
+        + ", releaseServiceId="
+        + releaseServiceId
         + ", releaseFeatures="
         + releaseFeatures
         + "]";

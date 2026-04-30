@@ -125,6 +125,14 @@ public class ReleaseEntity {
     this.releaseId = releaseId;
   }
 
+  public java.util.List<ReleasedFeaturesEntity> getFeatures() {
+    return features;
+  }
+
+  public void setFeatures(java.util.List<ReleasedFeaturesEntity> features) {
+    this.features = features;
+  }
+
   public String getReleaseName() {
     return releaseName;
   }
