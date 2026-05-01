@@ -8,9 +8,12 @@ Autozone QA Automation
 package com.az_qa.backend.vo;
 
 import com.az_qa.backend.enumeration.ReleaseStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Value Object representing a software release in the Autozone QA system.
@@ -19,6 +22,8 @@ import java.time.LocalDate;
  * status, and associated service information.
  */
 public class ReleaseVO {
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Long releaseId;
 
   @NotBlank(message = "Release name is required")
@@ -35,12 +40,25 @@ public class ReleaseVO {
   @NotBlank(message = "Release version is required")
   private String releaseVersion;
 
-  private String releaseTags;
+  private List<String> releaseTags;
 
-  @NotBlank(message = "Release status is required")
+  @NotNull(message = "Release status is required")
   private ReleaseStatus releaseStatus;
 
-  private String releaseService;
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  private List<String> releaseServices;
+
+  @NotNull(message = "Release service id is required")
+  private Long releaseServiceId;
+
+  @Schema(accessMode = Schema.AccessMode.WRITE_ONLY)
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  private List<Long> releaseFeatureIds;
+
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  private List<FeatureVO> releaseFeatures;
 
   public ReleaseVO() {}
 
@@ -55,7 +73,6 @@ public class ReleaseVO {
    * @param releaseVersion      the version number of the release
    * @param releaseTags         the tags associated with the release
    * @param releaseStatus       the status of the release
-   * @param releaseService      the service associated with the release
    */
   public ReleaseVO(
       Long releaseId,
@@ -64,9 +81,12 @@ public class ReleaseVO {
       LocalDate releaseCreationDate,
       LocalDate releaseLaunchDate,
       String releaseVersion,
-      String releaseTags,
+      List<String> releaseTags,
       ReleaseStatus releaseStatus,
-      String releaseService) {
+      List<String> releaseServices,
+      Long releaseServiceId,
+      List<Long> releaseFeatureIds,
+      List<FeatureVO> releaseFeatures) {
     this.releaseId = releaseId;
     this.releaseName = releaseName;
     this.releaseDescription = releaseDescription;
@@ -75,7 +95,68 @@ public class ReleaseVO {
     this.releaseVersion = releaseVersion;
     this.releaseTags = releaseTags;
     this.releaseStatus = releaseStatus;
-    this.releaseService = releaseService;
+    this.releaseServices = releaseServices;
+    this.releaseServiceId = releaseServiceId;
+    this.releaseFeatureIds = releaseFeatureIds;
+    this.releaseFeatures = releaseFeatures;
+  }
+
+  public ReleaseVO(
+      Long releaseId,
+      String releaseName,
+      String releaseDescription,
+      LocalDate releaseCreationDate,
+      LocalDate releaseLaunchDate,
+      String releaseVersion,
+      List<String> releaseTags,
+      ReleaseStatus releaseStatus,
+      List<String> releaseServices,
+      Long releaseServiceId) {
+    this(
+        releaseId,
+        releaseName,
+        releaseDescription,
+        releaseCreationDate,
+        releaseLaunchDate,
+        releaseVersion,
+        releaseTags,
+        releaseStatus,
+        releaseServices,
+        releaseServiceId,
+        null,
+        null);
+  }
+
+  public List<String> getReleaseServices() {
+    return releaseServices;
+  }
+
+  public void setReleaseServices(List<String> releaseServices) {
+    this.releaseServices = releaseServices;
+  }
+
+  public Long getReleaseServiceId() {
+    return releaseServiceId;
+  }
+
+  public void setReleaseServiceId(Long releaseServiceId) {
+    this.releaseServiceId = releaseServiceId;
+  }
+
+  public List<Long> getReleaseFeatureIds() {
+    return releaseFeatureIds;
+  }
+
+  public void setReleaseFeatureIds(List<Long> releaseFeatureIds) {
+    this.releaseFeatureIds = releaseFeatureIds;
+  }
+
+  public List<FeatureVO> getReleaseFeatures() {
+    return releaseFeatures;
+  }
+
+  public void setReleaseFeatures(List<FeatureVO> releaseFeatures) {
+    this.releaseFeatures = releaseFeatures;
   }
 
   public Long getReleaseId() {
@@ -126,11 +207,11 @@ public class ReleaseVO {
     this.releaseVersion = releaseVersion;
   }
 
-  public String getReleaseTags() {
+  public List<String> getReleaseTags() {
     return releaseTags;
   }
 
-  public void setReleaseTags(String releaseTags) {
+  public void setReleaseTags(List<String> releaseTags) {
     this.releaseTags = releaseTags;
   }
 
@@ -140,14 +221,6 @@ public class ReleaseVO {
 
   public void setReleaseStatus(ReleaseStatus releaseStatus) {
     this.releaseStatus = releaseStatus;
-  }
-
-  public String getReleaseService() {
-    return releaseService;
-  }
-
-  public void setReleaseService(String releaseService) {
-    this.releaseService = releaseService;
   }
 
   @Override
@@ -162,7 +235,9 @@ public class ReleaseVO {
     result = prime * result + ((releaseVersion == null) ? 0 : releaseVersion.hashCode());
     result = prime * result + ((releaseTags == null) ? 0 : releaseTags.hashCode());
     result = prime * result + ((releaseStatus == null) ? 0 : releaseStatus.hashCode());
-    result = prime * result + ((releaseService == null) ? 0 : releaseService.hashCode());
+    result = prime * result + ((releaseServices == null) ? 0 : releaseServices.hashCode());
+    result = prime * result + ((releaseServiceId == null) ? 0 : releaseServiceId.hashCode());
+    result = prime * result + ((releaseFeatures == null) ? 0 : releaseFeatures.hashCode());
     return result;
   }
 
@@ -196,9 +271,15 @@ public class ReleaseVO {
     if (releaseStatus == null) {
       if (other.releaseStatus != null) return false;
     } else if (!releaseStatus.equals(other.releaseStatus)) return false;
-    if (releaseService == null) {
-      if (other.releaseService != null) return false;
-    } else if (!releaseService.equals(other.releaseService)) return false;
+    if (releaseServices == null) {
+      if (other.releaseServices != null) return false;
+    } else if (!releaseServices.equals(other.releaseServices)) return false;
+    if (releaseServiceId == null) {
+      if (other.releaseServiceId != null) return false;
+    } else if (!releaseServiceId.equals(other.releaseServiceId)) return false;
+    if (releaseFeatures == null) {
+      if (other.releaseFeatures != null) return false;
+    } else if (!releaseFeatures.equals(other.releaseFeatures)) return false;
     return true;
   }
 
@@ -220,8 +301,12 @@ public class ReleaseVO {
         + releaseTags
         + ", releaseStatus="
         + releaseStatus
-        + ", releaseService="
-        + releaseService
+        + ", releaseServices="
+        + releaseServices
+        + ", releaseServiceId="
+        + releaseServiceId
+        + ", releaseFeatures="
+        + releaseFeatures
         + "]";
   }
 }

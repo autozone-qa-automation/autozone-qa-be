@@ -1,36 +1,65 @@
 package com.az_qa.backend.mapper;
 
-import com.az_qa.backend.dto.request.UserRequest;
-import com.az_qa.backend.dto.request.UserUpdateRequest;
-import com.az_qa.backend.dto.response.UserResponse;
-import com.az_qa.backend.entity.User;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.stereotype.Component;
+import com.az_qa.backend.entity.RoleEntity;
+import com.az_qa.backend.entity.UserEntity;
+import com.az_qa.backend.vo.UserVO;
 
-@Component
+/**
+ * Mapper for converting between UserEntity and UserVO.
+ */
 public class UserMapper {
 
-  public UserMapper() {}
-
-  public User toEntity(UserRequest request) {
-    return new User(request.getName(), request.getEmail());
-  }
-
-  public UserResponse toResponse(User user) {
-    return new UserResponse(user.getId(), user.getName(), user.getEmail());
-  }
-
-  public void updateFromRequest(UserUpdateRequest request, User user) {
-    if (request.getName() != null) {
-      user.setName(request.getName());
+  /**
+   * Converts a UserEntity to a UserVO.
+   *
+   * @param entity the UserEntity to convert
+   * @return the converted UserVO
+   */
+  public static UserVO toVO(UserEntity entity) {
+    if (entity == null) {
+      return null;
     }
-    if (request.getEmail() != null) {
-      user.setEmail(request.getEmail());
+
+    UserVO vo = new UserVO();
+    vo.setId(entity.getId());
+    vo.setName(entity.getName());
+    vo.setLastName(entity.getLastName());
+    vo.setEmail(entity.getEmail());
+    vo.setPassword(entity.getPassword());
+    vo.setIsActive(entity.getIsActive());
+    if (entity.getRole() != null) {
+      vo.setRoleId(entity.getRole().getId());
+      vo.setRolePermission(entity.getRole().getPermission());
     }
+
+    return vo;
   }
 
-  public List<UserResponse> toResponseList(List<User> users) {
-    return users.stream().map(this::toResponse).collect(Collectors.toList());
+  /**
+   * Converts a UserVO to a UserEntity.
+   *
+   * @param vo the UserVO to convert
+   * @return the converted UserEntity
+   */
+  public static UserEntity toEntity(UserVO vo) {
+    if (vo == null) {
+      return null;
+    }
+
+    UserEntity entity = new UserEntity();
+    entity.setId(vo.getId());
+    entity.setName(vo.getName());
+    entity.setLastName(vo.getLastName());
+    entity.setEmail(vo.getEmail());
+    entity.setPassword(vo.getPassword());
+    entity.setIsActive(vo.getIsActive());
+
+    if (vo.getRoleId() != 0) {
+      RoleEntity roleEntity = new RoleEntity();
+      roleEntity.setId(vo.getRoleId());
+      entity.setRole(roleEntity);
+    }
+
+    return entity;
   }
 }

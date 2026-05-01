@@ -6,6 +6,7 @@ Autozone QA Automation
 */
 package com.az_qa.backend.vo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
@@ -19,8 +20,19 @@ public class FeatureVO {
   @NotBlank(message = "Feature description is required")
   private String featureDescription;
 
-  @NotNull(message = "Feature service is required")
+  @NotNull(message = "Feature service id required")
   private Long idService;
+
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  private String serviceName;
+
+  public String getServiceName() {
+    return serviceName;
+  }
+
+  public void setServiceName(String serviceName) {
+    this.serviceName = serviceName;
+  }
 
   public FeatureVO() {}
 
