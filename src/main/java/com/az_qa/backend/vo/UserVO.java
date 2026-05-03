@@ -29,12 +29,23 @@ public class UserVO {
 
   private Boolean isActive;
 
-  private long roleId;
+  private Long roleId;
 
-  private String rolePermission;
+  private RoleVO rolePermission;
 
   public UserVO() {}
 
+  /**
+   * Creates a user value object with all fields.
+   *
+   * @param id       user identifier
+   * @param name     user name
+   * @param lastName user last name
+   * @param email    user email
+   * @param password user password
+   * @param isActive user status
+   * @param roleId   user role identifier
+   */
   public UserVO(
       Long id,
       String name,
@@ -50,6 +61,37 @@ public class UserVO {
     this.password = password;
     this.isActive = isActive;
     this.roleId = roleId;
+  }
+
+  /**
+   * Creates a user value object with all fields, including a RoleVO.
+   *
+   * @param id             user identifier
+   * @param name           user name
+   * @param lastName       user last name
+   * @param email          user email
+   * @param password       user password
+   * @param isActive       user status
+   * @param roleId         user role identifier
+   * @param rolePermission user role permissions
+   */
+  public UserVO(
+      Long id,
+      String name,
+      String lastName,
+      String email,
+      String password,
+      Boolean isActive,
+      Long roleId,
+      RoleVO rolePermission) {
+    this.id = id;
+    this.name = name;
+    this.lastName = lastName;
+    this.email = email;
+    this.password = password;
+    this.isActive = isActive;
+    this.roleId = roleId;
+    this.rolePermission = rolePermission;
   }
 
   public Long getId() {
@@ -108,11 +150,11 @@ public class UserVO {
     this.roleId = roleId;
   }
 
-  public String getRolePermission() {
+  public RoleVO getRolePermission() {
     return rolePermission;
   }
 
-  public void setRolePermission(String rolePermission) {
+  public void setRolePermission(RoleVO rolePermission) {
     this.rolePermission = rolePermission;
   }
 
