@@ -8,7 +8,6 @@ package com.az_qa.backend.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-
 import java.io.Serializable;
 import java.util.Objects;
 import org.springframework.data.domain.Persistable;
@@ -54,11 +53,9 @@ public class UserEntity implements Serializable, Persistable<Long> {
    * Entity new-state flag used by Spring Data persistence semantics.
    * This field is not persisted to the database.
    */
-  @Transient
-  private boolean isNew = false;
+  @Transient private boolean isNew = false;
 
-  public UserEntity() {
-  }
+  public UserEntity() {}
 
   /**
    * Creates a user entity with all supported fields.
@@ -173,8 +170,7 @@ public class UserEntity implements Serializable, Persistable<Long> {
 
   @Override
   public boolean equals(Object o) {
-    if (o == null || getClass() != o.getClass())
-      return false;
+    if (o == null || getClass() != o.getClass()) return false;
     UserEntity user = (UserEntity) o;
     return id == user.id
         && Objects.equals(name, user.name)
