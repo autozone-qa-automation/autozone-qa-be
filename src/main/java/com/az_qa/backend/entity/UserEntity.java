@@ -7,14 +7,22 @@ Autozone QA Automation
 package com.az_qa.backend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import java.io.Serializable;
 import java.util.Objects;
+import org.springframework.data.domain.Persistable;
 
 /**
  * JPA entity that maps the users table.
  */
 @Entity
 @Table(name = "users")
-public class UserEntity {
+public class UserEntity implements Serializable, Persistable<Long> {
+
+  /**
+   * Serializable version identifier.
+   */
+  private static final long serialVersionUID = 1739356800000L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +35,7 @@ public class UserEntity {
   @Column(name = "lastName", nullable = false)
   private String lastName;
 
+  @Email
   @Column(name = "email", nullable = false)
   private String email;
 
@@ -40,8 +49,25 @@ public class UserEntity {
   @JoinColumn(name = "idRoles", nullable = false)
   private RoleEntity role;
 
+  /**
+   * Entity new-state flag used by Spring Data persistence semantics.
+   * This field is not persisted to the database.
+   */
+  @Transient private boolean isNew = false;
+
   public UserEntity() {}
 
+  /**
+   * Creates a user entity with all supported fields.
+   *
+   * @param id       user identifier
+   * @param name     user name
+   * @param lastName user last name
+   * @param email    user email
+   * @param password user password
+   * @param isActive user status
+   * @param role     user role
+   */
   public UserEntity(
       String name,
       String lastName,
@@ -57,12 +83,41 @@ public class UserEntity {
     this.role = role;
   }
 
-  public long getId() {
+  @Override
+  public Long getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
+  }
+
+  /**
+   * Indicates whether this entity should be treated as new by Spring Data.
+   *
+   * @return {@code true} when the entity is new; otherwise {@code false}
+   */
+  @Override
+  public boolean isNew() {
+    return isNew;
+  }
+
+  /**
+   * Updates the new-state flag used by Spring Data.
+   *
+   * @param isNew {@code true} when the entity should be treated as new
+   */
+  public void setNew(boolean isNew) {
+    this.isNew = isNew;
+  }
+
+  /**
+   * Marks the entity as not new after it is persisted or loaded.
+   */
+  @PostPersist
+  @PostLoad
+  public void markNotNew() {
+    this.isNew = false;
   }
 
   public String getName() {

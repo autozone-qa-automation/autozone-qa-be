@@ -8,7 +8,6 @@ Autozone QA Automation
 package com.az_qa.backend.mapper;
 
 import com.az_qa.backend.entity.RoleEntity;
-import com.az_qa.backend.enumeration.UserRole;
 import com.az_qa.backend.vo.RoleVO;
 
 /**
@@ -29,9 +28,7 @@ public class RoleMapper {
 
     RoleVO vo = new RoleVO();
     vo.setId(entity.getId());
-    if (entity.getPermission() != null) {
-      vo.setPermission(UserRole.valueOf(entity.getPermission()));
-    }
+    vo.setPermission(entity.getPermission());
 
     return vo;
   }
@@ -49,10 +46,7 @@ public class RoleMapper {
 
     RoleEntity entity = new RoleEntity();
     entity.setId(vo.getId());
-    if (vo.getPermission() != null) {
-      entity.setPermission(vo.getPermission().name());
-    }
-
+    entity.setPermission(vo.getPermission());
     return entity;
   }
 }

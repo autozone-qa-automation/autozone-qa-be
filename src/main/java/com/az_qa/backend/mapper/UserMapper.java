@@ -10,28 +10,34 @@ import com.az_qa.backend.vo.UserVO;
 public class UserMapper {
 
   /**
-   * Converts a UserEntity to a UserVO.
+   * Utility class constructor.
+   */
+  private UserMapper() {}
+
+  /**
+   * Converts a {@link UserEntity} into a {@link UserVO}.
+   * Returns {@code null} when the input is {@code null}.
+   * Maps role details into {@code roleId} and nested {@code role}
+   * when available.
    *
-   * @param entity the UserEntity to convert
-   * @return the converted UserVO
+   * @param entity persistence entity
+   * @return value object representation or {@code null}
    */
   public static UserVO toVO(UserEntity entity) {
     if (entity == null) {
       return null;
     }
 
-    UserVO vo = new UserVO();
-    vo.setId(entity.getId());
-    vo.setName(entity.getName());
-    vo.setLastName(entity.getLastName());
-    vo.setEmail(entity.getEmail());
-    vo.setPassword(entity.getPassword());
-    vo.setIsActive(entity.getIsActive());
-    if (entity.getRole() != null) {
-      vo.setRoleId(entity.getRole().getId());
-      vo.setRolePermission(entity.getRole().getPermission());
-    }
-
+    UserVO vo =
+        new UserVO(
+            entity.getId(),
+            entity.getName(),
+            entity.getLastName(),
+            entity.getEmail(),
+            entity.getPassword(),
+            entity.getIsActive(),
+            entity.getRole().getId(),
+            RoleMapper.toVO(entity.getRole()));
     return vo;
   }
 

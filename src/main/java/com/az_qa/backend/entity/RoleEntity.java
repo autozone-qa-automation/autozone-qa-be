@@ -6,6 +6,7 @@ Autozone QA Automation
 */
 package com.az_qa.backend.entity;
 
+import com.az_qa.backend.enumeration.UserRole;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,30 +25,32 @@ public class RoleEntity {
   private Long id;
 
   @Column(name = "permission", nullable = false)
-  private String permission;
+  @Enumerated(EnumType.STRING)
+  private UserRole permission;
 
   @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
   private List<UserEntity> users = new ArrayList<>();
 
   public RoleEntity() {}
 
-  public RoleEntity(String permission) {
+  public RoleEntity(Long id, UserRole permission) {
+    this.id = id;
     this.permission = permission;
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
-  public String getPermission() {
+  public UserRole getPermission() {
     return permission;
   }
 
-  public void setPermission(String permission) {
+  public void setPermission(UserRole permission) {
     this.permission = permission;
   }
 
