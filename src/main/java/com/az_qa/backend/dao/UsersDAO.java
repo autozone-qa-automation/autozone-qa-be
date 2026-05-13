@@ -7,9 +7,9 @@ Autozone QA Automation
 
 package com.az_qa.backend.dao;
 
-
 import com.az_qa.backend.entity.UserEntity;
 import com.az_qa.backend.exception.ItemNotFoundException;
+import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.mapper.UserMapper;
 import com.az_qa.backend.repository.RolesRepository;
 import com.az_qa.backend.repository.UsersRepository;
@@ -18,7 +18,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import com.az_qa.backend.exception.ResourceNotFoundException;
 
 @Repository
 public class UsersDAO {
@@ -78,7 +77,7 @@ public class UsersDAO {
    *
    * @param id user id
    * @return no content response if deactivated, not found if user does not exist
-   * 
+   *
    * @throws ItemNotFoundException when no user exists with the provided id
    */
   @Transactional

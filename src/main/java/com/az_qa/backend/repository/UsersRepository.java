@@ -1,10 +1,10 @@
 package com.az_qa.backend.repository;
 
 import com.az_qa.backend.entity.UserEntity;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.List;
 
 @Repository
 public interface UsersRepository extends JpaRepository<UserEntity, Long> {
@@ -18,7 +18,7 @@ public interface UsersRepository extends JpaRepository<UserEntity, Long> {
 
   /**
    * Finds users by active status.
-   * 
+   *
    * @param isActive user active status
    * @return list of users matching the active status
    */
@@ -32,5 +32,4 @@ public interface UsersRepository extends JpaRepository<UserEntity, Long> {
    * @return optional containing the matching user entity when found
    */
   Optional<UserEntity> findByIdAndIsActive(long id, boolean isActive);
-  
 }

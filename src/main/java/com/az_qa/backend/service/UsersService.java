@@ -62,11 +62,10 @@ public class UsersService {
    *
    * @param id user id
    * @return no content response if deactivated, not found if user does not exist
-   * 
+   *
    * @throws ItemNotFoundException when no user exists with the provided id
    */
   public void deactivate(Long id) {
     userDAO.deactivate(id);
   }
-
 }
