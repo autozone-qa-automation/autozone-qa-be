@@ -104,6 +104,18 @@ public class GlobalExceptionHandler {
   }
 
   /**
+   * Handles {@link DuplicatedItemException}.
+   *
+   * @param ex the exception containing the duplication message
+   * @return 409 Conflict with the exception message
+   */
+  @ExceptionHandler(DuplicatedItemException.class)
+  public ResponseEntity<ErrorResponse> handleDuplicatedItem(DuplicatedItemException ex) {
+    ErrorResponse error = new ErrorResponse(409, ex.getMessage(), LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+  }
+
+  /**
    * Fallback handler for any exception not explicitly handled above.
    *
    * <p>Prevents internal error details from leaking to the client.</p>
