@@ -104,7 +104,8 @@ class PostReleaseServiceTests {
         when(releaseDAO.save(any(ReleaseVO.class))).thenReturn(savedRelease);
         when(featuresRepository.findAllById(List.of(10L))).thenReturn(List.of(feature));
         when(releaseRepository.getReferenceById(5L)).thenReturn(releaseReference);
-        when(releasedFeaturesRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(releasedFeaturesRepository.saveAll(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
         when(releaseDAO.findById(5L)).thenReturn(foundRelease);
         when(releaseRepository.findNombresServiciosByReleaseId(5L)).thenReturn(List.of("Orders API"));
 
@@ -145,14 +146,14 @@ class PostReleaseServiceTests {
                 releaseId,
                 "Inventory QA Release",
                 "Release for inventory QA automation.",
-                LocalDate.of(2026, 5, 4),
+                releaseCreationDate,
                 LocalDate.of(2026, 5, 30),
                 "2.0.0",
                 List.of("inventory", "qa"),
                 ReleaseStatus.Draft,
                 List.of(),
                 20L,
-                List.of(),
+                releaseFeatureIds,
                 List.of());
     }
 }

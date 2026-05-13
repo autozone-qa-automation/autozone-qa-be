@@ -35,20 +35,15 @@ import org.springframework.test.web.servlet.MockMvc;
 @ActiveProfiles("test")
 class PostReleasesControllerIntegrationTests {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @Autowired
-  private ReleaseRepository releaseRepository;
+  @Autowired private ReleaseRepository releaseRepository;
 
-  @Autowired
-  private ReleasedFeaturesRepository releasedFeaturesRepository;
+  @Autowired private ReleasedFeaturesRepository releasedFeaturesRepository;
 
-  @Autowired
-  private FeaturesRepository featuresRepository;
+  @Autowired private FeaturesRepository featuresRepository;
 
-  @Autowired
-  private ServicesRepository servicesRepository;
+  @Autowired private ServicesRepository servicesRepository;
 
   private Long releaseId;
   private Long featureId;
@@ -77,10 +72,10 @@ class PostReleasesControllerIntegrationTests {
         .andExpect(jsonPath("$.releaseCreationDate").value("2026-05-01"))
         .andExpect(jsonPath("$.releaseLaunchDate").value("2026-05-15"))
         .andExpect(jsonPath("$.releaseVersion").value("1.0.0"))
-        .andExpect(jsonPath("$.releaseTags").value("checkout,qa"))
+        .andExpect(jsonPath("$.releaseTags[0]").value("checkout"))
+        .andExpect(jsonPath("$.releaseTags[1]").value("qa"))
         .andExpect(jsonPath("$.releaseStatus").value("Active"))
         .andExpect(jsonPath("$.releaseServices").isArray())
-        .andExpect(jsonPath("$.releaseServiceIds").isArray())
         .andExpect(jsonPath("$.releaseFeatures").isArray());
   }
 
@@ -124,7 +119,8 @@ class PostReleasesControllerIntegrationTests {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$[0].releaseName").value("Search QA Release"))
-        .andExpect(jsonPath("$[0].releaseTags").value("search,qa"));
+        .andExpect(jsonPath("$[0].releaseTags[0]").value("search"))
+        .andExpect(jsonPath("$[0].releaseTags[1]").value("qa"));
   }
 
   @Test
@@ -141,8 +137,9 @@ class PostReleasesControllerIntegrationTests {
                           "releaseCreationDate": "2026-05-04",
                           "releaseLaunchDate": "2026-05-30",
                           "releaseVersion": "2.0.0",
-                          "releaseTags": "inventory,qa",
-                          "releaseStatus": "Draft"
+                          "releaseTags": ["inventory", "qa"],
+                          "releaseStatus": "Draft",
+                          "releaseServiceId": 1
                         }
                         """))
         .andExpect(status().isCreated())
@@ -168,8 +165,9 @@ class PostReleasesControllerIntegrationTests {
                               "releaseCreationDate": "2026-05-05",
                               "releaseLaunchDate": "2026-06-01",
                               "releaseVersion": "3.0.0",
-                              "releaseTags": "orders,qa",
+                              "releaseTags": ["orders", "qa"],
                               "releaseStatus": "Progress",
+                              "releaseServiceId": 1,
                               "releaseFeatureIds": [%d]
                             }
                             """,
@@ -202,14 +200,15 @@ class PostReleasesControllerIntegrationTests {
       String releaseVersion,
       String releaseTags,
       ReleaseStatus releaseStatus) {
-    ReleaseEntity release = new ReleaseEntity(
-        releaseName,
-        releaseDescription,
-        releaseCreationDate,
-        releaseLaunchDate,
-        releaseVersion,
-        releaseTags,
-        releaseStatus);
+    ReleaseEntity release =
+        new ReleaseEntity(
+            releaseName,
+            releaseDescription,
+            releaseCreationDate,
+            releaseLaunchDate,
+            releaseVersion,
+            releaseTags,
+            releaseStatus);
     release.setNew(true);
     return releaseRepository.save(release);
   }

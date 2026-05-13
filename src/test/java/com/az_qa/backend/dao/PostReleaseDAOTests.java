@@ -101,5 +101,4 @@ public class PostReleaseDAOTests {
                 List.of(),
                 List.of());
     }
-
 }
