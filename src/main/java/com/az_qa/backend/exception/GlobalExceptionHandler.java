@@ -48,6 +48,43 @@ public class GlobalExceptionHandler {
   }
 
   /**
+   * Handles {@link DuplicatedItemException}.
+   *
+   * @param ex
+   * @return
+   */
+  @ExceptionHandler(DuplicatedItemException.class)
+  public ResponseEntity<ErrorResponse> handleDuplicated(DuplicatedItemException ex) {
+    ErrorResponse error = new ErrorResponse(409, ex.getMessage(), LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+  }
+
+  /**
+   * Handles {@link MissingRequiredFieldException}.
+   *
+   * @param ex
+   * @return
+   */
+  @ExceptionHandler(MissingRequiredFieldException.class)
+  public ResponseEntity<ErrorResponse> handleMissingRequiredField(
+      MissingRequiredFieldException ex) {
+    ErrorResponse error = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+  }
+
+  /**
+   * Handles {@link ItemIdMismatchException}.
+   *
+   * @param ex
+   * @return
+   */
+  @ExceptionHandler(ItemIdMismatchException.class)
+  public ResponseEntity<ErrorResponse> handleIdMismatch(ItemIdMismatchException ex) {
+    ErrorResponse error = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+  }
+
+  /**
    * Handles {@link MethodArgumentNotValidException}, triggered when {@code @Valid}
    * fails on a {@code @RequestBody} field.
    *
