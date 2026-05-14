@@ -34,7 +34,7 @@ public class TestCaseVO {
   @NotBlank private String expectedOutput;
 
   private Boolean active;
-  private Long releaseId;
+  @NotNull private Long releaseId;
   private String featureName;
 
   public TestCaseVO() {}
