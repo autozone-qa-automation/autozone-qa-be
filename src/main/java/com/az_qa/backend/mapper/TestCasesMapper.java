@@ -10,6 +10,7 @@ package com.az_qa.backend.mapper;
 
 import com.az_qa.backend.entity.TestCasesEntity;
 import com.az_qa.backend.repository.FeaturesRepository;
+import com.az_qa.backend.repository.ReleaseRepository;
 import com.az_qa.backend.vo.TestCaseVO;
 import org.springframework.stereotype.Component;
 
@@ -17,15 +18,19 @@ import org.springframework.stereotype.Component;
 public class TestCasesMapper {
 
   private final FeaturesRepository featuresRepository;
+  private final ReleaseRepository releaseRepository;
 
-  public TestCasesMapper(FeaturesRepository featuresRepository) {
+  public TestCasesMapper(
+      FeaturesRepository featuresRepository, ReleaseRepository releaseRepository) {
     this.featuresRepository = featuresRepository;
+    this.releaseRepository = releaseRepository;
   }
 
   public TestCasesEntity toEntity(TestCaseVO vo) {
     TestCasesEntity e = new TestCasesEntity();
     e.setTitle(vo.getTitle());
     e.setFeature(featuresRepository.getReferenceById(vo.getRelatedFeature()));
+    e.setRelease(releaseRepository.getReferenceById(vo.getReleaseId()));
     e.setDescription(vo.getDescription());
     e.setType(vo.getType());
     e.setPreconditions(vo.getPreconditions());
