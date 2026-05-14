@@ -82,4 +82,41 @@ public class FeatureDAO {
     FeatureEntity savedEntity = featuresRepository.save(featureEntity);
     return FeatureMapper.toVO(savedEntity);
   }
+
+  /**
+   * Updates an existing feature with the provided information.
+   *
+   * @param id Identifier of the feature to update.
+   * @param featureVO Object containing the updated feature data.
+   * @return Updated feature representation.
+   * @throws ItemNotFoundException if the feature does not exist.
+   * @throws RuntimeException if the feature name is empty or already exists.
+   */
+  public FeatureVO updateFeature(Long id, FeatureVO featureVO) {
+    FeatureEntity existingEntity =
+        featuresRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new ItemNotFoundException("Feature with id {" + id + "} not found."));
+
+    if (featureVO.getFeatureName() == null || featureVO.getFeatureName().isBlank()) {
+      throw new RuntimeException("Feature name cannot be empty.");
+    }
+
+    featuresRepository
+        .findByName(featureVO.getFeatureName())
+        .ifPresent(
+            f -> {
+              if (!f.getId().equals(id)) {
+                throw new RuntimeException(
+                    "Feature name '" + featureVO.getFeatureName() + "' already exists.");
+              }
+            });
+
+    existingEntity.setName(featureVO.getFeatureName());
+    existingEntity.setDescription(featureVO.getFeatureDescription());
+
+    FeatureEntity savedEntity = featuresRepository.save(existingEntity);
+    return FeatureMapper.toVO(savedEntity);
+  }
 }
