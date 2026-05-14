@@ -50,7 +50,7 @@ jobs:
             --min-instances=0 \
             --max-instances=2 \
             --add-cloudsql-instances=autozone-qa-automation:us-central1:autozone-qa-mysql \
-            --set-env-vars="SPRING_PROFILES_ACTIVE=${{ github.event.inputs.environment }},DB_USERNAME=${{ secrets.DB_USERNAME }},DB_PASSWORD=${{ secrets.DB_PASSWORD }}"
+            --set-env-vars="SPRING_PROFILES_ACTIVE=${{ github.event.inputs.environment }},DB_USERNAME=${{ secrets.DB_USERNAME }},DB_PASSWORD=${{ secrets.DB_PASSWORD }}, JWT_KEY=${{ secrets.JWT_KEY }}"
 
       - name: Show service URL
         run: |

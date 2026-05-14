@@ -1,8 +1,8 @@
 package com.az_qa.backend.config;
 
+import com.az_qa.backend.security.JwtFilter;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,46 +15,49 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.az_qa.backend.security.JwtFilter;
-
 @Configuration
 public class UserManagementConfig {
-    @Bean
-    public PasswordEncoder passwordEncoder() throws NoSuchAlgorithmException {
-        SecureRandom s = SecureRandom.getInstanceStrong();
-        return new BCryptPasswordEncoder(4, s);
-    }  
+  @Bean
+  public PasswordEncoder passwordEncoder() throws NoSuchAlgorithmException {
+    SecureRandom s = SecureRandom.getInstanceStrong();
+    return new BCryptPasswordEncoder(4, s);
+  }
 
-    @Bean //frijol magico madre mia
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter)
-            throws Exception {
+  @Bean // frijol magico madre mia
+  public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter)
+      throws Exception {
 
-        http.httpBasic(Customizer.withDefaults());
+    http.httpBasic(Customizer.withDefaults());
 
-        http.csrf(csrf -> csrf.disable());
+    http.csrf(csrf -> csrf.disable());
 
-        http.authorizeHttpRequests(
-                c -> c.requestMatchers("/authentify").permitAll() 
-                    //MODIFICAR CAMINOS Y PERMISOS SEGUN NECESIDAD
+    http.authorizeHttpRequests(
+            c ->
+                c.requestMatchers("/api/v1/authentify")
+                    .permitAll()
+                    // MODIFICAR CAMINOS Y PERMISOS SEGUN NECESIDAD
 
-                        .requestMatchers("/api/v1/test-cases/1").hasAuthority("ADMIN")
+                    .requestMatchers("/api/v1/test-cases/1")
+                    .hasAuthority("ADMIN")
+                    .requestMatchers("/api/v1/test-cases")
+                    .hasAuthority("ADMIN")
+                    .requestMatchers("/api/v1/test-cases")
+                    .hasAuthority("READ_ONLY")
+                    .anyRequest()
+                    .denyAll())
+        // no queremos crear una sesion que se conserver entre una llamada a la api y otra, ergo:
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        // agregamos el filtro JwtFilter a la cadena de filtros de nuestras peticiones a la api!!!
+        // Asi debes logearte afuerzas
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-                        .requestMatchers("/api/v1/test-cases").hasAuthority("ADMIN")
-                        .requestMatchers("/api/v1/test-cases").hasAuthority("READ_ONLY")
+    return http.build();
+  }
 
-
-
-                        .anyRequest().denyAll())
-                //no queremos crear una sesion que se conserver entre una llamada a la api y otra, ergo:
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                //agregamos el filtro JwtFilter a la cadena de filtros de nuestras peticiones a la api!!! Asi debes logearte afuerzas
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+      throws Exception {
+    return config.getAuthenticationManager();
+  }
 }
