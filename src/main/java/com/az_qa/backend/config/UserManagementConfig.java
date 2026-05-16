@@ -43,8 +43,9 @@ public class UserManagementConfig {
                     .hasAuthority("ADMIN")
                     .requestMatchers("/api/v1/test-cases")
                     .hasAuthority("READ_ONLY")
-                    .anyRequest()
-                    .denyAll())
+                    //.anyRequest()
+                    //.denyAll()
+                  )
         // no queremos crear una sesion que se conserver entre una llamada a la api y otra, ergo:
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtService {
-    
+
   @Value("${JWT_KEY}")
   private String secretoJwt;
 
