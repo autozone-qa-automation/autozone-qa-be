@@ -98,7 +98,7 @@ public class UsersService {
             null,
             updateUserVO.getIsActive(),
             updateUserVO.getRoleId());
-            
+
     return userDAO.update(userVO);
   }
 }
