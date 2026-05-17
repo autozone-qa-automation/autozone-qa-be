@@ -6,8 +6,12 @@ Autozone QA Automation
 */
 package com.az_qa.backend.vo;
 
-import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * Value object that represents a user in the API layer.
@@ -126,10 +130,12 @@ public class UserVO {
     this.email = email;
   }
 
+  @JsonIgnore
   public String getPassword() {
     return password;
   }
 
+  @JsonProperty
   public void setPassword(String password) {
     this.password = password;
   }
