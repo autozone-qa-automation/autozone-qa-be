@@ -11,9 +11,12 @@ import com.az_qa.backend.dao.UsersDAO;
 import com.az_qa.backend.exception.DuplicatedItemException;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.MissingRequiredFieldException;
+import com.az_qa.backend.vo.UpdateUserVO;
 import com.az_qa.backend.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Service contract for user management operations.
@@ -22,6 +25,15 @@ import org.springframework.stereotype.Service;
 public class UsersService {
 
   @Autowired private UsersDAO userDAO;
+
+  /**
+   * Get all users
+   *
+   * @return List of all UserVO objects
+   */
+  public List<UserVO> getAllUsers() {
+    return userDAO.getAllUsers();
+  }
 
   /**
    * Adds a new user to the persistence layer.
@@ -78,40 +90,25 @@ public class UsersService {
    * @throws ItemNotFoundException when the user does not exist or is inactive
    * @throws DuplicatedItemException when the email belongs to another user
    */
-  public UserVO update(UserVO userVO) {
-    if (userVO.getId() == null) {
-      throw new MissingRequiredFieldException("User ID is required for update.");
-    }
-    if (userVO.getRoleId() == null) {
-      throw new MissingRequiredFieldException("Role id is required for user update.");
-    }
-    if (userVO.getEmail() == null) {
-      throw new MissingRequiredFieldException("Email is required for user update.");
-    }
-    if (userVO.getPassword() == null) {
-      throw new MissingRequiredFieldException("Password is required for user update.");
-    }
-    if (userVO.getName() == null) {
-      throw new MissingRequiredFieldException("Name is required for user update.");
-    }
-    if (userVO.getLastName() == null) {
-      throw new MissingRequiredFieldException("Last name is required for user update.");
-    }
-    if (userVO.getIsActive() == null) {
-      throw new MissingRequiredFieldException("Active status is required for user update.");
-    }
-
-    userDAO.findById(userVO.getId());
-
+  public UserVO update(Long id, UpdateUserVO updateUserVO) {
     try {
-      UserVO existingUserWithEmail = userDAO.findByEmail(userVO.getEmail());
-
-      if (!existingUserWithEmail.getId().equals(userVO.getId())) {
+      UserVO existingUserWithEmail = userDAO.findByEmail(updateUserVO.getEmail());
+      if (!existingUserWithEmail.getId().equals(id)) {
         throw new DuplicatedItemException(
-            "User with email {" + userVO.getEmail() + "} already exists.");
+            "User with email {" + updateUserVO.getEmail() + "} already exists.");
       }
     } catch (ItemNotFoundException e) {
     }
+
+    UserVO userVO =
+        new UserVO(
+            id,
+            updateUserVO.getName(),
+            updateUserVO.getLastName(),
+            updateUserVO.getEmail(),
+            null,
+            updateUserVO.getIsActive(),
+            updateUserVO.getRoleId());
 
     return userDAO.update(userVO);
   }

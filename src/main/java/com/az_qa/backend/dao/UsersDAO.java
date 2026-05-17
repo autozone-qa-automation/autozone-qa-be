@@ -14,6 +14,8 @@ import com.az_qa.backend.mapper.UserMapper;
 import com.az_qa.backend.repository.RolesRepository;
 import com.az_qa.backend.repository.UsersRepository;
 import com.az_qa.backend.vo.UserVO;
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -68,6 +70,19 @@ public class UsersDAO {
     return UserMapper.toVO(userEntity.get());
   }
 
+  /**
+   * Get a list of all users
+   *
+   * @return List of UserVO objects
+   */
+  public List<UserVO> getAllUsers() {
+    List<UserEntity> users = userRepository.findAll();
+
+    return users.stream()
+            .map(UserMapper::toVO)
+            .toList();
+  }
+
   public Optional<UserVO> findById(long id) {
     return userRepository.findByIdAndIsActive(id, true).map(UserMapper::toVO);
   }
@@ -97,29 +112,30 @@ public class UsersDAO {
    * @return updated user representation or {@code null} when the input is {@code null}
    * @throws ItemNotFoundException when the provided roleId does not exist
    */
+  @Transactional
   public UserVO update(UserVO userVO) {
     if (userVO == null) {
       return null;
     }
 
-    UserEntity userEntity = UserMapper.toEntity(userVO);
-    if (userEntity == null) {
-      return null;
-    }
+    UserEntity existing =
+        userRepository
+            .findByIdAndIsActive(userVO.getId(), true)
+            .orElseThrow(
+                () -> new ItemNotFoundException("User with id {" + userVO.getId() + "} not found."));
 
-    if (userEntity.getRole() == null) {
-      userEntity.setRole(
-          roleRepository
-              .findById(userVO.getRoleId())
-              .orElseThrow(
-                  () ->
-                      new ItemNotFoundException(
-                          "Role with id {" + userVO.getRoleId() + "} not found.")));
-    }
+    existing.setName(userVO.getName());
+    existing.setLastName(userVO.getLastName());
+    existing.setEmail(userVO.getEmail());
+    existing.setIsActive(userVO.getIsActive());
+    existing.setRole(
+        roleRepository
+            .findById(userVO.getRoleId())
+            .orElseThrow(
+                () ->
+                    new ItemNotFoundException(
+                        "Role with id {" + userVO.getRoleId() + "} not found.")));
 
-    userEntity.setNew(false);
-
-    UserVO updated = UserMapper.toVO(userRepository.save(userEntity));
-    return updated;
+    return UserMapper.toVO(userRepository.save(existing));
   }
 }
