@@ -8,6 +8,7 @@
 package com.az_qa.backend.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,23 +24,26 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
 public class TestCasesControllerIntegrationTests {
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired private WebApplicationContext context;
 
   @Autowired private TestCasesRepository testCasesRepository;
 
   @Autowired private FeaturesRepository featuresRepository;
+
+  private MockMvc mockMvc;
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -49,6 +53,8 @@ public class TestCasesControllerIntegrationTests {
 
   @BeforeEach
   void setUp() {
+    mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+
     testCasesRepository.deleteAll();
     featuresRepository.deleteAll();
 
@@ -69,6 +75,7 @@ public class TestCasesControllerIntegrationTests {
   }
 
   @Test
+  @WithMockUser(authorities = "ADMIN")
   @DisplayName(
       "PUT /api/v1/test-cases/{id} - Integracion completa para actualizar un test case existente")
   public void updateTestCase_IntegrationSuccess() throws Exception {

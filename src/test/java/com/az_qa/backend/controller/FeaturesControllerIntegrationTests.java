@@ -93,6 +93,7 @@ public class FeaturesControllerIntegrationTests {
   }
 
   @Test
+  @WithMockUser
   @DisplayName("PUT /api/v1/features/{id} - Integración completa para actualizar feature")
   public void updateFeature_IntegrationSuccess() throws Exception {
 
