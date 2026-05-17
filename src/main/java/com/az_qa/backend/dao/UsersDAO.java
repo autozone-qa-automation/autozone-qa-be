@@ -9,6 +9,7 @@ package com.az_qa.backend.dao;
 
 import com.az_qa.backend.entity.UserEntity;
 import com.az_qa.backend.exception.ItemNotFoundException;
+import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.mapper.UserMapper;
 import com.az_qa.backend.repository.RolesRepository;
 import com.az_qa.backend.repository.UsersRepository;
@@ -16,6 +17,7 @@ import com.az_qa.backend.vo.UserVO;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class UsersDAO {
@@ -64,5 +66,27 @@ public class UsersDAO {
       throw new ItemNotFoundException("User with email {" + email + "} not found.");
     }
     return UserMapper.toVO(userEntity.get());
+  }
+
+  public Optional<UserVO> findById(long id) {
+    return userRepository.findByIdAndIsActive(id, true).map(UserMapper::toVO);
+  }
+
+  /**
+   * Deactivates a user by id.
+   *
+   * @param id user id
+   * @return no content response if deactivated, not found if user does not exist
+   *
+   * @throws ItemNotFoundException when no user exists with the provided id
+   */
+  @Transactional
+  public void deactivate(Long id) {
+    UserEntity entity =
+        userRepository
+            .findByIdAndIsActive(id, true)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+    entity.setIsActive(false);
+    userRepository.save(entity);
   }
 }

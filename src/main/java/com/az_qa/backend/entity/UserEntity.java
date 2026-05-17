@@ -42,7 +42,7 @@ public class UserEntity implements Serializable, Persistable<Long> {
   @Column(name = "hashPassword", nullable = false)
   private String password;
 
-  @Column(name = "isActive")
+  @Column(name = "isActive", nullable = false)
   private Boolean isActive;
 
   @ManyToOne(fetch = FetchType.EAGER, optional = false)

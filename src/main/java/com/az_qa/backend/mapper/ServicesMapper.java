@@ -57,4 +57,47 @@ public final class ServicesMapper {
 
     return new UrlVO(urlEntity.getIdUrl(), urlEntity.getNombre(), urlEntity.getUrl());
   }
+
+  /**
+   * Converts a {@link ServicesVO} into a {@link ServicesEntity}.
+   * For POST/PUT operations.
+   */
+  public static ServicesEntity serviceToEntity(ServicesVO servicesVO) {
+    if (servicesVO == null) {
+      return null;
+    }
+
+    ServicesEntity serviceEntity = new ServicesEntity();
+    serviceEntity.setName(servicesVO.getName());
+    serviceEntity.setDescription(servicesVO.getDescription());
+
+    if (servicesVO.getUrls() != null) {
+      List<UrlEntity> urlEntities =
+          servicesVO.getUrls().stream()
+              .map(
+                  urlVO -> {
+                    UrlEntity urlEntity = urlToEntity(urlVO);
+                    urlEntity.setServicio(serviceEntity);
+                    return urlEntity;
+                  })
+              .toList();
+
+      serviceEntity.setUrls(urlEntities);
+    }
+    return serviceEntity;
+  }
+
+  /**
+   * Converts a {@link UrlVO} into a {@link UrlEntity}.
+   * For POST/PUT operations.
+   */
+  public static UrlEntity urlToEntity(UrlVO UrlVO) {
+    if (UrlVO == null) {
+      return null;
+    }
+    UrlEntity entity = new UrlEntity();
+    entity.setNombre(UrlVO.getNombre());
+    entity.setUrl(UrlVO.getUrl());
+    return entity;
+  }
 }

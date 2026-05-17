@@ -9,17 +9,25 @@ Autozone QA Automation
 package com.az_qa.backend.vo;
 
 import com.az_qa.backend.enumeration.TestCaseType;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class TestCaseVO {
 
   private Long id;
+
+  @Schema(hidden = true)
   private String code;
 
   @NotBlank private String title;
 
-  @NotNull private Long relatedFeature;
+  @JsonProperty("relatedFeature")
+  @JsonAlias("featureId")
+  @NotNull
+  private Long featureId;
 
   private String description;
 
@@ -33,39 +41,47 @@ public class TestCaseVO {
 
   @NotBlank private String expectedOutput;
 
+  @Schema(hidden = true)
   private Boolean active;
+
   private Long releaseId;
   private String featureName;
 
+  @Schema(hidden = true)
+  private FeatureVO feature;
+
+  @Schema(hidden = true)
+  private ReleaseVO release;
+
   public TestCaseVO() {}
 
-  public TestCaseVO(
-      Long id,
-      String code,
-      String title,
-      Long relatedFeature,
-      String description,
-      TestCaseType type,
-      String preconditions,
-      String postconditions,
-      String inputs,
-      String steps,
-      String expectedOutput,
-      Boolean active) {
+  // public TestCaseVO(
+  //     Long id,
+  //     String code,
+  //     String title,
+  //     Long featureId,
+  //     String description,
+  //     TestCaseType type,
+  //     String preconditions,
+  //     String postconditions,
+  //     String inputs,
+  //     String steps,
+  //     String expectedOutput,
+  //     Boolean active) {
 
-    this.id = id;
-    this.code = code;
-    this.title = title;
-    this.relatedFeature = relatedFeature;
-    this.description = description;
-    this.type = type;
-    this.preconditions = preconditions;
-    this.postconditions = postconditions;
-    this.inputs = inputs;
-    this.steps = steps;
-    this.expectedOutput = expectedOutput;
-    this.active = active;
-  }
+  //   this.id = id;
+  //   this.code = code;
+  //   this.title = title;
+  //   this.featureId = featureId;
+  //   this.description = description;
+  //   this.type = type;
+  //   this.preconditions = preconditions;
+  //   this.postconditions = postconditions;
+  //   this.inputs = inputs;
+  //   this.steps = steps;
+  //   this.expectedOutput = expectedOutput;
+  //   this.active = active;
+  // }
 
   public Long getId() {
     return id;
@@ -79,8 +95,8 @@ public class TestCaseVO {
     return code;
   }
 
-  public Long getRelatedFeature() {
-    return relatedFeature;
+  public Long getFeatureId() {
+    return featureId;
   }
 
   public String getDescription() {
@@ -127,8 +143,8 @@ public class TestCaseVO {
     this.title = title;
   }
 
-  public void setRelatedFeature(Long relatedFeature) {
-    this.relatedFeature = relatedFeature;
+  public void setFeatureId(Long featureId) {
+    this.featureId = featureId;
   }
 
   public void setDescription(String description) {
@@ -179,6 +195,22 @@ public class TestCaseVO {
     this.featureName = featureName;
   }
 
+  public FeatureVO getFeature() {
+    return feature;
+  }
+
+  public void setFeature(FeatureVO feature) {
+    this.feature = feature;
+  }
+
+  public ReleaseVO getRelease() {
+    return release;
+  }
+
+  public void setRelease(ReleaseVO release) {
+    this.release = release;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -188,9 +220,9 @@ public class TestCaseVO {
 
     if (id != null ? !id.equals(that.id) : that.id != null) return false;
     if (title != null ? !title.equals(that.title) : that.title != null) return false;
-    if (relatedFeature != null
-        ? !relatedFeature.equals(that.relatedFeature)
-        : that.relatedFeature != null) return false;
+    // cambiar por featureId en futuro
+    if (featureId != null ? !featureId.equals(that.featureId) : that.featureId != null)
+      return false;
     if (description != null ? !description.equals(that.description) : that.description != null)
       return false;
     if (type != null ? !type.equals(that.type) : that.type != null) return false;
@@ -210,7 +242,7 @@ public class TestCaseVO {
   @Override
   public int hashCode() {
     int result = id != null ? id.hashCode() : 0;
-    result = 31 * result + (relatedFeature != null ? relatedFeature.hashCode() : 0);
+    result = 31 * result + (featureId != null ? featureId.hashCode() : 0);
     result = 31 * result + (description != null ? description.hashCode() : 0);
     result = 31 * result + (type != null ? type.hashCode() : 0);
     result = 31 * result + (preconditions != null ? preconditions.hashCode() : 0);
@@ -232,8 +264,8 @@ public class TestCaseVO {
         + ", title='"
         + title
         + '\''
-        + ", relatedFeature="
-        + relatedFeature
+        + ", featureId="
+        + featureId
         + ", description='"
         + description
         + '\''
