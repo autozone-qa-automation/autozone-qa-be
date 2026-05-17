@@ -20,7 +20,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,5 +75,18 @@ public class UsersController {
       return ResponseEntity.badRequest().build();
     }
     return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+  }
+
+  /**
+   * Deactivates a user by id.
+   *
+   * @param id user id
+   * @return no content response if deactivated, not found if user does not exist
+   *
+   */
+  @PutMapping("/{id}/deactivate")
+  public ResponseEntity<Void> deactivate(@PathVariable Long id) {
+    usersService.deactivate(id);
+    return ResponseEntity.noContent().build();
   }
 }

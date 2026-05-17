@@ -60,4 +60,16 @@ public class FeaturesService {
   public FeatureVO createFeature(FeatureVO featureVO) {
     return featureDAO.createFeature(featureVO);
   }
+
+  /**
+   * Updates an existing feature.
+   *
+   * @param id the feature's ID
+   * @param featureVO the updated feature payload
+   * @return the updated feature response
+   */
+  @Transactional
+  public FeatureVO updateFeature(Long id, FeatureVO featureVO) {
+    return featureDAO.updateFeature(id, featureVO);
+  }
 }

@@ -62,4 +62,24 @@ public class FeaturesControllerTest {
     assertNotNull(response);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
+
+  @Test
+  @DisplayName("update: Debe retornar 200 OK cuando la actualización es exitosa")
+  public void update_Success() {
+
+    FeatureVO updatedFeature = new FeatureVO();
+    updatedFeature.setId(1L);
+    updatedFeature.setFeatureName("Feature Actualizada");
+
+    when(featuresService.updateFeature(any(Long.class), any(FeatureVO.class)))
+        .thenReturn(updatedFeature);
+
+    ResponseEntity<FeatureVO> response = featuresController.update(1L, updatedFeature);
+
+    assertNotNull(response);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    assertEquals("Feature Actualizada", response.getBody().getFeatureName());
+  }
 }

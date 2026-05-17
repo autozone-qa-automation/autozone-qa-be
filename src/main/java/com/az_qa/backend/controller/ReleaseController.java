@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -78,5 +79,25 @@ public class ReleaseController {
   public ResponseEntity<ReleaseVO> createRelease(@Valid @RequestBody ReleaseVO releaseVO) {
     ReleaseVO createdRelease = releaseService.createRelease(releaseVO);
     return new ResponseEntity<>(createdRelease, HttpStatus.CREATED);
+  }
+
+  /**
+   * Updates the status of a specific release.
+   *
+   * @param id     the ID of the release
+   * @param status the new status (Draft, Progress, Active)
+   * @return a ResponseEntity with the updated ReleaseVO or error details
+   */
+  @PutMapping("/{id}/status/{status}")
+  public ResponseEntity<?> updateReleaseStatus(
+      @PathVariable Long id, @PathVariable com.az_qa.backend.enumeration.ReleaseStatus status) {
+    try {
+      ReleaseVO updatedRelease = releaseService.updateReleaseStatus(id, status);
+      return new ResponseEntity<>(updatedRelease, HttpStatus.OK);
+    } catch (ResourceNotFoundException e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    } catch (IllegalArgumentException e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
   }
 }
