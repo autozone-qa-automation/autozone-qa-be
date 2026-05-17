@@ -79,7 +79,7 @@ public class UsersController {
     return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
   }
 
-  /**H
+  /**
    * updates an existing user.
    *
    * @param userVO user payload to update
@@ -105,7 +105,7 @@ public class UsersController {
         @ApiResponse(
             responseCode = "404",
             description = "User not found",
-            content = @Content(mediaType = "application/json")), // H: Incluído sólo con fines de desarrollo. 
+            content = @Content(mediaType = "application/json")),
         @ApiResponse(
             responseCode = "409",
             description = "email already exists",
@@ -118,13 +118,14 @@ public class UsersController {
                                 "{\"timestamp\":\"2026-04-19T10:00:00\",\"message\":\"User with"
                                     + " email john.doe@example.com already exists\"}")))
       })
-  ResponseEntity<UserVO> updates(@Valid @RequestBody UserVO userVO) { // Este bloque probablemente nunca se ejecute. 
+  ResponseEntity<UserVO> updates(@Valid @RequestBody UserVO userVO) {
     UserVO savedUser = usersService.update(userVO);
     if (savedUser == null) {
       return ResponseEntity.badRequest().build();
     }
     return ResponseEntity.status(HttpStatus.OK).body(savedUser);
   }
+  
   /**
    * Deactivates a user by id.
    *

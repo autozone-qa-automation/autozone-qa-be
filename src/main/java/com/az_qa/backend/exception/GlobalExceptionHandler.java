@@ -160,7 +160,6 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
 
-  // H: Adición de para soporte de error 409 (update; si hay emails repetidos)
   /**
    * Handles {@link DuplicatedItemException}.
    *

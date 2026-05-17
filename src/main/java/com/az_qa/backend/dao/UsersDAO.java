@@ -91,7 +91,8 @@ public class UsersDAO {
     entity.setIsActive(false);
     userRepository.save(entity);
   }
-  /**H
+  
+  /**
    * Persists the changes of an existing user and returns the stored representation.
    * 
    * @param userVO user with updated fields to persist
@@ -99,18 +100,15 @@ public class UsersDAO {
    * @throws ItemNotFoundException when the provided roleId does not exist
    */
   public UserVO update(UserVO userVO) {
-    // P1: Validación de entrada
     if (userVO == null) {
       return null;
     }
 
-    // P2: Traducción de VO a Entidad mediante el Mapper
     UserEntity userEntity = UserMapper.toEntity(userVO);
     if (userEntity == null) {
       return null;
     }
 
-    // P3: Gestión de integridad referencial del Rol
     if (userEntity.getRole() == null) {
       userEntity.setRole(
           roleRepository
@@ -121,12 +119,8 @@ public class UsersDAO {
                           "Role with id {" + userVO.getRoleId() + "} not found.")));
     }
 
-    // P4: Configuración crucial del flag de estado para JPA
-    // La entidad se pone como NO nueva
     userEntity.setNew(false);
 
-    // P5: Persistencia y retorno
-    // Al ser isNew = false, JPA ejecutará un SQL UPDATE en lugar de un INSERT.
     UserVO updated = UserMapper.toVO(userRepository.save(userEntity));
     return updated;
   }
