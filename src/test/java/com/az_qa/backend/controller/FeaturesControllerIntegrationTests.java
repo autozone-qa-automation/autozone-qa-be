@@ -8,6 +8,7 @@
 package com.az_qa.backend.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,23 +23,26 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
 public class FeaturesControllerIntegrationTests {
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired private WebApplicationContext context;
 
   @Autowired private FeaturesRepository featuresRepository;
 
   @Autowired private ServicesRepository servicesRepository;
+
+  private MockMvc mockMvc;
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -48,6 +52,8 @@ public class FeaturesControllerIntegrationTests {
 
   @BeforeEach
   void setUp() {
+    mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+
     featuresRepository.deleteAll();
     servicesRepository.deleteAll();
 
@@ -67,6 +73,7 @@ public class FeaturesControllerIntegrationTests {
   }
 
   @Test
+  @WithMockUser
   @DisplayName("POST /api/v1/features - Integración completa (Controller -> Service -> DAO -> DB)")
   public void createFeature_IntegrationSuccess() throws Exception {
 
@@ -78,7 +85,7 @@ public class FeaturesControllerIntegrationTests {
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").exists())
         .andExpect(jsonPath("$.featureName").value("Integration Test Feature"))
-        .andExpect(jsonPath("$.idService").value(validServiceId)); // Verificamos con el ID dinámico
+        .andExpect(jsonPath("$.idService").value(validServiceId));
 
     assertNotNull(featuresRepository.findAll().get(0));
   }
