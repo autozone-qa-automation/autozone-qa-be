@@ -7,12 +7,6 @@ Autozone QA Automation
 
 package com.az_qa.backend.dao;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.az_qa.backend.entity.UserEntity;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.ResourceNotFoundException;
@@ -20,6 +14,10 @@ import com.az_qa.backend.mapper.UserMapper;
 import com.az_qa.backend.repository.RolesRepository;
 import com.az_qa.backend.repository.UsersRepository;
 import com.az_qa.backend.vo.UserVO;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class UsersDAO {
@@ -91,10 +89,10 @@ public class UsersDAO {
     entity.setIsActive(false);
     userRepository.save(entity);
   }
-  
+
   /**
    * Persists the changes of an existing user and returns the stored representation.
-   * 
+   *
    * @param userVO user with updated fields to persist
    * @return updated user representation or {@code null} when the input is {@code null}
    * @throws ItemNotFoundException when the provided roleId does not exist

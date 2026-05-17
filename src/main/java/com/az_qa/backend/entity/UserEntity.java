@@ -6,11 +6,6 @@ Autozone QA Automation
 */
 package com.az_qa.backend.entity;
 
-import java.io.Serializable;
-import java.util.Objects;
-
-import org.springframework.data.domain.Persistable;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,6 +19,9 @@ import jakarta.persistence.PostPersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
+import java.io.Serializable;
+import java.util.Objects;
+import org.springframework.data.domain.Persistable;
 
 /**
  * JPA entity that maps the users table.

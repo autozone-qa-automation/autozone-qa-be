@@ -7,14 +7,13 @@ Autozone QA Automation
 
 package com.az_qa.backend.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.az_qa.backend.dao.UsersDAO;
 import com.az_qa.backend.exception.DuplicatedItemException;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.MissingRequiredFieldException;
 import com.az_qa.backend.vo.UserVO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Service contract for user management operations.
@@ -113,7 +112,7 @@ public class UsersService {
       }
     } catch (ItemNotFoundException e) {
     }
-    
+
     return userDAO.update(userVO);
   }
 }

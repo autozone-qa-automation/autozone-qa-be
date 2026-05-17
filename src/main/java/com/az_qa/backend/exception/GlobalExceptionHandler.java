@@ -1,8 +1,9 @@
 package com.az_qa.backend.exception;
 
+import com.az_qa.backend.dto.response.ErrorResponse;
+import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
-
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +13,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import com.az_qa.backend.dto.response.ErrorResponse;
-
-import jakarta.validation.ConstraintViolationException;
 
 /**
  * Global exception handler for all controllers.
