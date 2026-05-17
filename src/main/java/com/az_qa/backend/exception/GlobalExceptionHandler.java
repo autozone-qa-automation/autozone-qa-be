@@ -167,7 +167,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleConflict(DuplicatedItemException ex) {
     ErrorResponse error = new ErrorResponse(409, ex.getMessage(), LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
-  } 
+  }
 
   /**
    * Handles {@link MissingRequiredFieldException}.

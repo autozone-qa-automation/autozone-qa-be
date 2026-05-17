@@ -8,7 +8,6 @@ Autozone QA Automation
 package com.az_qa.backend.controller;
 
 import com.az_qa.backend.service.UsersService;
-import com.az_qa.backend.vo.UpdateUserVO;
 import com.az_qa.backend.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -84,7 +83,7 @@ public class UsersController {
    * @param userVO user payload to update
    * @return persisted user representation
    */
-  @PutMapping("/{id}")
+  @PutMapping
   @Operation(
       summary = "Update an existing user",
       description = "Updates an existing user with the provided information.")
@@ -117,9 +116,8 @@ public class UsersController {
                                 "{\"timestamp\":\"2026-04-19T10:00:00\",\"message\":\"User with"
                                     + " email john.doe@example.com already exists\"}")))
       })
-  public ResponseEntity<UserVO> updates(
-      @PathVariable Long id, @Valid @RequestBody UpdateUserVO updateUserVO) {
-    UserVO savedUser = usersService.update(id, updateUserVO);
+  ResponseEntity<UserVO> updates(@Valid @RequestBody UserVO userVO) {
+    UserVO savedUser = usersService.update(userVO);
     if (savedUser == null) {
       return ResponseEntity.badRequest().build();
     }
