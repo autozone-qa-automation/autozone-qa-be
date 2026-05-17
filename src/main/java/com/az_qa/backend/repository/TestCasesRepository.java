@@ -17,9 +17,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TestCasesRepository extends JpaRepository<TestCasesEntity, Long> {
 
-  List<TestCasesEntity> findByActive(boolean active);
+  List<TestCasesEntity> findByIsActive(boolean isActive);
 
-  Optional<TestCasesEntity> findByIdAndActive(long id, boolean active);
+  Optional<TestCasesEntity> findByIdAndIsActive(long id, boolean isActive);
 
-  List<TestCasesEntity> findByFeature_IdAndActiveTrue(Long featureId);
+  Optional<TestCasesEntity> findByTitleAndIsActive(String title, boolean isActive);
+
+  List<TestCasesEntity> findByFeature_IdAndIsActive(Long featureId, boolean isActive);
 }
