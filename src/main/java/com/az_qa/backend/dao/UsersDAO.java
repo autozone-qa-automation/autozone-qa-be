@@ -16,6 +16,7 @@ import com.az_qa.backend.vo.UserVO;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 @Repository
 public class UsersDAO {
@@ -65,4 +66,31 @@ public class UsersDAO {
     }
     return UserMapper.toVO(userEntity.get());
   }
+
+
+  /**
+   * Finds a user by id.
+   *
+   * @param id user identifier
+   * @return user representation
+   * @throws ItemNotFoundException when no user exists with that id
+   */
+  public UserVO findById(Long id) {
+    Optional<UserVO> userVO = userRepository.findById(id).map(UserMapper::toVO);
+    if (userVO.isEmpty()) {
+      throw new ItemNotFoundException("User with id {" + id + "} not found.");
+    }
+    return userVO.get();
+  }
+
+  /**
+   * Retrieves all users currently stored.
+   *
+   * @return list of users
+   */
+  public List<UserVO> findAll() {
+    List<UserVO> users = userRepository.findAll().stream().map(UserMapper::toVO).toList();
+    return users;
+  }
+
 }

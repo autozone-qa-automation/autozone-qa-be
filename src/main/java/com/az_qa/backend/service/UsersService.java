@@ -14,6 +14,7 @@ import com.az_qa.backend.exception.MissingRequiredFieldException;
 import com.az_qa.backend.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 /**
  * Service contract for user management operations.
@@ -55,5 +56,24 @@ public class UsersService {
     } catch (ItemNotFoundException e) {
       return userDAO.add(userVO);
     }
+  }
+
+    /**
+   * Finds a user by id.
+   *
+   * @param id user identifier
+   * @return user representation
+   */
+  public UserVO findById(Long id) {
+    return userDAO.findById(id);
+  }
+
+  /**
+   * Retrieves all users available in the persistence layer.
+   *
+   * @return list of users
+   */
+  public List<UserVO> findAll() {
+    return userDAO.findAll();
   }
 }
