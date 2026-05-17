@@ -5,9 +5,9 @@ TC3005B GPO500 - 2026
 Autozone QA Automation
 */
 package com.az_qa.backend.vo;
+import java.util.Objects;
 
 import jakarta.validation.constraints.NotBlank;
-import java.util.Objects;
 
 /**
  * Value object that represents a user in the API layer.

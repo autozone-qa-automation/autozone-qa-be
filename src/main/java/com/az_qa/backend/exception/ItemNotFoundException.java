@@ -23,4 +23,8 @@ public class ItemNotFoundException extends RuntimeException {
   public ItemNotFoundException() {
     this("Item not found");
   }
+
+  public DuplicatedItemException withMessage(String message) { /*H: que no queden dos emails iguales en UPDATE */
+    return new DuplicatedItemException(message, this);
+  }
 }

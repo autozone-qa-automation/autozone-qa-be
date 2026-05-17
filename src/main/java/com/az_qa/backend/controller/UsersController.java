@@ -7,16 +7,6 @@ Autozone QA Automation
 
 package com.az_qa.backend.controller;
 
-import com.az_qa.backend.service.UsersService;
-import com.az_qa.backend.vo.UserVO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +16,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.az_qa.backend.service.UsersService;
+import com.az_qa.backend.vo.UserVO;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -77,6 +79,52 @@ public class UsersController {
     return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
   }
 
+  /**H
+   * updates an existing user.
+   *
+   * @param userVO user payload to update
+   * @return persisted user representation
+   */
+  @PutMapping
+  @Operation(
+      summary = "Update an existing user",
+      description = "Updates an existing user with the provided information.")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "User updated",
+            content = @Content(schema = @Schema(implementation = UserVO.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid request payload",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\"email\":\"Email is mandatory\"}"))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found",
+            content = @Content(mediaType = "application/json")), // H: Incluído sólo con fines de desarrollo. 
+        @ApiResponse(
+            responseCode = "409",
+            description = "email already exists",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"timestamp\":\"2026-04-19T10:00:00\",\"message\":\"User with"
+                                    + " email john.doe@example.com already exists\"}")))
+      })
+  ResponseEntity<UserVO> updates(@Valid @RequestBody UserVO userVO) { // Este bloque probablemente nunca se ejecute. 
+    UserVO savedUser = usersService.update(userVO);
+    if (savedUser == null) {
+      return ResponseEntity.badRequest().build();
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(savedUser);
+  }
   /**
    * Deactivates a user by id.
    *

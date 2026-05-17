@@ -7,6 +7,12 @@ Autozone QA Automation
 
 package com.az_qa.backend.dao;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.az_qa.backend.entity.UserEntity;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.ResourceNotFoundException;
@@ -14,10 +20,6 @@ import com.az_qa.backend.mapper.UserMapper;
 import com.az_qa.backend.repository.RolesRepository;
 import com.az_qa.backend.repository.UsersRepository;
 import com.az_qa.backend.vo.UserVO;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class UsersDAO {
@@ -88,5 +90,44 @@ public class UsersDAO {
             .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     entity.setIsActive(false);
     userRepository.save(entity);
+  }
+  /**H
+   * Persists the changes of an existing user and returns the stored representation.
+   * 
+   * @param userVO user with updated fields to persist
+   * @return updated user representation or {@code null} when the input is {@code null}
+   * @throws ItemNotFoundException when the provided roleId does not exist
+   */
+  public UserVO update(UserVO userVO) {
+    // P1: Validación de entrada
+    if (userVO == null) {
+      return null;
+    }
+
+    // P2: Traducción de VO a Entidad mediante el Mapper
+    UserEntity userEntity = UserMapper.toEntity(userVO);
+    if (userEntity == null) {
+      return null;
+    }
+
+    // P3: Gestión de integridad referencial del Rol
+    if (userEntity.getRole() == null) {
+      userEntity.setRole(
+          roleRepository
+              .findById(userVO.getRoleId())
+              .orElseThrow(
+                  () ->
+                      new ItemNotFoundException(
+                          "Role with id {" + userVO.getRoleId() + "} not found.")));
+    }
+
+    // P4: Configuración crucial del flag de estado para JPA
+    // La entidad se pone como NO nueva
+    userEntity.setNew(false);
+
+    // P5: Persistencia y retorno
+    // Al ser isNew = false, JPA ejecutará un SQL UPDATE en lugar de un INSERT.
+    UserVO updated = UserMapper.toVO(userRepository.save(userEntity));
+    return updated;
   }
 }

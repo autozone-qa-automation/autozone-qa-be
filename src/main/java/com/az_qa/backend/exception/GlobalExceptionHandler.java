@@ -1,9 +1,8 @@
 package com.az_qa.backend.exception;
 
-import com.az_qa.backend.dto.response.ErrorResponse;
-import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
+
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import com.az_qa.backend.dto.response.ErrorResponse;
+
+import jakarta.validation.ConstraintViolationException;
 
 /**
  * Global exception handler for all controllers.
@@ -154,6 +157,31 @@ public class GlobalExceptionHandler {
     String message = "Invalid value '" + ex.getValue() + "' for parameter '" + ex.getName() + "'";
 
     ErrorResponse error = new ErrorResponse(400, message, LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+  }
+
+  // H: Adición de para soporte de error 409 (update; si hay emails repetidos)
+  /**
+   * Handles {@link DuplicatedItemException}.
+   *
+   * @param ex the exception containing the conflict message
+   * @return 409 with the exception message as the error body
+   */
+  @ExceptionHandler(DuplicatedItemException.class)
+  public ResponseEntity<ErrorResponse> handleConflict(DuplicatedItemException ex) {
+    ErrorResponse error = new ErrorResponse(409, ex.getMessage(), LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+  }
+
+  /**
+   * Handles {@link MissingRequiredFieldException}.
+   *
+   * @param ex the exception containing the validation message
+   * @return 400 with the exception message as the error body
+   */
+  @ExceptionHandler(MissingRequiredFieldException.class)
+  public ResponseEntity<ErrorResponse> handleBadRequest(MissingRequiredFieldException ex) {
+    ErrorResponse error = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
 }
