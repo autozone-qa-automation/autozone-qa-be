@@ -60,7 +60,7 @@ class TestCasesController {
       })
   ResponseEntity<TestCaseVO> update(
       @PathVariable Long id, @Valid @RequestBody TestCaseVO testCaseVO) {
-    TestCaseVO updatedTestCase = testCasesService.update(id, testCaseVO);
+    TestCaseVO updatedTestCase = testCasesService.updateTestCase(id, testCaseVO);
     if (updatedTestCase == null) {
       return ResponseEntity.badRequest().build();
     }

@@ -48,18 +48,6 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles {@link DuplicatedItemException}.
-   *
-   * @param ex
-   * @return
-   */
-  @ExceptionHandler(DuplicatedItemException.class)
-  public ResponseEntity<ErrorResponse> handleDuplicated(DuplicatedItemException ex) {
-    ErrorResponse error = new ErrorResponse(409, ex.getMessage(), LocalDateTime.now());
-    return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
-  }
-
-  /**
    * Handles {@link MissingRequiredFieldException}.
    *
    * @param ex

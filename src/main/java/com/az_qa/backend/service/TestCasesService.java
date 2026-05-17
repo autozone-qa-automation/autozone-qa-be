@@ -47,7 +47,7 @@ public class TestCasesService {
     return dao.create(testcaseVO);
   }
 
-  public TestCaseVO update(final Long id, final TestCaseVO testcaseVO) {
+  public TestCaseVO updateTestCase(final Long id, final TestCaseVO testcaseVO) {
     if (testcaseVO.getId() != null && !testcaseVO.getId().equals(id)) {
       throw new ItemIdMismatchException(
           "Path id {" + id + "} does not match test case id {" + testcaseVO.getId() + "}.");

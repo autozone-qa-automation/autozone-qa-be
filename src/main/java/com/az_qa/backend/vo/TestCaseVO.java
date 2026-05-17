@@ -11,7 +11,6 @@ package com.az_qa.backend.vo;
 import com.az_qa.backend.enumeration.TestCaseType;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,7 +26,8 @@ public class TestCaseVO {
 
   @JsonProperty("relatedFeature")
   @JsonAlias("featureId")
-  @NotNull private Long featureId;
+  @NotNull
+  private Long featureId;
 
   private String description;
 
