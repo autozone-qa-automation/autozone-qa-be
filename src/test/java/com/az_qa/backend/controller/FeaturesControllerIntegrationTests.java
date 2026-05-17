@@ -9,9 +9,11 @@ package com.az_qa.backend.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.az_qa.backend.entity.FeatureEntity;
 import com.az_qa.backend.entity.ServicesEntity;
 import com.az_qa.backend.repository.FeaturesRepository;
 import com.az_qa.backend.repository.ServicesRepository;
@@ -78,8 +80,45 @@ public class FeaturesControllerIntegrationTests {
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").exists())
         .andExpect(jsonPath("$.featureName").value("Integration Test Feature"))
-        .andExpect(jsonPath("$.idService").value(validServiceId)); // Verificamos con el ID dinámico
+        .andExpect(jsonPath("$.idService").value(validServiceId));
 
     assertNotNull(featuresRepository.findAll().get(0));
+  }
+
+  @Test
+  @DisplayName("PUT /api/v1/features/{id} - Integración completa para actualizar feature")
+  public void updateFeature_IntegrationSuccess() throws Exception {
+
+    FeatureEntity existingFeature = new FeatureEntity();
+
+    existingFeature.setName("Old Feature Name");
+    existingFeature.setDescription("Old Feature Description");
+
+    existingFeature.setService(servicesRepository.findById(validServiceId).orElseThrow());
+
+    existingFeature = featuresRepository.save(existingFeature);
+
+    Long featureId = existingFeature.getId();
+    FeatureVO updatedFeatureVO = new FeatureVO();
+
+    updatedFeatureVO.setFeatureName("Updated Feature Name");
+
+    updatedFeatureVO.setFeatureDescription("Updated Feature Description");
+
+    updatedFeatureVO.setIdService(validServiceId);
+
+    mockMvc
+        .perform(
+            put("/api/v1/features/{id}", featureId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedFeatureVO)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(featureId))
+        .andExpect(jsonPath("$.featureName").value("Updated Feature Name"))
+        .andExpect(jsonPath("$.featureDescription").value("Updated Feature Description"));
+
+    FeatureEntity updatedEntity = featuresRepository.findById(featureId).orElseThrow();
+
+    assertNotNull(updatedEntity);
   }
 }

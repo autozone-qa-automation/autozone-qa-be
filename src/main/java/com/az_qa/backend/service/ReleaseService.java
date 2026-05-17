@@ -106,4 +106,35 @@ public class ReleaseService {
 
     return getReleaseById(createdRelease.getReleaseId());
   }
+
+  /**
+   * Updates the status of an existing release following the predefined state machine rules.
+   *
+   * @param id        the release's ID
+   * @param newStatus the new status to apply
+   * @return the updated release value object
+   * @throws ResourceNotFoundException if the release is not found
+   * @throws IllegalArgumentException  if the status transition is prohibited
+   */
+  @Transactional
+  public ReleaseVO updateReleaseStatus(
+      Long id, com.az_qa.backend.enumeration.ReleaseStatus newStatus) {
+    try {
+      ReleaseVO releaseVO = releaseDAO.findById(id);
+      com.az_qa.backend.enumeration.ReleaseStatus currentStatus = releaseVO.getReleaseStatus();
+
+      // Validate transition logic using the Enum's built-in rules
+      if (!currentStatus.canTransitionTo(newStatus)) {
+        throw new IllegalArgumentException(
+            "Invalid status transition from " + currentStatus + " to " + newStatus);
+      }
+
+      releaseVO.setReleaseStatus(newStatus);
+      releaseDAO.save(releaseVO);
+
+      return getReleaseById(id);
+    } catch (ItemNotFoundException e) {
+      throw new ResourceNotFoundException("Release with id {" + id + "} not found.");
+    }
+  }
 }

@@ -7,13 +7,20 @@
 
 package com.az_qa.backend.vo;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 public class ServicesVO {
 
   private Long id;
+
+  @NotBlank(message = "Service name is required")
+  @Size(max = 100, message = "Service name must be at most 100 characters")
   private String name;
+
   private String description;
+
   private List<UrlVO> urls;
 
   public ServicesVO() {}
