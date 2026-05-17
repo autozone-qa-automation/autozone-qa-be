@@ -112,6 +112,9 @@ public class UsersService {
     if (userVO.getLastName() == null) {
       throw new MissingRequiredFieldException("Last name is required for user update.");
     }
+    if (userVO.getIsActive() == null) { // H: si no queremos que el active se pueda modificar en el update, no es necesario. 
+      throw new MissingRequiredFieldException("Active status is required for user update.");
+    }
     // P2: Operación de lectura (Verificar existencia y estado activo)
     // Se utiliza el método findByIdAndIsActive[mejor getID, ni al caso] para asegurar que el usuario existe y puede ser editado.
     userDAO.findById(userVO.getId());
