@@ -8,6 +8,7 @@ package com.az_qa.backend.repository;
 
 import com.az_qa.backend.entity.FeatureEntity;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,4 +21,6 @@ public interface FeaturesRepository extends JpaRepository<FeatureEntity, Long> {
    * @return FeatureEntity.
    */
   List<FeatureEntity> findByServiceId(Long id);
+
+  Optional<FeatureEntity> findByName(String name);
 }

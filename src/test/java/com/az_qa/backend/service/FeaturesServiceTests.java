@@ -60,4 +60,35 @@ public class FeaturesServiceTests {
 
     assertNull(result, "Debería retornar null si el DAO falla al insertar");
   }
+
+  @Test
+  @DisplayName("PUT: Debe retornar la feature actualizada correctamente")
+  public void updateFeature_ReturnsUpdatedFeature() {
+
+    FeatureVO updatedFeature = new FeatureVO();
+    updatedFeature.setId(10L);
+    updatedFeature.setFeatureName("Updated Feature");
+
+    when(featureDAO.updateFeature(any(Long.class), any(FeatureVO.class)))
+        .thenReturn(updatedFeature);
+
+    FeatureVO result = featuresService.updateFeature(10L, updatedFeature);
+
+    assertNotNull(result);
+
+    assertEquals(10L, result.getId());
+
+    assertEquals("Updated Feature", result.getFeatureName());
+  }
+
+  @Test
+  @DisplayName("PUT: Debe retornar null cuando el DAO falla al actualizar")
+  public void updateFeature_ReturnsNull_WhenDaoFails() {
+
+    when(featureDAO.updateFeature(any(Long.class), any(FeatureVO.class))).thenReturn(null);
+
+    FeatureVO result = featuresService.updateFeature(10L, new FeatureVO());
+
+    assertNull(result);
+  }
 }
