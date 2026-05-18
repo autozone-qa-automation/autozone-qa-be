@@ -8,6 +8,7 @@ Autozone QA Automation
 package com.az_qa.backend.controller;
 
 import com.az_qa.backend.service.UsersService;
+import com.az_qa.backend.vo.UpdateUserVO;
 import com.az_qa.backend.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -75,6 +76,54 @@ public class UsersController {
       return ResponseEntity.badRequest().build();
     }
     return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+  }
+
+  /**
+   * updates an existing user.
+   *
+   * @param userVO user payload to update
+   * @return persisted user representation
+   */
+  @PutMapping("/{id}")
+  @Operation(
+      summary = "Update an existing user",
+      description = "Updates an existing user with the provided information.")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "User updated",
+            content = @Content(schema = @Schema(implementation = UserVO.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid request payload",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = "{\"email\":\"Email is mandatory\"}"))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found",
+            content = @Content(mediaType = "application/json")),
+        @ApiResponse(
+            responseCode = "409",
+            description = "email already exists",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"timestamp\":\"2026-04-19T10:00:00\",\"message\":\"User with"
+                                    + " email john.doe@example.com already exists\"}")))
+      })
+  public ResponseEntity<UserVO> updates(
+      @PathVariable Long id, @Valid @RequestBody UpdateUserVO updateUserVO) {
+    UserVO savedUser = usersService.update(id, updateUserVO);
+    if (savedUser == null) {
+      return ResponseEntity.badRequest().build();
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(savedUser);
   }
 
   /**
