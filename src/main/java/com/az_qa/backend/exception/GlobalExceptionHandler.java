@@ -156,5 +156,4 @@ public class GlobalExceptionHandler {
     ErrorResponse error = new ErrorResponse(400, message, LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
-
 }
