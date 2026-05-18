@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,11 +24,27 @@ public class UserManagementConfig {
     return new BCryptPasswordEncoder(4, s);
   }
 
+  @Bean
+  public WebSecurityCustomizer webSecurityCustomizer() {
+    return web ->
+        web.ignoring()
+            .requestMatchers(
+                "/docs",
+                "/docs/**",
+                "/v3/api-docs",
+                "/v3/api-docs/**",
+                "/swagger-ui",
+                "/swagger-ui/**",
+                "/swagger-ui.html");
+  }
+
   @Bean // frijol magico madre mia
   public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter)
       throws Exception {
 
-    http.httpBasic(Customizer.withDefaults());
+    http.httpBasic(basic -> basic.disable());
+
+    http.cors(Customizer.withDefaults());
 
     http.csrf(csrf -> csrf.disable());
 
