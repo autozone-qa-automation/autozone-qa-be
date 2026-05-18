@@ -64,4 +64,14 @@ public class ServicesDAO {
   public List<ServicesVO> findAll() {
     return servicesRepository.findAllWithUrls().stream().map(ServicesMapper::toVO).toList();
   }
+
+  /**
+   * Creates a new service with the provided details.
+   *
+   * @param serviceVO the service data to create
+   * @return the created service representation
+   */
+  public ServicesVO createService(ServicesVO serviceVO) {
+    return ServicesMapper.toVO(servicesRepository.save(ServicesMapper.serviceToEntity(serviceVO)));
+  }
 }

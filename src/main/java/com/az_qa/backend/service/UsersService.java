@@ -11,6 +11,7 @@ import com.az_qa.backend.dao.UsersDAO;
 import com.az_qa.backend.exception.DuplicatedItemException;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.MissingRequiredFieldException;
+import com.az_qa.backend.vo.UpdateUserVO;
 import com.az_qa.backend.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,5 +76,49 @@ public class UsersService {
    */
   public List<UserVO> findAll() {
     return userDAO.findAll();
+  }
+
+  /**
+   * Deactivates a user by id.
+   *
+   * @param id user id
+   * @return no content response if deactivated, not found if user does not exist
+   *
+   * @throws ItemNotFoundException when no user exists with the provided id
+   */
+  public void deactivate(Long id) {
+    userDAO.deactivate(id);
+  }
+
+  /**
+   * Updates a user in the persistence layer.
+   *
+   * @param userVO user payload to persist
+   * @return persisted user representation
+   * @throws MissingRequiredFieldException when mandatory fields are missing
+   * @throws ItemNotFoundException when the user does not exist or is inactive
+   * @throws DuplicatedItemException when the email belongs to another user
+   */
+  public UserVO update(Long id, UpdateUserVO updateUserVO) {
+    try {
+      UserVO existingUserWithEmail = userDAO.findByEmail(updateUserVO.getEmail());
+      if (!existingUserWithEmail.getId().equals(id)) {
+        throw new DuplicatedItemException(
+            "User with email {" + updateUserVO.getEmail() + "} already exists.");
+      }
+    } catch (ItemNotFoundException e) {
+    }
+
+    UserVO userVO =
+        new UserVO(
+            id,
+            updateUserVO.getName(),
+            updateUserVO.getLastName(),
+            updateUserVO.getEmail(),
+            null,
+            updateUserVO.getIsActive(),
+            updateUserVO.getRoleId());
+
+    return userDAO.update(userVO);
   }
 }

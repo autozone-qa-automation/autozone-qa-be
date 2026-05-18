@@ -23,4 +23,8 @@ public class ItemNotFoundException extends RuntimeException {
   public ItemNotFoundException() {
     this("Item not found");
   }
+
+  public DuplicatedItemException withMessage(String message) {
+    return new DuplicatedItemException(message, this);
+  }
 }

@@ -48,6 +48,31 @@ public class GlobalExceptionHandler {
   }
 
   /**
+   * Handles {@link MissingRequiredFieldException}.
+   *
+   * @param ex
+   * @return
+   */
+  @ExceptionHandler(MissingRequiredFieldException.class)
+  public ResponseEntity<ErrorResponse> handleMissingRequiredField(
+      MissingRequiredFieldException ex) {
+    ErrorResponse error = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+  }
+
+  /**
+   * Handles {@link ItemIdMismatchException}.
+   *
+   * @param ex
+   * @return
+   */
+  @ExceptionHandler(ItemIdMismatchException.class)
+  public ResponseEntity<ErrorResponse> handleIdMismatch(ItemIdMismatchException ex) {
+    ErrorResponse error = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+  }
+
+  /**
    * Handles {@link MethodArgumentNotValidException}, triggered when {@code @Valid}
    * fails on a {@code @RequestBody} field.
    *
@@ -101,6 +126,18 @@ public class GlobalExceptionHandler {
     ErrorResponse error =
         new ErrorResponse(400, "Invalid or malformed request body", LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+  }
+
+  /**
+   * Handles {@link DuplicatedItemException}.
+   *
+   * @param ex the exception containing the duplication message
+   * @return 409 Conflict with the exception message
+   */
+  @ExceptionHandler(DuplicatedItemException.class)
+  public ResponseEntity<ErrorResponse> handleDuplicatedItem(DuplicatedItemException ex) {
+    ErrorResponse error = new ErrorResponse(409, ex.getMessage(), LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
   }
 
   /**

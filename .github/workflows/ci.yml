@@ -29,6 +29,8 @@ jobs:
         run: ./mvnw spotless:check
 
       - name: Run tests
+        env:
+          JWT_KEY: ${{ secrets.JWT_KEY }}
         run: ./mvnw test
 
       - name: Build

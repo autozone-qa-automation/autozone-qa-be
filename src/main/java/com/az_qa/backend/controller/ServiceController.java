@@ -10,6 +10,7 @@ package com.az_qa.backend.controller;
 import com.az_qa.backend.service.ServicesService;
 import com.az_qa.backend.vo.ServicesVO;
 import com.az_qa.backend.vo.UrlVO;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/services")
+@Tag(name = "Services", description = "Endpoints for managing services")
 @Validated
 public class ServiceController {
 
@@ -53,5 +57,14 @@ public class ServiceController {
 
     ServicesVO service = new ServicesVO(id, "Service Test", "Description Test", urls);
     return new ResponseEntity<>(service, HttpStatus.OK);
+  }
+
+  @PostMapping
+  public ResponseEntity<ServicesVO> createService(@Validated @RequestBody ServicesVO servicesVO) {
+    ServicesVO createdService = servicesService.createService(servicesVO);
+    if (createdService == null) {
+      return ResponseEntity.badRequest().build();
+    }
+    return ResponseEntity.status(HttpStatus.CREATED).body(createdService);
   }
 }

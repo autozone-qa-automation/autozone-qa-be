@@ -9,24 +9,22 @@ Autozone QA Automation
 package com.az_qa.backend.entity;
 
 import com.az_qa.backend.enumeration.TestCaseType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.io.Serializable;
+import org.springframework.data.domain.Persistable;
 
 @Entity
 @Table(name = "test_cases")
-public class TestCasesEntity {
+public class TestCasesEntity implements Serializable, Persistable<Long> {
+
+  /**
+   * Serializable version identifier.
+   */
+  private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
   private Long id;
 
   @Column(unique = true)
@@ -34,18 +32,6 @@ public class TestCasesEntity {
 
   @Column(nullable = false)
   private String title;
-
-  // Relationships
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "idFeature", nullable = false)
-  private FeatureEntity feature;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "release_id")
-  private ReleaseEntity release;
-
-  // End of relationships
 
   @Column(columnDefinition = "TEXT")
   private String description;
@@ -69,9 +55,26 @@ public class TestCasesEntity {
   @Column(name = "expected_output", nullable = false, columnDefinition = "TEXT")
   private String expectedOutput;
 
-  @Column(nullable = false)
-  private Boolean active = true;
+  @Column(name = "active", nullable = false)
+  private Boolean isActive = true;
 
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "idFeature", nullable = false)
+  private FeatureEntity feature;
+
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "release_id")
+  private ReleaseEntity release;
+
+  /**
+   * Entity new-state flag used by Spring Data persistence semantics.
+   * This field is not persisted to the database.
+   */
+  @Transient private boolean isNew = false;
+
+  /**
+   * Creates an empty test case entity.
+   */
   public TestCasesEntity() {}
 
   public Long getId() {
@@ -80,6 +83,21 @@ public class TestCasesEntity {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  @Override
+  public boolean isNew() {
+    return isNew;
+  }
+
+  public void setNew(boolean isNew) {
+    this.isNew = isNew;
+  }
+
+  @PostPersist
+  @PostLoad
+  private void markNotNew() {
+    this.isNew = false;
   }
 
   public String getCode() {
@@ -170,11 +188,11 @@ public class TestCasesEntity {
     this.expectedOutput = expectedOutput;
   }
 
-  public Boolean getActive() {
-    return active;
+  public Boolean getIsActive() {
+    return isActive;
   }
 
-  public void setActive(Boolean active) {
-    this.active = active;
+  public void setIsActive(Boolean isActive) {
+    this.isActive = isActive;
   }
 }

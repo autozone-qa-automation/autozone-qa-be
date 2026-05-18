@@ -7,6 +7,7 @@
 
 package com.az_qa.backend.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -49,7 +50,7 @@ public class ServicesEntity implements Serializable, Persistable<Long> {
   private String description;
 
   /** URLs associated with this service. */
-  @OneToMany(mappedBy = "servicio", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "servicio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<UrlEntity> urls;
 
   /** Entity new-state flag used by Spring Data persistence semantics. */

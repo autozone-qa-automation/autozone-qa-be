@@ -9,6 +9,7 @@ package com.az_qa.backend.dao;
 
 import com.az_qa.backend.entity.UserEntity;
 import com.az_qa.backend.exception.ItemNotFoundException;
+import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.mapper.UserMapper;
 import com.az_qa.backend.repository.RolesRepository;
 import com.az_qa.backend.repository.UsersRepository;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class UsersDAO {
@@ -93,4 +95,60 @@ public class UsersDAO {
     return users;
   }
 
+  public Optional<UserVO> findById(long id) {
+    return userRepository.findByIdAndIsActive(id, true).map(UserMapper::toVO);
+  }
+
+  /**
+   * Deactivates a user by id.
+   *
+   * @param id user id
+   * @return no content response if deactivated, not found if user does not exist
+   *
+   * @throws ItemNotFoundException when no user exists with the provided id
+   */
+  @Transactional
+  public void deactivate(Long id) {
+    UserEntity entity =
+        userRepository
+            .findByIdAndIsActive(id, true)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+    entity.setIsActive(false);
+    userRepository.save(entity);
+  }
+
+  /**
+   * Persists the changes of an existing user and returns the stored representation.
+   *
+   * @param userVO user with updated fields to persist
+   * @return updated user representation or {@code null} when the input is {@code null}
+   * @throws ItemNotFoundException when the provided roleId does not exist
+   */
+  @Transactional
+  public UserVO update(UserVO userVO) {
+    if (userVO == null) {
+      return null;
+    }
+
+    UserEntity existing =
+        userRepository
+            .findByIdAndIsActive(userVO.getId(), true)
+            .orElseThrow(
+                () ->
+                    new ItemNotFoundException("User with id {" + userVO.getId() + "} not found."));
+
+    existing.setName(userVO.getName());
+    existing.setLastName(userVO.getLastName());
+    existing.setEmail(userVO.getEmail());
+    existing.setIsActive(userVO.getIsActive());
+    existing.setRole(
+        roleRepository
+            .findById(userVO.getRoleId())
+            .orElseThrow(
+                () ->
+                    new ItemNotFoundException(
+                        "Role with id {" + userVO.getRoleId() + "} not found.")));
+
+    return UserMapper.toVO(userRepository.save(existing));
+  }
 }
