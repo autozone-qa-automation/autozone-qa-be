@@ -11,6 +11,7 @@ import com.az_qa.backend.service.UsersService;
 import com.az_qa.backend.vo.UpdateUserVO;
 import com.az_qa.backend.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,9 +19,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -137,5 +140,52 @@ public class UsersController {
   public ResponseEntity<Void> deactivate(@PathVariable Long id) {
     usersService.deactivate(id);
     return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Retrieves a user by id.
+   *
+   * @param id user identifier
+   * @return user representation
+   */
+  @GetMapping("/{id}")
+  @Operation(summary = "Get user by id", description = "Retrieves a user by its identifier")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "User found",
+            content = @Content(schema = @Schema(implementation = UserVO.class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"timestamp\":\"2026-04-19T10:00:00\",\"message\":\"User with id"
+                                    + " 99 not found\"}")))
+      })
+  public ResponseEntity<UserVO> getById(@PathVariable Long id) {
+    UserVO user = usersService.findById(id);
+    return ResponseEntity.ok(user);
+  }
+
+  /**
+   * Retrieves all users.
+   *
+   * @return list of users
+   */
+  @GetMapping
+  @Operation(summary = "Get all users", description = "Retrieves all users in the system")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Users retrieved",
+      content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserVO.class))))
+  ResponseEntity<List<UserVO>> getAll() {
+    List<UserVO> users = usersService.findAll();
+    return ResponseEntity.ok(users);
   }
 }
