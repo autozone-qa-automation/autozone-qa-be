@@ -157,15 +157,4 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
 
-  /**
-   * Handles {@link MissingRequiredFieldException}.
-   *
-   * @param ex the exception containing the validation message
-   * @return 400 with the exception message as the error body
-   */
-  @ExceptionHandler(MissingRequiredFieldException.class)
-  public ResponseEntity<ErrorResponse> handleBadRequest(MissingRequiredFieldException ex) {
-    ErrorResponse error = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-  }
 }
