@@ -24,7 +24,7 @@ public class TestCasesEntity implements Serializable, Persistable<Long> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "idTestCase")
+  @Column(name = "id")
   private Long id;
 
   @Column(unique = true)
@@ -55,7 +55,7 @@ public class TestCasesEntity implements Serializable, Persistable<Long> {
   @Column(name = "expected_output", nullable = false, columnDefinition = "TEXT")
   private String expectedOutput;
 
-  @Column(nullable = false)
+  @Column(name = "active", nullable = false)
   private Boolean isActive = true;
 
   @ManyToOne(fetch = FetchType.EAGER)
@@ -63,7 +63,7 @@ public class TestCasesEntity implements Serializable, Persistable<Long> {
   private FeatureEntity feature;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "idRelease")
+  @JoinColumn(name = "release_id")
   private ReleaseEntity release;
 
   /**

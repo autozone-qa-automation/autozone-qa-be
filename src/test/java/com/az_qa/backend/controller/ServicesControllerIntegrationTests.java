@@ -8,6 +8,7 @@
 package com.az_qa.backend.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,21 +21,24 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
 public class ServicesControllerIntegrationTests {
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired private WebApplicationContext context;
 
   @Autowired private ServicesRepository servicesRepository;
+
+  private MockMvc mockMvc;
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -42,6 +46,8 @@ public class ServicesControllerIntegrationTests {
 
   @BeforeEach
   void setUp() {
+    mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+
     servicesRepository.deleteAll();
 
     serviceVO = new ServicesVO();
@@ -50,6 +56,7 @@ public class ServicesControllerIntegrationTests {
   }
 
   @Test
+  @WithMockUser
   @DisplayName("POST /api/v1/services - Integración completa (Controller -> Service -> DAO -> DB)")
   public void createService_IntegrationSuccess() throws Exception {
 
@@ -68,6 +75,7 @@ public class ServicesControllerIntegrationTests {
   }
 
   @Test
+  @WithMockUser
   @DisplayName("POST /api/v1/services - Error por duplicado (Integración con Exception Handler)")
   public void createService_IntegrationConflict() throws Exception {
 
