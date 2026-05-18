@@ -158,18 +158,6 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles {@link DuplicatedItemException}.
-   *
-   * @param ex the exception containing the conflict message
-   * @return 409 with the exception message as the error body
-   */
-  @ExceptionHandler(DuplicatedItemException.class)
-  public ResponseEntity<ErrorResponse> handleConflict(DuplicatedItemException ex) {
-    ErrorResponse error = new ErrorResponse(409, ex.getMessage(), LocalDateTime.now());
-    return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
-  }
-
-  /**
    * Handles {@link MissingRequiredFieldException}.
    *
    * @param ex the exception containing the validation message
