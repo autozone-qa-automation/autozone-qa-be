@@ -13,9 +13,9 @@ import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.MissingRequiredFieldException;
 import com.az_qa.backend.vo.UpdateUserVO;
 import com.az_qa.backend.vo.UserVO;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 /**
  * Service contract for user management operations.
@@ -59,7 +59,7 @@ public class UsersService {
     }
   }
 
-    /**
+  /**
    * Finds a user by id.
    *
    * @param id user identifier

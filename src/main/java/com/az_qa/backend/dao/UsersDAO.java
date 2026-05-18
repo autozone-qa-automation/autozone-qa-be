@@ -14,10 +14,10 @@ import com.az_qa.backend.mapper.UserMapper;
 import com.az_qa.backend.repository.RolesRepository;
 import com.az_qa.backend.repository.UsersRepository;
 import com.az_qa.backend.vo.UserVO;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
@@ -68,7 +68,6 @@ public class UsersDAO {
     }
     return UserMapper.toVO(userEntity.get());
   }
-
 
   /**
    * Finds a user by id.
