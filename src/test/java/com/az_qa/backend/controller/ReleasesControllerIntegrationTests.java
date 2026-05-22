@@ -33,17 +33,22 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class PostReleasesControllerIntegrationTests {
+class ReleasesControllerIntegrationTests {
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-  @Autowired private ReleaseRepository releaseRepository;
+  @Autowired
+  private ReleaseRepository releaseRepository;
 
-  @Autowired private ReleasedFeaturesRepository releasedFeaturesRepository;
+  @Autowired
+  private ReleasedFeaturesRepository releasedFeaturesRepository;
 
-  @Autowired private FeaturesRepository featuresRepository;
+  @Autowired
+  private FeaturesRepository featuresRepository;
 
-  @Autowired private ServicesRepository servicesRepository;
+  @Autowired
+  private ServicesRepository servicesRepository;
 
   private Long releaseId;
   private Long featureId;
@@ -200,15 +205,14 @@ class PostReleasesControllerIntegrationTests {
       String releaseVersion,
       String releaseTags,
       ReleaseStatus releaseStatus) {
-    ReleaseEntity release =
-        new ReleaseEntity(
-            releaseName,
-            releaseDescription,
-            releaseCreationDate,
-            releaseLaunchDate,
-            releaseVersion,
-            releaseTags,
-            releaseStatus);
+    ReleaseEntity release = new ReleaseEntity(
+        releaseName,
+        releaseDescription,
+        releaseCreationDate,
+        releaseLaunchDate,
+        releaseVersion,
+        releaseTags,
+        releaseStatus);
     release.setNew(true);
     return releaseRepository.save(release);
   }
