@@ -7,6 +7,7 @@ Autozone QA Automation
 
 package com.az_qa.backend.controller;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -25,36 +26,38 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Transactional
 class ReleasesControllerIntegrationTests {
 
-  @Autowired
+  @Autowired private WebApplicationContext context;
+
+  @Autowired private ReleaseRepository releaseRepository;
+
+  @Autowired private ReleasedFeaturesRepository releasedFeaturesRepository;
+
+  @Autowired private FeaturesRepository featuresRepository;
+
+  @Autowired private ServicesRepository servicesRepository;
+
   private MockMvc mockMvc;
-
-  @Autowired
-  private ReleaseRepository releaseRepository;
-
-  @Autowired
-  private ReleasedFeaturesRepository releasedFeaturesRepository;
-
-  @Autowired
-  private FeaturesRepository featuresRepository;
-
-  @Autowired
-  private ServicesRepository servicesRepository;
 
   private Long releaseId;
   private Long featureId;
 
   @BeforeEach
   void setUp() {
+    mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+
     releasedFeaturesRepository.deleteAll();
     featuresRepository.deleteAll();
     servicesRepository.deleteAll();
@@ -67,6 +70,7 @@ class ReleasesControllerIntegrationTests {
   }
 
   @Test
+  @WithMockUser
   void getReleaseById_returnsExpectedRelease() throws Exception {
     mockMvc
         .perform(get("/api/v1/releases/{id}", releaseId))
@@ -85,11 +89,13 @@ class ReleasesControllerIntegrationTests {
   }
 
   @Test
+  @WithMockUser
   void getReleaseById_notExistingRelease() throws Exception {
     mockMvc.perform(get("/api/v1/releases/999999")).andExpect(status().isNotFound());
   }
 
   @Test
+  @WithMockUser
   void getAllReleases_withStatusFilter_returnsMatchingReleases() throws Exception {
     createRelease(
         "Draft Search Release",
@@ -109,6 +115,7 @@ class ReleasesControllerIntegrationTests {
   }
 
   @Test
+  @WithMockUser
   void getAllReleases_withTagsFilter_returnsMatchingReleases() throws Exception {
     createRelease(
         "Search QA Release",
@@ -129,6 +136,7 @@ class ReleasesControllerIntegrationTests {
   }
 
   @Test
+  @WithMockUser
   void addRelease_withoutFeatureIds_returnsCreatedAndPersistsRelease() throws Exception {
     mockMvc
         .perform(
@@ -156,6 +164,7 @@ class ReleasesControllerIntegrationTests {
   }
 
   @Test
+  @WithMockUser
   void addRelease_withFeatureIds_returnsCreatedAndPersistsAssociation() throws Exception {
     mockMvc
         .perform(
@@ -205,14 +214,15 @@ class ReleasesControllerIntegrationTests {
       String releaseVersion,
       String releaseTags,
       ReleaseStatus releaseStatus) {
-    ReleaseEntity release = new ReleaseEntity(
-        releaseName,
-        releaseDescription,
-        releaseCreationDate,
-        releaseLaunchDate,
-        releaseVersion,
-        releaseTags,
-        releaseStatus);
+    ReleaseEntity release =
+        new ReleaseEntity(
+            releaseName,
+            releaseDescription,
+            releaseCreationDate,
+            releaseLaunchDate,
+            releaseVersion,
+            releaseTags,
+            releaseStatus);
     release.setNew(true);
     return releaseRepository.save(release);
   }
