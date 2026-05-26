@@ -47,8 +47,7 @@ public class FeatureEntity {
   @Column(name = "isActive")
   private boolean active = true;
 
-  public FeatureEntity() {
-  }
+  public FeatureEntity() {}
 
   public FeatureEntity(String name, String description) {
     this.name = name;
@@ -97,8 +96,7 @@ public class FeatureEntity {
 
   @Override
   public boolean equals(Object o) {
-    if (o == null || getClass() != o.getClass())
-      return false;
+    if (o == null || getClass() != o.getClass()) return false;
     FeatureEntity feature = (FeatureEntity) o;
     return Objects.equals(id, feature.id)
         && Objects.equals(name, feature.name)

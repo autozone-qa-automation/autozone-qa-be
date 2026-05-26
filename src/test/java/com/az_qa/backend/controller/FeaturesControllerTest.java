@@ -27,11 +27,9 @@ import org.springframework.http.ResponseEntity;
 @ExtendWith(MockitoExtension.class)
 public class FeaturesControllerTest {
 
-  @Mock
-  private FeaturesService featuresService;
+  @Mock private FeaturesService featuresService;
 
-  @InjectMocks
-  private FeaturesController featuresController;
+  @InjectMocks private FeaturesController featuresController;
 
   private FeatureVO featureStub;
 
@@ -93,5 +91,4 @@ public class FeaturesControllerTest {
     assertNotNull(response);
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
-
 }

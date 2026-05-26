@@ -10,12 +10,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.az_qa.backend.dao.FeatureDAO;
 import com.az_qa.backend.vo.FeatureVO;
 import com.az_qa.backend.vo.TestCaseVO;
-
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,20 +25,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import static org.mockito.Mockito.verify;
-import java.util.Collections;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 public class FeaturesServiceTests {
 
-  @Mock
-  private FeatureDAO featureDAO;
-  @Mock
-  private TestCasesService testCasesService;
+  @Mock private FeatureDAO featureDAO;
+  @Mock private TestCasesService testCasesService;
 
-  @InjectMocks
-  private FeaturesService featuresService;
+  @InjectMocks private FeaturesService featuresService;
 
   private FeatureVO featureStub;
 

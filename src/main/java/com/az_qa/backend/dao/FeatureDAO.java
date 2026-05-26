@@ -23,14 +23,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class FeatureDAO {
 
-  @Autowired
-  private FeaturesRepository featuresRepository;
-  @Autowired
-  private ServicesRepository servicesRepository;
+  @Autowired private FeaturesRepository featuresRepository;
+  @Autowired private ServicesRepository servicesRepository;
 
   /**
    * Find features by id.
-   * 
+   *
    * @param id feature identifier.
    * @return optional Feature representation.
    */
@@ -45,14 +43,15 @@ public class FeatureDAO {
 
   /**
    * Finds the features that contains the service id received.
-   * 
+   *
    * @param id Service id.
    * @return Features.
    */
   public List<FeatureVO> getFeaturesByServiceId(Long id) {
-    List<FeatureVO> featureVO = featuresRepository.findByServiceId(id).stream()
-        .map(FeatureMapper::toVO)
-        .collect(Collectors.toList());
+    List<FeatureVO> featureVO =
+        featuresRepository.findByServiceId(id).stream()
+            .map(FeatureMapper::toVO)
+            .collect(Collectors.toList());
 
     if (featureVO.isEmpty()) {
       throw new ItemNotFoundException("No feature found for service identifier {" + id + "}.");
@@ -62,7 +61,7 @@ public class FeatureDAO {
 
   /**
    * Retrieves all existing features.
-   * 
+   *
    * @return list of all the features found.
    */
   public java.util.List<FeatureVO> getAllFeatures() {
@@ -73,11 +72,13 @@ public class FeatureDAO {
     FeatureEntity featureEntity = FeatureMapper.toEntity(featureVO);
 
     if (featureVO.getIdService() != null) {
-      ServicesEntity service = servicesRepository
-          .findById(featureVO.getIdService())
-          .orElseThrow(
-              () -> new ItemNotFoundException(
-                  "Service with id {" + featureVO.getIdService() + "} not found."));
+      ServicesEntity service =
+          servicesRepository
+              .findById(featureVO.getIdService())
+              .orElseThrow(
+                  () ->
+                      new ItemNotFoundException(
+                          "Service with id {" + featureVO.getIdService() + "} not found."));
       featureEntity.setService(service);
     }
 
@@ -95,10 +96,11 @@ public class FeatureDAO {
    * @throws RuntimeException      if the feature name is empty or already exists.
    */
   public FeatureVO updateFeature(Long id, FeatureVO featureVO) {
-    FeatureEntity existingEntity = featuresRepository
-        .findById(id)
-        .orElseThrow(
-            () -> new ItemNotFoundException("Feature with id {" + id + "} not found."));
+    FeatureEntity existingEntity =
+        featuresRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new ItemNotFoundException("Feature with id {" + id + "} not found."));
 
     if (featureVO.getFeatureName() == null || featureVO.getFeatureName().isBlank()) {
       throw new RuntimeException("Feature name cannot be empty.");
@@ -128,10 +130,11 @@ public class FeatureDAO {
    * @throws ItemNotFoundException if the feature does not exist.
    */
   public void deactivateFeature(Long id) {
-    FeatureEntity existingEntity = featuresRepository
-        .findById(id)
-        .orElseThrow(
-            () -> new ItemNotFoundException("Feature with id {" + id + "} not found."));
+    FeatureEntity existingEntity =
+        featuresRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new ItemNotFoundException("Feature with id {" + id + "} not found."));
 
     existingEntity.setActive(false);
     featuresRepository.save(existingEntity);

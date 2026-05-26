@@ -8,7 +8,6 @@ package com.az_qa.backend.controller;
 
 import com.az_qa.backend.service.FeaturesService;
 import com.az_qa.backend.vo.FeatureVO;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -42,7 +41,7 @@ public class FeaturesController {
 
   /**
    * Endpoint used to get a feature by id.
-   * 
+   *
    * @param id Feature identifier.
    * @return Feature.
    */
@@ -53,7 +52,7 @@ public class FeaturesController {
 
   /**
    * Endpoint used to get the features linked to a service by id.
-   * 
+   *
    * @param id Service identifier.
    * @return Features.
    */
@@ -64,7 +63,7 @@ public class FeaturesController {
 
   /**
    * Endpoint used to get all features found in db.
-   * 
+   *
    * @return List of features.
    */
   @GetMapping
@@ -83,19 +82,25 @@ public class FeaturesController {
 
   /**
    * Endpoint used to update an existing feature.
-   * 
+   *
    * @param id        Feature identifier.
    * @param featureVO Data to update.
    * @return Updated feature.
    */
   @PutMapping("/{id}/deactivate")
-  @Operation(summary = "Deactivate a feature and its related test cases", description = "Sets the specified feature as inactive and also deactivates all test cases associated"
-      + " with it. Returns 200 if the operation was successful, or 404 if the feature does"
-      + " not exist.")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Feature and related test cases successfully deactivated."),
-      @ApiResponse(responseCode = "404", description = "Feature not found.")
-  })
+  @Operation(
+      summary = "Deactivate a feature and its related test cases",
+      description =
+          "Sets the specified feature as inactive and also deactivates all test cases associated"
+              + " with it. Returns 200 if the operation was successful, or 404 if the feature does"
+              + " not exist.")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Feature and related test cases successfully deactivated."),
+        @ApiResponse(responseCode = "404", description = "Feature not found.")
+      })
   public ResponseEntity<Void> deactivate(@PathVariable @Positive long id) {
     featuresService.deactivateFeature(id);
     return ResponseEntity.ok().build();

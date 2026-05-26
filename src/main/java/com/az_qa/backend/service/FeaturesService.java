@@ -21,14 +21,12 @@ public class FeaturesService {
   /**
    * DAO dependency used to access feature data.
    */
-  @Autowired
-  private FeatureDAO featureDAO;
+  @Autowired private FeatureDAO featureDAO;
 
   /**
    * Service dependency used to manage test cases linked to a feature.
    */
-  @Autowired
-  private TestCasesService testCasesService;
+  @Autowired private TestCasesService testCasesService;
 
   /**
    * Retrieves a feature by its ID.
@@ -42,7 +40,7 @@ public class FeaturesService {
 
   /**
    * Retrieves a feature by the service id on it.
-   * 
+   *
    * @param id Service id.
    * @return Feature.
    */
