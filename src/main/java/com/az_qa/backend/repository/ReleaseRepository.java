@@ -28,13 +28,6 @@ public interface ReleaseRepository extends JpaRepository<ReleaseEntity, Long> {
    * @param releaseId the release identifier
    * @return a list of service names linked to the release features
    */
-  /**
-   * Retrieves the most recent 5 releases ordered by creation date descending.
-   *
-   * @return a list of up to 5 release entities
-   */
-  List<ReleaseEntity> findTop5ByOrderByReleaseCreationDateDesc();
-
   @Query(
       "SELECT s.name FROM ReleaseEntity r "
           + "JOIN r.features rf "
@@ -42,4 +35,6 @@ public interface ReleaseRepository extends JpaRepository<ReleaseEntity, Long> {
           + "JOIN f.service s "
           + "WHERE r.releaseId = :releaseId")
   List<String> findNombresServiciosByReleaseId(@Param("releaseId") Long releaseId);
+
+  List<ReleaseEntity> findTop5ByOrderByReleaseCreationDateDesc();
 }

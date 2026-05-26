@@ -67,11 +67,6 @@ public class ReleaseService {
     return releaseDAO.findFiltered(releaseStatus, releaseTags);
   }
 
-  /**
-   * Retrieves the last 5 releases ordered by creation date descending.
-   *
-   * @return a list of up to 5 releases
-   */
   public List<ReleaseVO> getLastReleases() {
     return releaseDAO.findLast();
   }

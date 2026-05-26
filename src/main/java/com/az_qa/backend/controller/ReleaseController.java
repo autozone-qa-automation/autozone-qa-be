@@ -6,18 +6,9 @@ Autozone QA Automation
 */
 package com.az_qa.backend.controller;
 
-import com.az_qa.backend.enumeration.ReleaseStatus;
 import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.service.ReleaseService;
 import com.az_qa.backend.vo.ReleaseVO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -33,7 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/releases")
-@Tag(name = "Releases", description = "Endpoints for managing releases")
+/**
+ * REST controller for managing releases.
+ * Provides endpoints for retrieving, creating, and managing release
+ * information.
+ */
 public class ReleaseController {
 
   private final ReleaseService releaseService;
@@ -49,17 +44,6 @@ public class ReleaseController {
    *         status OK
    */
   @GetMapping
-  @Operation(
-      summary = "Get all releases",
-      description = "Retrieves all releases, optionally filtered by tags and status")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Releases retrieved",
-            content =
-                @Content(array = @ArraySchema(schema = @Schema(implementation = ReleaseVO.class))))
-      })
   public ResponseEntity<List<ReleaseVO>> getAllReleases(
       @RequestParam(required = false) String releaseTags,
       @RequestParam(required = false) String releaseStatus) {
@@ -67,19 +51,7 @@ public class ReleaseController {
     return new ResponseEntity<>(releases, HttpStatus.OK);
   }
 
-  /**
-   * Retrieves the last 5 releases ordered by creation date descending.
-   *
-   * @return a ResponseEntity containing a list of up to 5 ReleaseVO objects
-   */
   @GetMapping("/last")
-  @Operation(
-      summary = "Get last 5 releases",
-      description = "Retrieves the 5 most recent releases ordered by creation date descending")
-  @ApiResponse(
-      responseCode = "200",
-      description = "Last 5 releases retrieved",
-      content = @Content(array = @ArraySchema(schema = @Schema(implementation = ReleaseVO.class))))
   public ResponseEntity<List<ReleaseVO>> getLastReleases() {
     List<ReleaseVO> releases = releaseService.getLastReleases();
     return new ResponseEntity<>(releases, HttpStatus.OK);
@@ -93,25 +65,6 @@ public class ReleaseController {
    *         NOT_FOUND if not found
    */
   @GetMapping("/{id}")
-  @Operation(summary = "Get release by id", description = "Retrieves a release by its identifier")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Release found",
-            content = @Content(schema = @Schema(implementation = ReleaseVO.class))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Release not found",
-            content =
-                @Content(
-                    mediaType = "application/json",
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"timestamp\":\"2026-05-25T10:00:00\",\"message\":\"Release with"
-                                    + " id 99 not found\"}")))
-      })
   public ResponseEntity<ReleaseVO> getReleaseById(@PathVariable Long id) {
     try {
       ReleaseVO release = releaseService.getReleaseById(id);
@@ -129,15 +82,6 @@ public class ReleaseController {
    *         CREATED
    */
   @PostMapping
-  @Operation(summary = "Create release", description = "Creates a new release")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "201",
-            description = "Release created",
-            content = @Content(schema = @Schema(implementation = ReleaseVO.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid payload")
-      })
   public ResponseEntity<ReleaseVO> createRelease(@Valid @RequestBody ReleaseVO releaseVO) {
     ReleaseVO createdRelease = releaseService.createRelease(releaseVO);
     return new ResponseEntity<>(createdRelease, HttpStatus.CREATED);
@@ -151,37 +95,8 @@ public class ReleaseController {
    * @return a ResponseEntity with the updated ReleaseVO or error details
    */
   @PutMapping("/{id}/status/{status}")
-  @Operation(
-      summary = "Update release status",
-      description = "Updates the status of a release following state machine rules")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Release status updated",
-            content = @Content(schema = @Schema(implementation = ReleaseVO.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Invalid status transition",
-            content =
-                @Content(
-                    mediaType = "application/json",
-                    examples =
-                        @ExampleObject(value = "Invalid status transition from Active to Draft"))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Release not found",
-            content =
-                @Content(
-                    mediaType = "application/json",
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"timestamp\":\"2026-05-25T10:00:00\",\"message\":\"Release with"
-                                    + " id 99 not found\"}")))
-      })
   public ResponseEntity<?> updateReleaseStatus(
-      @PathVariable Long id, @PathVariable ReleaseStatus status) {
+      @PathVariable Long id, @PathVariable com.az_qa.backend.enumeration.ReleaseStatus status) {
     try {
       ReleaseVO updatedRelease = releaseService.updateReleaseStatus(id, status);
       return new ResponseEntity<>(updatedRelease, HttpStatus.OK);

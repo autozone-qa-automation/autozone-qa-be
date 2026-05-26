@@ -73,11 +73,6 @@ public class ReleaseDAO {
         .toList();
   }
 
-  /**
-   * Retrieves the most recent 5 releases.
-   *
-   * @return a list of up to 5 ReleaseVO objects ordered by creation date descending
-   */
   public List<ReleaseVO> findLast() {
     return releaseRepository.findTop5ByOrderByReleaseCreationDateDesc().stream()
         .map(ReleaseMapper::toVO)
