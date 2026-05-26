@@ -87,6 +87,19 @@ public class FeaturesController {
    * @param featureVO Data to update.
    * @return Updated feature.
    */
+  @PutMapping("/{id}")
+  public ResponseEntity<FeatureVO> update(
+      @PathVariable @Positive long id, @Valid @RequestBody FeatureVO featureVO) {
+    return ResponseEntity.ok(featuresService.updateFeature(id, featureVO));
+  }
+
+  /**
+   * Endpoint used to update an existing feature.
+   *
+   * @param id        Feature identifier.
+   * @param featureVO Data to update.
+   * @return Updated feature.
+   */
   @PutMapping("/{id}/deactivate")
   @Operation(
       summary = "Deactivate a feature and its related test cases",
