@@ -27,9 +27,11 @@ import org.springframework.http.ResponseEntity;
 @ExtendWith(MockitoExtension.class)
 public class FeaturesControllerTest {
 
-  @Mock private FeaturesService featuresService;
+  @Mock
+  private FeaturesService featuresService;
 
-  @InjectMocks private FeaturesController featuresController;
+  @InjectMocks
+  private FeaturesController featuresController;
 
   private FeatureVO featureStub;
 
@@ -82,4 +84,14 @@ public class FeaturesControllerTest {
 
     assertEquals("Feature Actualizada", response.getBody().getFeatureName());
   }
+
+  @Test
+  @DisplayName("deactivate: Debe retornar 200 OK cuando se desactiva la feature")
+  public void deactivate_Success() {
+    ResponseEntity<Void> response = featuresController.deactivate(1L);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
 }

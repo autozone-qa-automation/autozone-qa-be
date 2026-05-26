@@ -9,6 +9,7 @@ package com.az_qa.backend.service;
 
 import com.az_qa.backend.dao.FeatureDAO;
 import com.az_qa.backend.vo.FeatureVO;
+import com.az_qa.backend.vo.TestCaseVO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,14 @@ public class FeaturesService {
   /**
    * DAO dependency used to access feature data.
    */
-  @Autowired private FeatureDAO featureDAO;
+  @Autowired
+  private FeatureDAO featureDAO;
+
+  /**
+   * Service dependency used to manage test cases linked to a feature.
+   */
+  @Autowired
+  private TestCasesService testCasesService;
 
   /**
    * Retrieves a feature by its ID.
@@ -34,6 +42,7 @@ public class FeaturesService {
 
   /**
    * Retrieves a feature by the service id on it.
+   * 
    * @param id Service id.
    * @return Feature.
    */
@@ -64,12 +73,26 @@ public class FeaturesService {
   /**
    * Updates an existing feature.
    *
-   * @param id the feature's ID
+   * @param id        the feature's ID
    * @param featureVO the updated feature payload
    * @return the updated feature response
    */
   @Transactional
   public FeatureVO updateFeature(Long id, FeatureVO featureVO) {
     return featureDAO.updateFeature(id, featureVO);
+  }
+
+  /**
+   * Deactivates a feature and all its related test cases.
+   *
+   * @param id the feature's ID
+   */
+  @Transactional
+  public void deactivateFeature(Long id) {
+    featureDAO.deactivateFeature(id);
+    List<TestCaseVO> relatedTestCases = testCasesService.getByFeature(id);
+    for (TestCaseVO testCase : relatedTestCases) {
+      testCasesService.deactivate(testCase.getId());
+    }
   }
 }

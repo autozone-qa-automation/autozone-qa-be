@@ -14,6 +14,8 @@ import static org.mockito.Mockito.when;
 
 import com.az_qa.backend.dao.FeatureDAO;
 import com.az_qa.backend.vo.FeatureVO;
+import com.az_qa.backend.vo.TestCaseVO;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,13 +23,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.Mockito.verify;
+import java.util.Collections;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 public class FeaturesServiceTests {
 
-  @Mock private FeatureDAO featureDAO;
+  @Mock
+  private FeatureDAO featureDAO;
+  @Mock
+  private TestCasesService testCasesService;
 
-  @InjectMocks private FeaturesService featuresService;
+  @InjectMocks
+  private FeaturesService featuresService;
 
   private FeatureVO featureStub;
 
@@ -90,5 +99,30 @@ public class FeaturesServiceTests {
     FeatureVO result = featuresService.updateFeature(10L, new FeatureVO());
 
     assertNull(result);
+  }
+
+  @Test
+  @DisplayName("PUT: deactivateFeature: Debe desactivar la feature")
+  public void deactivateFeature_Success() {
+    when(testCasesService.getByFeature(10L)).thenReturn(Collections.emptyList());
+
+    featuresService.deactivateFeature(10L);
+
+    verify(featureDAO).deactivateFeature(10L);
+    verify(testCasesService).getByFeature(10L);
+  }
+
+  @Test
+  @DisplayName("PUT: deactivateFeature: Debe desactivar feature y test cases relacionados")
+  public void deactivateFeature_DeactivatesRelatedTestCases() {
+    TestCaseVO testCase = new TestCaseVO();
+    testCase.setId(5L);
+
+    when(testCasesService.getByFeature(10L)).thenReturn(List.of(testCase));
+
+    featuresService.deactivateFeature(10L);
+
+    verify(featureDAO).deactivateFeature(10L);
+    verify(testCasesService).deactivate(5L);
   }
 }
