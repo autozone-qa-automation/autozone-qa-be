@@ -68,6 +68,15 @@ public class ReleaseService {
   }
 
   /**
+   * Retrieves the last 5 releases ordered by creation date descending.
+   *
+   * @return a list of up to 5 releases
+   */
+  public List<ReleaseVO> getLastReleases() {
+    return releaseDAO.findLast();
+  }
+
+  /**
    * Retrieves all registered releases.
    *
    * @return a list of all releases
