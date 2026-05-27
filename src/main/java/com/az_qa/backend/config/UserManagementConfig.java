@@ -60,6 +60,8 @@ public class UserManagementConfig {
                     .hasAuthority("ADMIN")
                     .requestMatchers("/api/v1/test-cases")
                     .hasAuthority("READ_ONLY")
+                    .requestMatchers("/api/v1/services/**")
+                    .hasAuthority("ADMIN")
                     .anyRequest()
                     .authenticated())
         // no queremos crear una sesion que se conserver entre una llamada a la api y otra, ergo:

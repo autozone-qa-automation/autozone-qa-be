@@ -23,4 +23,9 @@ public interface ServicesRepository extends JpaRepository<ServicesEntity, Long> 
 
   @Query("SELECT s FROM ServicesEntity s LEFT JOIN FETCH s.urls WHERE s.id = :id")
   Optional<ServicesEntity> findByIdWithUrls(@Param("id") Long id);
+
+  @Query(
+      "SELECT COUNT(s) > 0 FROM ServicesEntity s WHERE LOWER(s.name) = LOWER(:name) AND s.id <>"
+          + " :id")
+  boolean existsByNameIgnoreCaseAndIdNot(@Param("name") String name, @Param("id") Long id);
 }
