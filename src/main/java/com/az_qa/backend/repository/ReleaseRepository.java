@@ -8,6 +8,7 @@ Autozone QA Automation
 package com.az_qa.backend.repository;
 
 import com.az_qa.backend.entity.ReleaseEntity;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -37,4 +38,28 @@ public interface ReleaseRepository extends JpaRepository<ReleaseEntity, Long> {
   List<String> findNombresServiciosByReleaseId(@Param("releaseId") Long releaseId);
 
   List<ReleaseEntity> findTop5ByOrderByReleaseCreationDateDesc();
+  /**
+   * Finds releases matching all provided filter criteria. Any {@code null} parameter is ignored,
+   * making every filter optional.
+   *
+   * @param serviceId  only releases that include a feature from this service; {@code null} skips
+   * @param startDate  lower bound (inclusive) for {@code releaseLaunchDate}; {@code null} skips
+   * @param endDate    upper bound (inclusive) for {@code releaseLaunchDate}; {@code null} skips
+   * @param tagName    substring match (case-insensitive) against {@code releaseTags}; {@code null} skips
+   * @return distinct list of matching release entities
+   */
+  @Query(
+      "SELECT DISTINCT r FROM ReleaseEntity r "
+          + "LEFT JOIN r.features rf "
+          + "LEFT JOIN rf.feature f "
+          + "LEFT JOIN f.service s "
+          + "WHERE (:serviceId IS NULL OR s.id = :serviceId) "
+          + "AND (:startDate IS NULL OR r.releaseLaunchDate >= :startDate) "
+          + "AND (:endDate IS NULL OR r.releaseLaunchDate <= :endDate) "
+          + "AND (:tagName IS NULL OR LOWER(r.releaseTags) LIKE LOWER(CONCAT('%', :tagName, '%')))")
+  List<ReleaseEntity> findByFilters(
+      @Param("serviceId") Long serviceId,
+      @Param("startDate") LocalDate startDate,
+      @Param("endDate") LocalDate endDate,
+      @Param("tagName") String tagName);
 }

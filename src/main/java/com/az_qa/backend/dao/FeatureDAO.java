@@ -28,6 +28,7 @@ public class FeatureDAO {
 
   /**
    * Find features by id.
+   *
    * @param id feature identifier.
    * @return optional Feature representation.
    */
@@ -42,6 +43,7 @@ public class FeatureDAO {
 
   /**
    * Finds the features that contains the service id received.
+   *
    * @param id Service id.
    * @return Features.
    */
@@ -59,6 +61,7 @@ public class FeatureDAO {
 
   /**
    * Retrieves all existing features.
+   *
    * @return list of all the features found.
    */
   public java.util.List<FeatureVO> getAllFeatures() {
@@ -86,11 +89,11 @@ public class FeatureDAO {
   /**
    * Updates an existing feature with the provided information.
    *
-   * @param id Identifier of the feature to update.
+   * @param id        Identifier of the feature to update.
    * @param featureVO Object containing the updated feature data.
    * @return Updated feature representation.
    * @throws ItemNotFoundException if the feature does not exist.
-   * @throws RuntimeException if the feature name is empty or already exists.
+   * @throws RuntimeException      if the feature name is empty or already exists.
    */
   public FeatureVO updateFeature(Long id, FeatureVO featureVO) {
     FeatureEntity existingEntity =
@@ -118,5 +121,22 @@ public class FeatureDAO {
 
     FeatureEntity savedEntity = featuresRepository.save(existingEntity);
     return FeatureMapper.toVO(savedEntity);
+  }
+
+  /**
+   * Deactivates a feature by setting its active status to false.
+   *
+   * @param id Identifier of the feature to deactivate.
+   * @throws ItemNotFoundException if the feature does not exist.
+   */
+  public void deactivateFeature(Long id) {
+    FeatureEntity existingEntity =
+        featuresRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new ItemNotFoundException("Feature with id {" + id + "} not found."));
+
+    existingEntity.setActive(false);
+    featuresRepository.save(existingEntity);
   }
 }
