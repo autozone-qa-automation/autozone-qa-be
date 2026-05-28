@@ -7,25 +7,23 @@ Autozone QA Automation
 
 package com.az_qa.backend.service;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import org.apache.coyote.BadRequestException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.az_qa.backend.dao.ReleaseDAO;
 import com.az_qa.backend.entity.FeatureEntity;
 import com.az_qa.backend.entity.ReleaseEntity;
 import com.az_qa.backend.entity.ReleasedFeaturesEntity;
+import com.az_qa.backend.entity.TestCasesEntity;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.repository.FeaturesRepository;
 import com.az_qa.backend.repository.ReleaseRepository;
 import com.az_qa.backend.repository.ReleasedFeaturesRepository;
 import com.az_qa.backend.repository.TestCasesRepository;
-import com.az_qa.backend.entity.TestCasesEntity;
 import com.az_qa.backend.vo.ReleaseVO;
+import java.time.LocalDate;
+import java.util.List;
+import org.apache.coyote.BadRequestException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReleaseService {
@@ -145,12 +143,13 @@ public class ReleaseService {
       throw new ResourceNotFoundException("Release with id {" + id + "} not found.");
     }
   }
-    /**
+
+  /**
    * Deletes a release by its ID.
    *
    * @param id the release's ID
    * @return HTTP status indicating the result of the operation
-   * @throws BadRequestException 
+   * @throws BadRequestException
    */
   @Transactional
   public void deleteReleaseById(Long id) throws BadRequestException {
@@ -187,5 +186,4 @@ public class ReleaseService {
       throw new ResourceNotFoundException("Release with id {" + id + "} not found.");
     }
   }
-
 }

@@ -7,15 +7,13 @@ Autozone QA Automation
 
 package com.az_qa.backend.vo;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import com.az_qa.backend.enumeration.ReleaseStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Value Object representing a software release in the Autozone QA system.
@@ -239,7 +237,6 @@ public class ReleaseVO {
   public void setReleaseIsActive(Boolean releaseIsActive) {
     this.releaseIsActive = releaseIsActive;
   }
-
 
   @Override
   public int hashCode() {

@@ -19,11 +19,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReleasedFeaturesRepository extends JpaRepository<ReleasedFeaturesEntity, Long> {
 
-	/**
-	 * Finds all released-feature links for a given release.
-	 *
-	 * @param releaseId the release identifier
-	 * @return matching released-feature rows
-	 */
-	List<ReleasedFeaturesEntity> findByRelease_ReleaseId(Long releaseId);
+  /**
+   * Finds all released-feature links for a given release.
+   *
+   * @param releaseId the release identifier
+   * @return matching released-feature rows
+   */
+  List<ReleasedFeaturesEntity> findByRelease_ReleaseId(Long releaseId);
 }
