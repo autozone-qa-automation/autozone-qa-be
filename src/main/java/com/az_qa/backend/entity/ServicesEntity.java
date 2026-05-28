@@ -50,7 +50,11 @@ public class ServicesEntity implements Serializable, Persistable<Long> {
   private String description;
 
   /** URLs associated with this service. */
-  @OneToMany(mappedBy = "servicio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToMany(
+      mappedBy = "servicio",
+      fetch = FetchType.LAZY,
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
   private List<UrlEntity> urls;
 
   /** Entity new-state flag used by Spring Data persistence semantics. */
