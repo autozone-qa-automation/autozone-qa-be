@@ -38,6 +38,7 @@ public interface ReleaseRepository extends JpaRepository<ReleaseEntity, Long> {
   List<String> findNombresServiciosByReleaseId(@Param("releaseId") Long releaseId);
 
   List<ReleaseEntity> findTop5ByOrderByReleaseCreationDateDesc();
+
   /**
    * Finds releases matching all provided filter criteria. Any {@code null} parameter is ignored,
    * making every filter optional.
