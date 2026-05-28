@@ -24,4 +24,13 @@ public interface TestCasesRepository extends JpaRepository<TestCasesEntity, Long
   Optional<TestCasesEntity> findByTitleAndIsActive(String title, boolean isActive);
 
   List<TestCasesEntity> findByFeature_IdAndIsActive(Long featureId, boolean isActive);
+
+  /**
+   * Finds all test cases associated with a given release.
+   * Used to desassociate test cases when a release is soft-deleted.
+   *
+   * @param releaseId the release identifier
+   * @return list of test case entities linked to the release
+   */
+  List<TestCasesEntity> findByRelease_ReleaseId(Long releaseId);
 }

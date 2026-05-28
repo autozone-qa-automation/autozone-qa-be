@@ -7,7 +7,12 @@ Autozone QA Automation
 
 package com.az_qa.backend.entity;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
+
 import com.az_qa.backend.enumeration.ReleaseStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,9 +26,6 @@ import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * JPA entity representing a software release in the Autozone QA system.
@@ -71,6 +73,9 @@ public class ReleaseEntity {
   @Column(name = "release_status", nullable = false)
   private ReleaseStatus releaseStatus;
 
+  @Column(name = "isActive", nullable = false)
+  private boolean isActive;
+
   @Transient private boolean isNew;
 
   public ReleaseEntity() {}
@@ -85,6 +90,7 @@ public class ReleaseEntity {
    * @param releaseVersion      the release version
    * @param releaseTags         optional release tags
    * @param releaseStatus       the release status
+   * @param isActive           indicates whether the release is active
    */
   public ReleaseEntity(
       String releaseName,
@@ -93,7 +99,8 @@ public class ReleaseEntity {
       LocalDate releaseLaunchDate,
       String releaseVersion,
       String releaseTags,
-      ReleaseStatus releaseStatus) {
+      ReleaseStatus releaseStatus,
+      boolean isActive) {
     this.releaseName = releaseName;
     this.releaseDescription = releaseDescription;
     this.releaseCreationDate = releaseCreationDate;
@@ -101,6 +108,7 @@ public class ReleaseEntity {
     this.releaseVersion = releaseVersion;
     this.releaseTags = releaseTags;
     this.releaseStatus = releaseStatus;
+    this.isActive = isActive;
   }
 
   public Long getReleaseId() {
@@ -187,6 +195,14 @@ public class ReleaseEntity {
 
   public void setReleaseStatus(ReleaseStatus releaseStatus) {
     this.releaseStatus = releaseStatus;
+  }
+
+  public boolean getReleaseIsActive() {
+    return isActive;
+  }
+
+  public void setReleaseIsActive(boolean isActive) {
+    this.isActive = isActive;
   }
 
   public String getReleaseService() {

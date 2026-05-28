@@ -104,7 +104,7 @@ public class ReleaseDAO {
    *
    * @param id the ID of the release to delete
    */
-  public void deleteById(Long id) {
-    releaseRepository.deleteById(id);
+  public void deleteReleaseById(Long id) {
+    releaseRepository.deleteReleaseById(id);
   }
 }

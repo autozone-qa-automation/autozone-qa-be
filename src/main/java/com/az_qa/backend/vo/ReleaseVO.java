@@ -7,13 +7,15 @@ Autozone QA Automation
 
 package com.az_qa.backend.vo;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import com.az_qa.backend.enumeration.ReleaseStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  * Value Object representing a software release in the Autozone QA system.
@@ -60,6 +62,8 @@ public class ReleaseVO {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private List<FeatureVO> releaseFeatures;
 
+  private boolean releaseIsActive;
+
   public ReleaseVO() {}
 
   /**
@@ -73,6 +77,7 @@ public class ReleaseVO {
    * @param releaseVersion      the version number of the release
    * @param releaseTags         the tags associated with the release
    * @param releaseStatus       the status of the release
+   * @param releaseIsActive     indicates whether the release is active
    */
   public ReleaseVO(
       Long releaseId,
@@ -83,6 +88,7 @@ public class ReleaseVO {
       String releaseVersion,
       List<String> releaseTags,
       ReleaseStatus releaseStatus,
+      boolean releaseIsActive,
       List<String> releaseServices,
       Long releaseServiceId,
       List<Long> releaseFeatureIds,
@@ -95,6 +101,7 @@ public class ReleaseVO {
     this.releaseVersion = releaseVersion;
     this.releaseTags = releaseTags;
     this.releaseStatus = releaseStatus;
+    this.releaseIsActive = releaseIsActive;
     this.releaseServices = releaseServices;
     this.releaseServiceId = releaseServiceId;
     this.releaseFeatureIds = releaseFeatureIds;
@@ -108,6 +115,7 @@ public class ReleaseVO {
       LocalDate releaseCreationDate,
       LocalDate releaseLaunchDate,
       String releaseVersion,
+      Boolean releaseIsActive,
       List<String> releaseTags,
       ReleaseStatus releaseStatus,
       List<String> releaseServices,
@@ -121,6 +129,7 @@ public class ReleaseVO {
         releaseVersion,
         releaseTags,
         releaseStatus,
+        releaseIsActive,
         releaseServices,
         releaseServiceId,
         null,
@@ -222,6 +231,15 @@ public class ReleaseVO {
   public void setReleaseStatus(ReleaseStatus releaseStatus) {
     this.releaseStatus = releaseStatus;
   }
+
+  public boolean getReleaseIsActive() {
+    return releaseIsActive;
+  }
+
+  public void setReleaseIsActive(Boolean releaseIsActive) {
+    this.releaseIsActive = releaseIsActive;
+  }
+
 
   @Override
   public int hashCode() {

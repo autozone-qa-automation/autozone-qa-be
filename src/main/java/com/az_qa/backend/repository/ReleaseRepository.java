@@ -7,12 +7,16 @@ Autozone QA Automation
 
 package com.az_qa.backend.repository;
 
-import com.az_qa.backend.entity.ReleaseEntity;
+import java.time.LocalDate;
 import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.az_qa.backend.entity.ReleaseEntity;
 
 /**
  * Repository for accessing and managing release records.
@@ -35,4 +39,38 @@ public interface ReleaseRepository extends JpaRepository<ReleaseEntity, Long> {
           + "JOIN f.service s "
           + "WHERE r.releaseId = :releaseId")
   List<String> findNombresServiciosByReleaseId(@Param("releaseId") Long releaseId);
+
+  /**
+   * Finds releases matching all provided filter criteria. Any {@code null} parameter is ignored,
+   * making every filter optional.
+   *
+   * @param serviceId  only releases that include a feature from this service; {@code null} skips
+   * @param startDate  lower bound (inclusive) for {@code releaseLaunchDate}; {@code null} skips
+   * @param endDate    upper bound (inclusive) for {@code releaseLaunchDate}; {@code null} skips
+   * @param tagName    substring match (case-insensitive) against {@code releaseTags}; {@code null} skips
+   * @return distinct list of matching release entities
+   */
+  @Query(
+      "SELECT DISTINCT r FROM ReleaseEntity r "
+          + "LEFT JOIN r.features rf "
+          + "LEFT JOIN rf.feature f "
+          + "LEFT JOIN f.service s "
+          + "WHERE (:serviceId IS NULL OR s.id = :serviceId) "
+          + "AND (:startDate IS NULL OR r.releaseLaunchDate >= :startDate) "
+          + "AND (:endDate IS NULL OR r.releaseLaunchDate <= :endDate) "
+          + "AND (:tagName IS NULL OR LOWER(r.releaseTags) LIKE LOWER(CONCAT('%', :tagName, '%')))")
+  List<ReleaseEntity> findByFilters(
+      @Param("serviceId") Long serviceId,
+      @Param("startDate") LocalDate startDate,
+      @Param("endDate") LocalDate endDate,
+      @Param("tagName") String tagName);
+
+   /**
+    * Deactivates a release by its ID (soft delete).
+    * Performs an update setting the entity active flag to false.
+    * @param releaseId the release identifier
+    */
+    @Modifying
+    @Query("UPDATE ReleaseEntity r SET r.isActive = false WHERE r.releaseId = :releaseId")
+    void deleteReleaseById(@Param("releaseId") Long releaseId);
 }

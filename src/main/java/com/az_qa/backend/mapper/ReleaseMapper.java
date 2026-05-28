@@ -7,11 +7,12 @@ Autozone QA Automation
 
 package com.az_qa.backend.mapper;
 
-import com.az_qa.backend.entity.ReleasedFeaturesEntity;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import com.az_qa.backend.entity.ReleasedFeaturesEntity;
 
 /**
  * Utility mapper for converting release persistence entities and value objects.
@@ -58,6 +59,7 @@ public class ReleaseMapper {
         entity.getReleaseVersion(),
         tags,
         entity.getReleaseStatus(),
+        entity.getReleaseIsActive(),
         entity.getReleaseServices(),
         entity.getReleaseServiceIds().stream().findFirst().orElse(null),
         entity.getReleaseFeatureIds(),
@@ -82,6 +84,7 @@ public class ReleaseMapper {
     entity.setReleaseCreationDate(vo.getReleaseCreationDate());
     entity.setReleaseLaunchDate(vo.getReleaseLaunchDate());
     entity.setReleaseVersion(vo.getReleaseVersion());
+    entity.setReleaseIsActive(vo.getReleaseIsActive());
     entity.setReleaseTags(
         vo.getReleaseTags() == null
             ? null
