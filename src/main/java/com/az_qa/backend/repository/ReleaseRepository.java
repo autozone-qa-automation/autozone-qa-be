@@ -7,14 +7,16 @@ Autozone QA Automation
 
 package com.az_qa.backend.repository;
 
-import com.az_qa.backend.entity.ReleaseEntity;
 import java.time.LocalDate;
 import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.az_qa.backend.entity.ReleaseEntity;
 
 /**
  * Repository for accessing and managing release records.
@@ -37,6 +39,8 @@ public interface ReleaseRepository extends JpaRepository<ReleaseEntity, Long> {
           + "JOIN f.service s "
           + "WHERE r.releaseId = :releaseId")
   List<String> findNombresServiciosByReleaseId(@Param("releaseId") Long releaseId);
+
+  List<ReleaseEntity> findTop5ByOrderByReleaseCreationDateDesc();
 
   /**
    * Finds releases matching all provided filter criteria. Any {@code null} parameter is ignored,
@@ -63,6 +67,7 @@ public interface ReleaseRepository extends JpaRepository<ReleaseEntity, Long> {
       @Param("endDate") LocalDate endDate,
       @Param("tagName") String tagName);
 
+      
   /**
    * Deactivates a release by its ID (soft delete).
    * Performs an update setting the entity active flag to false.

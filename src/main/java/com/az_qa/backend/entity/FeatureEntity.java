@@ -44,6 +44,9 @@ public class FeatureEntity {
   @Column(name = "description")
   private String description;
 
+  @Column(name = "isActive")
+  private boolean active = true;
+
   public FeatureEntity() {}
 
   public FeatureEntity(String name, String description) {
@@ -81,6 +84,14 @@ public class FeatureEntity {
 
   public void setService(ServicesEntity service) {
     this.service = service;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
   }
 
   @Override

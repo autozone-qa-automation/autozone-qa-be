@@ -7,9 +7,11 @@ Autozone QA Automation
 package com.az_qa.backend.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.az_qa.backend.entity.FeatureEntity;
@@ -186,5 +188,32 @@ public class FeaturesDAOTests {
     FeatureVO result = featureDAO.updateFeature(1L, updateVO);
 
     assertNotNull(result);
+  }
+
+  @Test
+  @DisplayName("PUT: deactivateFeature: Debe poner active en false")
+  void deactivateFeature_Success() {
+    FeatureEntity existingEntity = new FeatureEntity();
+    existingEntity.setId(1L);
+    existingEntity.setActive(true);
+
+    when(featuresRepository.findById(1L)).thenReturn(Optional.of(existingEntity));
+    when(featuresRepository.save(any(FeatureEntity.class))).thenReturn(existingEntity);
+
+    featureDAO.deactivateFeature(1L);
+
+    assertFalse(existingEntity.isActive());
+    verify(featuresRepository).save(existingEntity);
+  }
+
+  @Test
+  @DisplayName("PUT: deactivateFeature: Debe lanzar excepción cuando feature no existe")
+  void deactivateFeature_ThrowsException_WhenFeatureDoesNotExist() {
+    when(featuresRepository.findById(1L)).thenReturn(Optional.empty());
+
+    ItemNotFoundException exception =
+        assertThrows(ItemNotFoundException.class, () -> featureDAO.deactivateFeature(1L));
+
+    assertEquals("Feature with id {1} not found.", exception.getMessage());
   }
 }

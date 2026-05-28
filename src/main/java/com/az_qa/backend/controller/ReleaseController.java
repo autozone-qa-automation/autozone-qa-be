@@ -53,6 +53,12 @@ public class ReleaseController {
     return new ResponseEntity<>(releases, HttpStatus.OK);
   }
 
+  @GetMapping("/last")
+  public ResponseEntity<List<ReleaseVO>> getLastReleases() {
+    List<ReleaseVO> releases = releaseService.getLastReleases();
+    return new ResponseEntity<>(releases, HttpStatus.OK);
+  }
+
   /**
    * Retrieves a release by its ID.
    *
