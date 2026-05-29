@@ -7,6 +7,8 @@ Autozone QA Automation
 
 package com.az_qa.backend.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,7 +19,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.Objects;
 
 @Entity
 @Table(name = "features")
@@ -45,7 +46,7 @@ public class FeatureEntity {
   private String description;
 
   @Column(name = "isActive")
-  private boolean active = true;
+  private Boolean isActive = true;
 
   public FeatureEntity() {}
 
@@ -86,12 +87,12 @@ public class FeatureEntity {
     this.service = service;
   }
 
-  public boolean isActive() {
-    return active;
+  public Boolean getIsActive() {
+    return isActive;
   }
 
-  public void setActive(boolean active) {
-    this.active = active;
+  public void setIsActive(Boolean isActive) {
+    this.isActive = isActive;
   }
 
   @Override
@@ -121,4 +122,13 @@ public class FeatureEntity {
         + '\''
         + '}';
   }
+
+  public boolean isActive() {
+    return isActive != null && isActive;
+  }
+
+  public void setActive(boolean active) {
+    this.isActive = active;
+  }
+  
 }

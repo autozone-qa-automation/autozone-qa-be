@@ -7,6 +7,13 @@ Autozone QA Automation
 
 package com.az_qa.backend.dao;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.az_qa.backend.entity.FeatureEntity;
 import com.az_qa.backend.entity.ServicesEntity;
 import com.az_qa.backend.exception.ItemNotFoundException;
@@ -14,11 +21,6 @@ import com.az_qa.backend.mapper.FeatureMapper;
 import com.az_qa.backend.repository.FeaturesRepository;
 import com.az_qa.backend.repository.ServicesRepository;
 import com.az_qa.backend.vo.FeatureVO;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public class FeatureDAO {
@@ -136,7 +138,7 @@ public class FeatureDAO {
             .orElseThrow(
                 () -> new ItemNotFoundException("Feature with id {" + id + "} not found."));
 
-    existingEntity.setActive(false);
+    existingEntity.setIsActive(false);
     featuresRepository.save(existingEntity);
   }
 }

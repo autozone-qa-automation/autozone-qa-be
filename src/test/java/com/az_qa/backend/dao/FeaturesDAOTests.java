@@ -195,14 +195,14 @@ public class FeaturesDAOTests {
   void deactivateFeature_Success() {
     FeatureEntity existingEntity = new FeatureEntity();
     existingEntity.setId(1L);
-    existingEntity.setActive(true);
+    existingEntity.setIsActive(true);
 
     when(featuresRepository.findById(1L)).thenReturn(Optional.of(existingEntity));
     when(featuresRepository.save(any(FeatureEntity.class))).thenReturn(existingEntity);
 
     featureDAO.deactivateFeature(1L);
 
-    assertFalse(existingEntity.isActive());
+    assertFalse(existingEntity.getIsActive());
     verify(featuresRepository).save(existingEntity);
   }
 
