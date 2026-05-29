@@ -67,6 +67,10 @@ public class ReleaseService {
     return releaseDAO.findFiltered(releaseStatus, releaseTags);
   }
 
+  public List<ReleaseVO> getLastReleases() {
+    return releaseDAO.findLast();
+  }
+
   /**
    * Retrieves all registered releases.
    *

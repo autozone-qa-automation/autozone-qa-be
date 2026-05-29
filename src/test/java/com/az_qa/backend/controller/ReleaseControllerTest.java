@@ -87,6 +87,20 @@ public class ReleaseControllerTest {
   }
 
   @Test
+  @DisplayName("getLastReleases: Debe retornar 200 OK con la lista de los últimos 5 releases")
+  public void getLastReleases_Success() {
+    when(releaseService.getLastReleases()).thenReturn(Collections.singletonList(releaseStub));
+
+    ResponseEntity<List<ReleaseVO>> response = releaseController.getLastReleases();
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals(1, response.getBody().size());
+    assertEquals("QA Automation Release", response.getBody().get(0).getReleaseName());
+  }
+
+  @Test
   @DisplayName("createRelease: Debe retornar 201 Created cuando se crea correctamente")
   public void createRelease_Success() {
     when(releaseService.createRelease(any(ReleaseVO.class))).thenReturn(releaseStub);
