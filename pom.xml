@@ -134,6 +134,7 @@
 				<version>2.44.4</version>
 				<configuration>
 					<java>
+						<lineEndings>UNIX</lineEndings>
 						<googleJavaFormat>
 							<version>1.17.0</version>
 							<style>GOOGLE</style>

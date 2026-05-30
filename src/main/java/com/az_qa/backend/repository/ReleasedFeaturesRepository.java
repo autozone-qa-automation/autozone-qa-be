@@ -7,12 +7,10 @@ Autozone QA Automation
 
 package com.az_qa.backend.repository;
 
+import com.az_qa.backend.entity.ReleasedFeaturesEntity;
 import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import com.az_qa.backend.entity.ReleasedFeaturesEntity;
 
 /**
  * Repository for accessing released-feature relationship records.

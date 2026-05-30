@@ -85,6 +85,7 @@ public class ReleaseController {
    */
   @PostMapping
   public ResponseEntity<ReleaseVO> createRelease(@Valid @RequestBody ReleaseVO releaseVO) {
+    releaseVO.setReleaseIsActive(true);
     ReleaseVO createdRelease = releaseService.createRelease(releaseVO);
     return new ResponseEntity<>(createdRelease, HttpStatus.CREATED);
   }

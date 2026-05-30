@@ -69,4 +69,26 @@ public class ServicesService {
 
     return servicesDAO.createService(serviceVO);
   }
+
+  @Transactional
+  public ServicesVO updateService(Long id, ServicesVO serviceVO) {
+    if (serviceVO.getName() == null || serviceVO.getName().isBlank()) {
+      throw new IllegalArgumentException("Service name cannot be empty");
+    }
+
+    String sanitizedName = serviceVO.getName().trim();
+    serviceVO.setName(sanitizedName);
+
+    boolean isDuplicated = servicesDAO.existsByNameIgnoreCaseAndIdNot(sanitizedName, id);
+    if (isDuplicated) {
+      throw new DuplicatedItemException(
+          "A service with the name '" + sanitizedName + "' already exists.");
+    }
+
+    if (serviceVO.getDescription() == null || serviceVO.getDescription().isBlank()) {
+      serviceVO.setDescription("No description provided for " + sanitizedName);
+    }
+
+    return servicesDAO.updateService(id, serviceVO);
+  }
 }

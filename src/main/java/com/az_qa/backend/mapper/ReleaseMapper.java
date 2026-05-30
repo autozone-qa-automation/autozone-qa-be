@@ -7,12 +7,11 @@ Autozone QA Automation
 
 package com.az_qa.backend.mapper;
 
+import com.az_qa.backend.entity.ReleasedFeaturesEntity;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import com.az_qa.backend.entity.ReleasedFeaturesEntity;
 
 /**
  * Utility mapper for converting release persistence entities and value objects.

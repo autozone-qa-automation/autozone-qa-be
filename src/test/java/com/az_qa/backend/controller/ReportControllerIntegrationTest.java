@@ -78,7 +78,8 @@ public class ReportControllerIntegrationTest {
             LocalDate.of(2026, 3, 15),
             "2.0.0",
             "qa,integracion",
-            ReleaseStatus.Active);
+            ReleaseStatus.Active,
+            true);
     release.setNew(true);
     release = releaseRepository.save(release);
 

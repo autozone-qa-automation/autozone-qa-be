@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 import com.az_qa.backend.dao.ServicesDAO;
 import com.az_qa.backend.exception.DuplicatedItemException;
 import com.az_qa.backend.vo.ServicesVO;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,5 +77,48 @@ public class ServicesServiceTests {
 
     assertEquals("A service with the name 'Service Test' already exists.", exception.getMessage());
     verify(servicesDAO, never()).createService(any(ServicesVO.class));
+  }
+
+  @Test
+  @DisplayName("PUT: updateService: Debe retornar el servicio actualizado correctamente")
+  void updateService_ReturnsUpdatedService() {
+    ServicesVO updateVO = new ServicesVO();
+    updateVO.setName("Servicio Actualizado");
+    updateVO.setDescription("Nueva descripción");
+    updateVO.setUrls(new ArrayList<>());
+
+    ServicesVO updatedStub = new ServicesVO();
+    updatedStub.setId(1L);
+    updatedStub.setName("Servicio Actualizado");
+
+    when(servicesDAO.existsByNameIgnoreCaseAndIdNot("Servicio Actualizado", 1L)).thenReturn(false);
+    when(servicesDAO.updateService(any(Long.class), any(ServicesVO.class))).thenReturn(updatedStub);
+
+    ServicesVO result = servicesService.updateService(1L, updateVO);
+
+    assertNotNull(result);
+    assertEquals("Servicio Actualizado", result.getName());
+  }
+
+  @Test
+  @DisplayName("PUT: updateService: Debe lanzar excepción cuando el nombre está vacío")
+  void updateService_ThrowsException_WhenNameIsBlank() {
+    ServicesVO updateVO = new ServicesVO();
+    updateVO.setName("");
+    updateVO.setUrls(new ArrayList<>());
+
+    assertThrows(IllegalArgumentException.class, () -> servicesService.updateService(1L, updateVO));
+  }
+
+  @Test
+  @DisplayName("PUT: updateService: Debe lanzar excepción cuando el nombre está duplicado")
+  void updateService_ThrowsException_WhenNameIsDuplicated() {
+    ServicesVO updateVO = new ServicesVO();
+    updateVO.setName("Nombre Duplicado");
+    updateVO.setUrls(new ArrayList<>());
+
+    when(servicesDAO.existsByNameIgnoreCaseAndIdNot("Nombre Duplicado", 1L)).thenReturn(true);
+
+    assertThrows(DuplicatedItemException.class, () -> servicesService.updateService(1L, updateVO));
   }
 }

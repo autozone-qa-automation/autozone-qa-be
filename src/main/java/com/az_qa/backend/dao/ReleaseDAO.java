@@ -67,7 +67,8 @@ public class ReleaseDAO {
                               .getReleaseTags()
                               .toLowerCase()
                               .contains(releaseTags.toLowerCase()));
-              return matchesStatus && matchesTags;
+              boolean isActive = release.getReleaseIsActive();
+              return matchesStatus && matchesTags && isActive;
             })
         .map(ReleaseMapper::toVO)
         .toList();

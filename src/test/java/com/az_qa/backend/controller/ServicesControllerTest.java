@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import com.az_qa.backend.exception.DuplicatedItemException;
 import com.az_qa.backend.service.ServicesService;
 import com.az_qa.backend.vo.ServicesVO;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,5 +63,33 @@ public class ServicesControllerTest {
 
     assertNotNull(response);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+  }
+
+  @Test
+  @DisplayName("updateService: Debe retornar 200 OK cuando la actualización es exitosa")
+  public void updateService_Success() {
+    ServicesVO updatedService = new ServicesVO();
+    updatedService.setId(1L);
+    updatedService.setName("Servicio Actualizado");
+
+    when(servicesService.updateService(any(Long.class), any(ServicesVO.class)))
+        .thenReturn(updatedService);
+
+    ResponseEntity<?> response = servicesController.updateService(1L, new ServicesVO());
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  @DisplayName("updateService: Debe retornar 409 Conflict cuando el nombre está duplicado")
+  public void updateService_ReturnsConflict_WhenDuplicated() {
+    when(servicesService.updateService(any(Long.class), any(ServicesVO.class)))
+        .thenThrow(new DuplicatedItemException("Duplicado"));
+
+    ResponseEntity<?> response = servicesController.updateService(1L, new ServicesVO());
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
   }
 }

@@ -7,21 +7,11 @@ Autozone QA Automation
 
 package com.az_qa.backend.service;
 
-import java.util.Collections;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.az_qa.backend.dao.ReleaseDAO;
 import com.az_qa.backend.entity.FeatureEntity;
@@ -33,6 +23,15 @@ import com.az_qa.backend.repository.FeaturesRepository;
 import com.az_qa.backend.repository.ReleaseRepository;
 import com.az_qa.backend.repository.ReleasedFeaturesRepository;
 import com.az_qa.backend.vo.ReleaseVO;
+import java.util.Collections;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class ReleaseServiceTest {

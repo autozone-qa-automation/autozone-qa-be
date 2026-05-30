@@ -76,12 +76,11 @@ public class TestCasesDAO {
 
   @Transactional
   public void deactivate(Long id) {
-    TestCasesEntity entity =
-        repository
-            .findByIdAndIsActive(id, true)
-            .orElseThrow(() -> new ItemNotFoundException("TestCase not found with id: " + id));
-    entity.setIsActive(false);
-    repository.save(entity);
+    int updatedRows = repository.deactivateById(id);
+
+    if (updatedRows == 0) {
+      throw new ItemNotFoundException("TestCase not found with id: " + id);
+    }
   }
 
   public List<TestCaseVO> findByFeature(Long featureId) {
