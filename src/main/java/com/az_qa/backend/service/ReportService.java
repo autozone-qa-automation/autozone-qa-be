@@ -45,14 +45,16 @@ public class ReportService {
   }
 
   /**
-   * Returns a list of releases matching the provided filters. All parameters are optional; passing
+   * Returns a list of releases matching the provided filters. All parameters are
+   * optional; passing
    * {@code null} skips that filter.
    *
    * @param serviceId only releases containing a feature from this service
    * @param startDate lower bound (inclusive) for {@code releaseLaunchDate}
    * @param endDate   upper bound (inclusive) for {@code releaseLaunchDate}
    * @param tagName   case-insensitive substring to match against the release tags
-   * @return list of report VOs with the hierarchical release → service → feature → test-case
+   * @return list of report VOs with the hierarchical release → service → feature
+   *         → test-case
    *         structure
    */
   @Transactional(readOnly = true)
@@ -109,5 +111,116 @@ public class ReportService {
         release.getReleaseCreationDate(),
         release.getReleaseLaunchDate(),
         services);
+  }
+
+  /**
+   * Genera el contenido de un archivo CSV basado en los reportes filtrados.
+   * Las columnas mapean directamente a las especificaciones del SRS (Página 15).
+   *
+   * @param serviceId ID del servicio
+   * @param startDate Límite inferior para releaseLaunchDate
+   * @param endDate   Límite superior para releaseLaunchDate
+   * @param tagName   Tag a buscar
+   * @return Un arreglo de bytes que representa el archivo CSV (codificado en
+   *         UTF-8 con BOM)
+   */
+  @Transactional(readOnly = true)
+  public byte[] exportReportsCsv(
+      Long serviceId, LocalDate startDate, LocalDate endDate, String tagName) {
+
+    List<ReportReleaseVO> reports = getReports(serviceId, startDate, endDate, tagName);
+    StringBuilder csv = new StringBuilder();
+
+    // Headers exactos usando punto y coma (;)
+    csv.append(
+        "Versión del release;Nombre del release;Tags del release;Estatus;Fecha de creación;Fecha de"
+            + " lanzamiento;Servicio;Feature;Caso de prueba\n");
+
+    for (ReportReleaseVO release : reports) {
+      String version = escapeCsv(release.getReleaseVersion());
+      String name = escapeCsv(release.getReleaseName());
+
+      String tags =
+          release.getReleaseTags() != null
+              ? escapeCsv(String.join(", ", release.getReleaseTags()))
+              : "";
+      String status =
+          release.getReleaseStatus() != null ? escapeCsv(release.getReleaseStatus().name()) : "";
+
+      String creation =
+          release.getReleaseCreationDate() != null
+              ? release.getReleaseCreationDate().toString()
+              : "";
+      String launch =
+          release.getReleaseLaunchDate() != null ? release.getReleaseLaunchDate().toString() : "";
+
+      if (release.getServices() == null || release.getServices().isEmpty()) {
+        csv.append(
+            String.format("%s;%s;%s;%s;%s;%s;;;\n", version, name, tags, status, creation, launch));
+      } else {
+        for (ReportServiceVO service : release.getServices()) {
+          String svcName = escapeCsv(service.getServiceName());
+
+          if (service.getFeatures() == null || service.getFeatures().isEmpty()) {
+            csv.append(
+                String.format(
+                    "%s;%s;%s;%s;%s;%s;%s;;\n",
+                    version, name, tags, status, creation, launch, svcName));
+          } else {
+            for (ReportFeatureVO feature : service.getFeatures()) {
+              String featureName = escapeCsv(feature.getFeatureName());
+
+              if (feature.getTestCases() == null || feature.getTestCases().isEmpty()) {
+                csv.append(
+                    String.format(
+                        "%s;%s;%s;%s;%s;%s;%s;%s;\n",
+                        version, name, tags, status, creation, launch, svcName, featureName));
+              } else {
+                for (String testCase : feature.getTestCases()) {
+                  String tcName = escapeCsv(testCase);
+                  csv.append(
+                      String.format(
+                          "%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                          version,
+                          name,
+                          tags,
+                          status,
+                          creation,
+                          launch,
+                          svcName,
+                          featureName,
+                          tcName));
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Añadir BOM (Byte Order Mark) para compatibilidad nativa con Excel
+    // (reconocimiento de acentos)
+    byte[] utf8Bom = new byte[] {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
+    byte[] csvBytes = csv.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    byte[] result = new byte[utf8Bom.length + csvBytes.length];
+
+    System.arraycopy(utf8Bom, 0, result, 0, utf8Bom.length);
+    System.arraycopy(csvBytes, 0, result, utf8Bom.length, csvBytes.length);
+
+    return result;
+  }
+
+  /**
+   * Helper para sanitizar strings en CSV según RFC 4180 (adaptado para usar punto
+   * y coma).
+   */
+  private String escapeCsv(String data) {
+    if (data == null) return "";
+    String escaped = data.replaceAll("\\R", " ");
+    // Buscamos el punto y coma (;) para escapar correctamente
+    if (escaped.contains(";") || escaped.contains("\"") || escaped.contains("'")) {
+      escaped = "\"" + escaped.replace("\"", "\"\"") + "\"";
+    }
+    return escaped;
   }
 }

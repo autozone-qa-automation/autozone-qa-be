@@ -7,29 +7,37 @@ Autozone QA Automation
 
 package com.az_qa.backend.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.az_qa.backend.enumeration.ReleaseStatus;
+import com.az_qa.backend.exception.GlobalExceptionHandler;
 import com.az_qa.backend.service.ReportService;
 import com.az_qa.backend.vo.ReportReleaseVO;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
 public class ReportControllerTest {
+
+  private MockMvc mockMvc;
 
   @Mock private ReportService reportService;
 
@@ -39,6 +47,15 @@ public class ReportControllerTest {
 
   @BeforeEach
   void setUp() {
+    // Configuración Standalone en lugar de @WebMvcTest para evitar errores de
+    // dependencias de Maven
+    // Inyecta directamente el GlobalExceptionHandler cumpliendo las reglas del
+    // proyecto
+    mockMvc =
+        MockMvcBuilders.standaloneSetup(reportController)
+            .setControllerAdvice(new GlobalExceptionHandler())
+            .build();
+
     reportStub =
         new ReportReleaseVO(
             1L,
@@ -52,32 +69,57 @@ public class ReportControllerTest {
             List.of());
   }
 
-  @Test
-  @DisplayName("getReports: Debe retornar 200 OK con la lista de reportes")
-  public void getReports_Success() {
-    when(reportService.getReports(any(), any(), any(), any())).thenReturn(List.of(reportStub));
+  @Nested
+  @DisplayName("GET /api/v1/reports")
+  class GetReports {
 
-    ResponseEntity<List<ReportReleaseVO>> response =
-        reportController.getReports(null, null, null, null);
+    @Test
+    @DisplayName("Debe retornar 200 OK con la lista de reportes")
+    void getReports_Success() throws Exception {
+      when(reportService.getReports(any(), any(), any(), any())).thenReturn(List.of(reportStub));
 
-    assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertNotNull(response.getBody());
-    assertEquals(1, response.getBody().size());
-    assertEquals("Test Release", response.getBody().get(0).getReleaseName());
+      mockMvc
+          .perform(get("/api/v1/reports").contentType(MediaType.APPLICATION_JSON))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$").isArray())
+          .andExpect(jsonPath("$[0].releaseName").value("Test Release"));
+    }
+
+    @Test
+    @DisplayName("Debe retornar 200 OK con lista vacía cuando ningún release coincide")
+    void getReports_EmptyResult() throws Exception {
+      when(reportService.getReports(any(), any(), any(), any())).thenReturn(List.of());
+
+      mockMvc
+          .perform(
+              get("/api/v1/reports")
+                  .param("serviceId", "1")
+                  .contentType(MediaType.APPLICATION_JSON))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$").isEmpty());
+    }
   }
 
-  @Test
-  @DisplayName("getReports: Debe retornar 200 OK con lista vacía cuando ningún release coincide")
-  public void getReports_EmptyResult() {
-    when(reportService.getReports(any(), any(), any(), any())).thenReturn(List.of());
+  @Nested
+  @DisplayName("GET /api/v1/reports/export")
+  class ExportReports {
 
-    ResponseEntity<List<ReportReleaseVO>> response =
-        reportController.getReports(1L, null, null, null);
+    @Test
+    @DisplayName("Debe retornar 200 OK con el archivo CSV y headers correctos")
+    void exportReportsCsv_Success() throws Exception {
+      byte[] mockCsv = "Versión del release;Nombre del release\n1.0.0;Test Release".getBytes();
+      when(reportService.exportReportsCsv(any(), any(), any(), any())).thenReturn(mockCsv);
 
-    assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertNotNull(response.getBody());
-    assertTrue(response.getBody().isEmpty());
+      mockMvc
+          .perform(get("/api/v1/reports/export"))
+          .andExpect(status().isOk())
+          .andExpect(
+              header()
+                  .string(
+                      HttpHeaders.CONTENT_DISPOSITION,
+                      "attachment; filename=reportes_releases.csv"))
+          .andExpect(header().string(HttpHeaders.CONTENT_TYPE, "text/csv; charset=UTF-8"))
+          .andExpect(content().bytes(mockCsv));
+    }
   }
 }
