@@ -68,7 +68,8 @@ public class ReleaseDAO {
                               .getReleaseTags()
                               .toLowerCase()
                               .contains(releaseTags.toLowerCase()));
-              return matchesStatus && matchesTags;
+              boolean isActive = release.getReleaseIsActive();
+              return matchesStatus && matchesTags && isActive;
             })
         .map(ReleaseMapper::toVO)
         .toList();
@@ -116,7 +117,7 @@ public class ReleaseDAO {
    *
    * @param id the ID of the release to delete
    */
-  public void deleteById(Long id) {
-    releaseRepository.deleteById(id);
+  public void deleteReleaseById(Long id) {
+    releaseRepository.deleteReleaseById(id);
   }
 }

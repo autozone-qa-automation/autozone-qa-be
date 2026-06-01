@@ -11,8 +11,10 @@ import com.az_qa.backend.service.ReleaseService;
 import com.az_qa.backend.vo.ReleaseVO;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -84,6 +86,7 @@ public class ReleaseController {
    */
   @PostMapping
   public ResponseEntity<ReleaseVO> createRelease(@Valid @RequestBody ReleaseVO releaseVO) {
+    releaseVO.setReleaseIsActive(true);
     ReleaseVO createdRelease = releaseService.createRelease(releaseVO);
     return new ResponseEntity<>(createdRelease, HttpStatus.CREATED);
   }
@@ -106,5 +109,20 @@ public class ReleaseController {
     } catch (IllegalArgumentException e) {
       return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+  }
+
+  /**
+   * Updates the status of a specific release.
+   *
+   * @param id the ID of the release
+   * @return
+   * @return
+   * @return an HTTP response indicating the result of the operation.
+   * @throws BadRequestException
+   */
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteReleaseById(@PathVariable Long id) throws BadRequestException {
+    releaseService.deleteReleaseById(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }
