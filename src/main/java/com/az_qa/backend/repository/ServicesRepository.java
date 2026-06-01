@@ -18,11 +18,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ServicesRepository extends JpaRepository<ServicesEntity, Long> {
 
-  @Query("SELECT DISTINCT s FROM ServicesEntity s LEFT JOIN FETCH s.urls")
+  @Query("SELECT DISTINCT s FROM ServicesEntity s LEFT JOIN FETCH s.urls WHERE s.isActive = true")
   List<ServicesEntity> findAllWithUrls();
 
-  @Query("SELECT s FROM ServicesEntity s LEFT JOIN FETCH s.urls WHERE s.id = :id")
+  @Query(
+      "SELECT s FROM ServicesEntity s LEFT JOIN FETCH s.urls WHERE s.id = :id AND s.isActive ="
+          + " true")
   Optional<ServicesEntity> findByIdWithUrls(@Param("id") Long id);
+
+  Optional<ServicesEntity> findByIdAndIsActive(Long id, Boolean isActive);
 
   @Query(
       "SELECT COUNT(s) > 0 FROM ServicesEntity s WHERE LOWER(s.name) = LOWER(:name) AND s.id <>"
