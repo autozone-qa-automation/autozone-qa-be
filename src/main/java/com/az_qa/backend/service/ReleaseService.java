@@ -7,6 +7,13 @@ Autozone QA Automation
 
 package com.az_qa.backend.service;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import org.apache.coyote.BadRequestException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.az_qa.backend.dao.ReleaseDAO;
 import com.az_qa.backend.entity.FeatureEntity;
 import com.az_qa.backend.entity.ReleaseEntity;
@@ -19,11 +26,6 @@ import com.az_qa.backend.repository.ReleaseRepository;
 import com.az_qa.backend.repository.ReleasedFeaturesRepository;
 import com.az_qa.backend.repository.TestCasesRepository;
 import com.az_qa.backend.vo.ReleaseVO;
-import java.time.LocalDate;
-import java.util.List;
-import org.apache.coyote.BadRequestException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReleaseService {
@@ -161,9 +163,15 @@ public class ReleaseService {
       ReleaseVO releaseVO = releaseDAO.findById(id);
       releaseVO.setReleaseServices(releaseRepository.findNombresServiciosByReleaseId(id));
       com.az_qa.backend.enumeration.ReleaseStatus currentStatus = releaseVO.getReleaseStatus();
+      Boolean currentIsActive = releaseVO.getReleaseIsActive();
       if (currentStatus != com.az_qa.backend.enumeration.ReleaseStatus.Draft) {
         throw new BadRequestException(
             "Only releases in DRAFT status can be deleted. Current status: " + currentStatus);
+      }
+
+      if (currentIsActive == false || !currentIsActive) {
+        throw new BadRequestException(
+            "Only active releases can be deleted.");
       }
 
       // Desassociate released features
