@@ -67,8 +67,8 @@ public class ReleaseService {
     return releaseDAO.findFiltered(releaseStatus, releaseTags);
   }
 
-  public List<ReleaseVO> getLastReleases() {
-    return releaseDAO.findLast();
+  public List<ReleaseVO> getLastReleases(Long serviceId) {
+    return releaseDAO.findLast(serviceId);
   }
 
   /**
