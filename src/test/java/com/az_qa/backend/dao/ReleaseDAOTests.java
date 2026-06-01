@@ -50,7 +50,7 @@ public class ReleaseDAOTests {
     when(releaseRepository.findTop5ByOrderByReleaseCreationDateDesc())
         .thenReturn(List.of(releaseEntity));
 
-    List<ReleaseVO> result = releaseDAO.findLast();
+    List<ReleaseVO> result = releaseDAO.findLast(null);
 
     assertNotNull(result);
     assertEquals(1, result.size());

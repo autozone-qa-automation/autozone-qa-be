@@ -15,6 +15,7 @@ import com.az_qa.backend.vo.ReleaseVO;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -73,7 +74,12 @@ public class ReleaseDAO {
         .toList();
   }
 
-  public List<ReleaseVO> findLast() {
+  public List<ReleaseVO> findLast(Long serviceId) {
+    if (serviceId != null) {
+      return releaseRepository.findTop5ByServiceId(serviceId, PageRequest.of(0, 5)).stream()
+          .map(ReleaseMapper::toVO)
+          .toList();
+    }
     return releaseRepository.findTop5ByOrderByReleaseCreationDateDesc().stream()
         .map(ReleaseMapper::toVO)
         .toList();

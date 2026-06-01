@@ -52,8 +52,9 @@ public class ReleaseController {
   }
 
   @GetMapping("/last")
-  public ResponseEntity<List<ReleaseVO>> getLastReleases() {
-    List<ReleaseVO> releases = releaseService.getLastReleases();
+  public ResponseEntity<List<ReleaseVO>> getLastReleases(
+      @RequestParam(required = false) Long serviceId) {
+    List<ReleaseVO> releases = releaseService.getLastReleases(serviceId);
     return new ResponseEntity<>(releases, HttpStatus.OK);
   }
 

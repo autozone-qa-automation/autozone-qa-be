@@ -56,9 +56,9 @@ public class ReleaseServiceTest {
   @Test
   @DisplayName("GET /last: Debe retornar los últimos 5 releases ordenados por fecha de creación")
   public void getLastReleases_Success() {
-    when(releaseDAO.findLast()).thenReturn(Collections.singletonList(releaseStub));
+    when(releaseDAO.findLast(null)).thenReturn(Collections.singletonList(releaseStub));
 
-    List<ReleaseVO> result = releaseService.getLastReleases();
+    List<ReleaseVO> result = releaseService.getLastReleases(null);
 
     assertNotNull(result);
     assertEquals(1, result.size());

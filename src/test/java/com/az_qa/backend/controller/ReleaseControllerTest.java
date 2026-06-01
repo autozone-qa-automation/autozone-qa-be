@@ -89,9 +89,9 @@ public class ReleaseControllerTest {
   @Test
   @DisplayName("getLastReleases: Debe retornar 200 OK con la lista de los últimos 5 releases")
   public void getLastReleases_Success() {
-    when(releaseService.getLastReleases()).thenReturn(Collections.singletonList(releaseStub));
+    when(releaseService.getLastReleases(null)).thenReturn(Collections.singletonList(releaseStub));
 
-    ResponseEntity<List<ReleaseVO>> response = releaseController.getLastReleases();
+    ResponseEntity<List<ReleaseVO>> response = releaseController.getLastReleases(null);
 
     assertNotNull(response);
     assertEquals(HttpStatus.OK, response.getStatusCode());
