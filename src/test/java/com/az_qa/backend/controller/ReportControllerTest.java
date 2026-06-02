@@ -105,13 +105,24 @@ public class ReportControllerTest {
   class ExportReports {
 
     @Test
-    @DisplayName("Debe retornar 200 OK con el archivo CSV y headers correctos")
+    @DisplayName(
+        "Debe retornar 200 OK con el archivo CSV y headers correctos al pasar IDs de release")
     void exportReportsCsv_Success() throws Exception {
+      // Arrange
       byte[] mockCsv = "Versión del release;Nombre del release\n1.0.0;Test Release".getBytes();
-      when(reportService.exportReportsCsv(any(), any(), any(), any())).thenReturn(mockCsv);
+      List<Long> targetIds = List.of(1L, 2L, 3L);
 
+      // Corregido: Ahora se mockea el nuevo método exportReportsCsvByIds que recibe
+      // la lista de IDs
+      when(reportService.exportReportsCsvByIds(targetIds)).thenReturn(mockCsv);
+
+      // Act & Assert
       mockMvc
-          .perform(get("/api/v1/reports/export"))
+          .perform(
+              get("/api/v1/reports/export")
+                  .param(
+                      "releaseIds",
+                      "1,2,3")) // Corregido: Se pasa el parámetro requerido por el Controller
           .andExpect(status().isOk())
           .andExpect(
               header()
