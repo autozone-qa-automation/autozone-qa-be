@@ -47,7 +47,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-		
+
 		<!-- Validation (@NotBlank, @Size, @Positive, etc.) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -134,6 +134,7 @@
 				<version>2.44.4</version>
 				<configuration>
 					<java>
+						<lineEndings>UNIX</lineEndings>
 						<googleJavaFormat>
 							<version>1.17.0</version>
 							<style>GOOGLE</style>

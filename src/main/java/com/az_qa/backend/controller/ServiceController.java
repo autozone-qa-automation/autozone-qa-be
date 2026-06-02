@@ -7,6 +7,8 @@
 
 package com.az_qa.backend.controller;
 
+import com.az_qa.backend.exception.DuplicatedItemException;
+import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.service.ServicesService;
 import com.az_qa.backend.vo.ServicesVO;
 import com.az_qa.backend.vo.UrlVO;
@@ -20,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,5 +69,33 @@ public class ServiceController {
       return ResponseEntity.badRequest().build();
     }
     return ResponseEntity.status(HttpStatus.CREATED).body(createdService);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<?> updateService(
+      @PathVariable Long id, @Validated @RequestBody ServicesVO servicesVO) {
+
+    try {
+
+      ServicesVO updated = servicesService.updateService(id, servicesVO);
+
+      return ResponseEntity.ok(updated);
+
+    } catch (DuplicatedItemException e) {
+
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+
+    } catch (IllegalArgumentException e) {
+
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+    } catch (ItemNotFoundException e) {
+
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+    } catch (Exception e) {
+
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error");
+    }
   }
 }

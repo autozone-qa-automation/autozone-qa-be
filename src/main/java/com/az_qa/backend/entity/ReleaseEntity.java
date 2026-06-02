@@ -71,6 +71,9 @@ public class ReleaseEntity {
   @Column(name = "release_status", nullable = false)
   private ReleaseStatus releaseStatus;
 
+  @Column(name = "isActive", nullable = false)
+  private boolean isActive;
+
   @Transient private boolean isNew;
 
   public ReleaseEntity() {}
@@ -85,6 +88,7 @@ public class ReleaseEntity {
    * @param releaseVersion      the release version
    * @param releaseTags         optional release tags
    * @param releaseStatus       the release status
+   * @param isActive           indicates whether the release is active
    */
   public ReleaseEntity(
       String releaseName,
@@ -93,7 +97,8 @@ public class ReleaseEntity {
       LocalDate releaseLaunchDate,
       String releaseVersion,
       String releaseTags,
-      ReleaseStatus releaseStatus) {
+      ReleaseStatus releaseStatus,
+      boolean isActive) {
     this.releaseName = releaseName;
     this.releaseDescription = releaseDescription;
     this.releaseCreationDate = releaseCreationDate;
@@ -101,6 +106,7 @@ public class ReleaseEntity {
     this.releaseVersion = releaseVersion;
     this.releaseTags = releaseTags;
     this.releaseStatus = releaseStatus;
+    this.isActive = isActive;
   }
 
   public Long getReleaseId() {
@@ -187,6 +193,14 @@ public class ReleaseEntity {
 
   public void setReleaseStatus(ReleaseStatus releaseStatus) {
     this.releaseStatus = releaseStatus;
+  }
+
+  public boolean getReleaseIsActive() {
+    return isActive;
+  }
+
+  public void setReleaseIsActive(boolean isActive) {
+    this.isActive = isActive;
   }
 
   public String getReleaseService() {

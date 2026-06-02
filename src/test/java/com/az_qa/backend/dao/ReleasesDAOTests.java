@@ -94,6 +94,7 @@ public class ReleasesDAOTests {
         "2.0.0",
         List.of("inventory", "qa"),
         ReleaseStatus.Draft,
+        true,
         List.of(),
         20L,
         List.of(),
