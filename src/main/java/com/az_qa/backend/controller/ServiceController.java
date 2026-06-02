@@ -31,8 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class ServiceController {
 
-  @Autowired
-  private ServicesService servicesService;
+  @Autowired private ServicesService servicesService;
 
   @GetMapping
   public ResponseEntity<List<ServicesVO>> getAllServices() {

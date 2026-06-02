@@ -22,8 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ServicesService {
 
   /** DAO dependency used for service data access operations. */
-  @Autowired
-  private ServicesDAO servicesDAO;
+  @Autowired private ServicesDAO servicesDAO;
 
   /**
    * Retrieves all existing services with their URLs.
@@ -65,7 +64,8 @@ public class ServicesService {
     serviceVO.setName(sanitizedName);
 
     List<ServicesVO> existingServices = getAllServices();
-    boolean isDuplicated = existingServices.stream().anyMatch(s -> s.getName().equalsIgnoreCase(sanitizedName));
+    boolean isDuplicated =
+        existingServices.stream().anyMatch(s -> s.getName().equalsIgnoreCase(sanitizedName));
 
     if (isDuplicated) {
       throw new DuplicatedItemException(
@@ -78,5 +78,4 @@ public class ServicesService {
 
     return servicesDAO.createService(serviceVO);
   }
-
 }

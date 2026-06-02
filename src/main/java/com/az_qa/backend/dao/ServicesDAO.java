@@ -23,8 +23,7 @@ import org.springframework.stereotype.Repository;
 public class ServicesDAO {
 
   /** Repository dependency used for service persistence operations. */
-  @Autowired
-  private ServicesRepository servicesRepository;
+  @Autowired private ServicesRepository servicesRepository;
 
   /**
    * Finds a service by id with its URLs.
@@ -33,7 +32,8 @@ public class ServicesDAO {
    * @return service representation with URLs
    */
   public ServicesVO findById(Long id) {
-    Optional<ServicesVO> servicesVO = servicesRepository.findByIdWithUrls(id).map(ServicesMapper::toVO);
+    Optional<ServicesVO> servicesVO =
+        servicesRepository.findByIdWithUrls(id).map(ServicesMapper::toVO);
 
     if (servicesVO.isEmpty()) {
       throw new ItemNotFoundException("Service with id " + id + " not found");
@@ -44,7 +44,7 @@ public class ServicesDAO {
 
   /**
    * Finds the service information by id.
-   * 
+   *
    * @param id Service id.
    * @return Service information.
    */
