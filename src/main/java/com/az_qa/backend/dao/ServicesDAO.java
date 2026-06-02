@@ -86,6 +86,7 @@ public class ServicesDAO {
    */
   public void deleteService(Long id) {
     servicesRepository.deleteById(id);
+  }
   public ServicesVO updateService(Long id, ServicesVO serviceVO) {
     ServicesEntity existing =
         servicesRepository
