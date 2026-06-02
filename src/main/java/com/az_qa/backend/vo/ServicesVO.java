@@ -21,6 +21,8 @@ public class ServicesVO {
 
   private String description;
 
+  private Boolean isActive = true;
+
   private List<UrlVO> urls;
 
   public ServicesVO() {}
@@ -29,6 +31,14 @@ public class ServicesVO {
     this.id = id;
     this.name = name;
     this.description = description;
+    this.urls = urls;
+  }
+
+  public ServicesVO(Long id, String name, String description, Boolean isActive, List<UrlVO> urls) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.isActive = isActive;
     this.urls = urls;
   }
 
@@ -56,6 +66,14 @@ public class ServicesVO {
     this.description = description;
   }
 
+  public Boolean getIsActive() {
+    return isActive;
+  }
+
+  public void setIsActive(Boolean isActive) {
+    this.isActive = isActive;
+  }
+
   public List<UrlVO> getUrls() {
     return urls;
   }
@@ -75,6 +93,8 @@ public class ServicesVO {
         + ", description='"
         + description
         + '\''
+        + ", isActive="
+        + isActive
         + ", urls="
         + urls
         + '}';
@@ -91,6 +111,7 @@ public class ServicesVO {
     if (name != null ? !name.equals(that.name) : that.name != null) return false;
     if (description != null ? !description.equals(that.description) : that.description != null)
       return false;
+    if (isActive != null ? !isActive.equals(that.isActive) : that.isActive != null) return false;
     return urls != null ? urls.equals(that.urls) : that.urls == null;
   }
 
@@ -99,6 +120,7 @@ public class ServicesVO {
     int result = id != null ? id.hashCode() : 0;
     result = 31 * result + (name != null ? name.hashCode() : 0);
     result = 31 * result + (description != null ? description.hashCode() : 0);
+    result = 31 * result + (isActive != null ? isActive.hashCode() : 0);
     result = 31 * result + (urls != null ? urls.hashCode() : 0);
     return result;
   }

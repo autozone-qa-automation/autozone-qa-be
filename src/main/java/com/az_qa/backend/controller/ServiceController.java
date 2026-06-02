@@ -9,6 +9,7 @@ package com.az_qa.backend.controller;
 
 import com.az_qa.backend.exception.DuplicatedItemException;
 import com.az_qa.backend.exception.ItemNotFoundException;
+import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.service.ServicesService;
 import com.az_qa.backend.vo.ServicesVO;
 import com.az_qa.backend.vo.UrlVO;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -96,6 +98,16 @@ public class ServiceController {
     } catch (Exception e) {
 
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error");
+    }
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteService(@PathVariable Long id) {
+    try {
+      servicesService.deactivate(id);
+      return ResponseEntity.noContent().build();
+    } catch (ResourceNotFoundException | ItemNotFoundException e) {
+      return ResponseEntity.notFound().build();
     }
   }
 }

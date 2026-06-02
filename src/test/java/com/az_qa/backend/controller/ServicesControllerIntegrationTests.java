@@ -8,7 +8,9 @@
 package com.az_qa.backend.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -95,6 +97,23 @@ public class ServicesControllerIntegrationTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(serviceVO)))
         .andExpect(status().isConflict());
+  }
+
+  @Test
+  @WithMockUser(authorities = "ADMIN")
+  @DisplayName("DELETE /api/v1/services/{id} - Debe desactivar el servicio y devolver 204")
+  public void deleteService_IntegrationSuccess() throws Exception {
+    ServicesEntity testService = new ServicesEntity();
+    testService.setName("Servicio a Desactivar");
+    testService.setDescription("Servicio que se desactivará en integración");
+    testService.setNew(true);
+    testService = servicesRepository.save(testService);
+
+    mockMvc
+        .perform(delete("/api/v1/services/{id}", testService.getId()))
+        .andExpect(status().isNoContent());
+
+    assertTrue(servicesRepository.findByIdAndIsActive(testService.getId(), true).isEmpty());
   }
 
   @Test
