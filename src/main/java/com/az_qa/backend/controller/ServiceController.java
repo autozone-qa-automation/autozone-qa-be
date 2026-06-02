@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class ServiceController {
 
-  @Autowired private ServicesService servicesService;
+  @Autowired
+  private ServicesService servicesService;
 
   @GetMapping
   public ResponseEntity<List<ServicesVO>> getAllServices() {
@@ -66,5 +68,11 @@ public class ServiceController {
       return ResponseEntity.badRequest().build();
     }
     return ResponseEntity.status(HttpStatus.CREATED).body(createdService);
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteService(@PathVariable Long id) {
+    servicesService.deleteService(id);
+    return ResponseEntity.noContent().build();
   }
 }
