@@ -77,6 +77,7 @@ public class ServicesService {
    */
   public void deleteService(Long id) {
     servicesDAO.deleteService(id);
+  }
   @Transactional
   public ServicesVO updateService(Long id, ServicesVO serviceVO) {
     if (serviceVO.getName() == null || serviceVO.getName().isBlank()) {
