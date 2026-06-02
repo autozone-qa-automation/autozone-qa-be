@@ -7,6 +7,8 @@
 
 package com.az_qa.backend.controller;
 
+import com.az_qa.backend.exception.DuplicatedItemException;
+import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.service.ServicesService;
 import com.az_qa.backend.vo.ServicesVO;
 import com.az_qa.backend.vo.UrlVO;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class ServiceController {
 
-  @Autowired private ServicesService servicesService;
+  @Autowired
+  private ServicesService servicesService;
 
   @GetMapping
   public ResponseEntity<List<ServicesVO>> getAllServices() {

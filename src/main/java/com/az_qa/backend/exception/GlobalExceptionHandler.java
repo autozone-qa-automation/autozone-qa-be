@@ -17,8 +17,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 /**
  * Global exception handler for all controllers.
  *
- * <p>Intercepts exceptions thrown anywhere in the application and maps them
- * to structured {@link ErrorResponse} objects with the appropriate HTTP status.</p>
+ * <p>
+ * Intercepts exceptions thrown anywhere in the application and maps them
+ * to structured {@link ErrorResponse} objects with the appropriate HTTP status.
+ * </p>
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -73,58 +75,63 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles {@link MethodArgumentNotValidException}, triggered when {@code @Valid}
+   * Handles {@link MethodArgumentNotValidException}, triggered when
+   * {@code @Valid}
    * fails on a {@code @RequestBody} field.
    *
-   * <p>Collects all field errors and joins them into a single message,
-   * e.g. {@code "email: must not be blank, name: size must be between 2 and 50"}.</p>
+   * <p>
+   * Collects all field errors and joins them into a single message,
+   * e.g. {@code "email: must not be blank, name: size must be between 2 and 50"}.
+   * </p>
    *
    * @param ex the validation exception from Spring
    * @return 400 with a comma-separated list of field violations
    */
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
-    String message =
-        ex.getBindingResult().getFieldErrors().stream()
-            .map(e -> e.getField() + ": " + e.getDefaultMessage())
-            .collect(Collectors.joining(", "));
+    String message = ex.getBindingResult().getFieldErrors().stream()
+        .map(e -> e.getField() + ": " + e.getDefaultMessage())
+        .collect(Collectors.joining(", "));
 
     ErrorResponse error = new ErrorResponse(400, message, LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
 
   /**
-   * Handles {@link ConstraintViolationException}, triggered when constraint annotations
+   * Handles {@link ConstraintViolationException}, triggered when constraint
+   * annotations
    * such as {@code @Positive} or {@code @Min} fail on a {@code @PathVariable}
    * or {@code @RequestParam}.
    *
-   * <p>Requires {@code @Validated} on the controller class to activate.</p>
+   * <p>
+   * Requires {@code @Validated} on the controller class to activate.
+   * </p>
    *
    * @param ex the constraint violation exception
    * @return 400 with a comma-separated list of constraint violations
    */
   @ExceptionHandler(ConstraintViolationException.class)
   public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException ex) {
-    String message =
-        ex.getConstraintViolations().stream()
-            .map(v -> v.getPropertyPath() + ": " + v.getMessage())
-            .collect(Collectors.joining(", "));
+    String message = ex.getConstraintViolations().stream()
+        .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+        .collect(Collectors.joining(", "));
 
     ErrorResponse error = new ErrorResponse(400, message, LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
 
   /**
-   * Handles {@link HttpMessageNotReadableException}, triggered when the request body
-   * is malformed or contains a wrong type (e.g. {@code "abc"} where a number was expected).
+   * Handles {@link HttpMessageNotReadableException}, triggered when the request
+   * body
+   * is malformed or contains a wrong type (e.g. {@code "abc"} where a number was
+   * expected).
    *
    * @param ex the unreadable message exception
    * @return 400 with a generic malformed body message
    */
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ErrorResponse> handleUnreadable(HttpMessageNotReadableException ex) {
-    ErrorResponse error =
-        new ErrorResponse(400, "Invalid or malformed request body", LocalDateTime.now());
+    ErrorResponse error = new ErrorResponse(400, "Invalid or malformed request body", LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
 
@@ -143,7 +150,9 @@ public class GlobalExceptionHandler {
   /**
    * Fallback handler for any exception not explicitly handled above.
    *
-   * <p>Prevents internal error details from leaking to the client.</p>
+   * <p>
+   * Prevents internal error details from leaking to the client.
+   * </p>
    *
    * @param ex the unhandled exception
    * @return 500 with a generic error message
@@ -151,13 +160,13 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
     System.out.println("EXCEPCION: " + ex.getClass().getName());
-    ErrorResponse error =
-        new ErrorResponse(500, "An unexpected error occurred", LocalDateTime.now());
+    ErrorResponse error = new ErrorResponse(500, "An unexpected error occurred", LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
   }
 
   /**
-   * Handles {@link HandlerMethodValidationException}, triggered in Spring Boot 3.2+
+   * Handles {@link HandlerMethodValidationException}, triggered in Spring Boot
+   * 3.2+
    * when constraint annotations such as {@code @Positive} fail on
    * a {@code @PathVariable} or {@code @RequestParam}.
    *
@@ -167,11 +176,10 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(HandlerMethodValidationException.class)
   public ResponseEntity<ErrorResponse> handleMethodValidation(HandlerMethodValidationException ex) {
 
-    String message =
-        ex.getParameterValidationResults().stream()
-            .flatMap(r -> r.getResolvableErrors().stream())
-            .map(MessageSourceResolvable::getDefaultMessage)
-            .collect(Collectors.joining(", "));
+    String message = ex.getParameterValidationResults().stream()
+        .flatMap(r -> r.getResolvableErrors().stream())
+        .map(MessageSourceResolvable::getDefaultMessage)
+        .collect(Collectors.joining(", "));
 
     ErrorResponse error = new ErrorResponse(400, message, LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
@@ -191,6 +199,20 @@ public class GlobalExceptionHandler {
     String message = "Invalid value '" + ex.getValue() + "' for parameter '" + ex.getName() + "'";
 
     ErrorResponse error = new ErrorResponse(400, message, LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+  }
+
+  /**
+   * Handles {@link org.apache.coyote.BadRequestException} used in services to
+   * indicate
+   * business-level bad requests (e.g., invalid state transitions).
+   *
+   * @param ex the bad request exception
+   * @return 400 with structured error body
+   */
+  @ExceptionHandler(org.apache.coyote.BadRequestException.class)
+  public ResponseEntity<ErrorResponse> handleBadRequest(org.apache.coyote.BadRequestException ex) {
+    ErrorResponse error = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
 }

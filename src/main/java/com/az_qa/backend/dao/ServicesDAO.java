@@ -7,10 +7,13 @@
 
 package com.az_qa.backend.dao;
 
+import com.az_qa.backend.entity.ServicesEntity;
+import com.az_qa.backend.entity.UrlEntity;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.mapper.ServicesMapper;
 import com.az_qa.backend.repository.ServicesRepository;
 import com.az_qa.backend.vo.ServicesVO;
+import com.az_qa.backend.vo.UrlVO;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +26,8 @@ import org.springframework.stereotype.Repository;
 public class ServicesDAO {
 
   /** Repository dependency used for service persistence operations. */
-  @Autowired private ServicesRepository servicesRepository;
+  @Autowired
+  private ServicesRepository servicesRepository;
 
   /**
    * Finds a service by id with its URLs.
@@ -32,8 +36,7 @@ public class ServicesDAO {
    * @return service representation with URLs
    */
   public ServicesVO findById(Long id) {
-    Optional<ServicesVO> servicesVO =
-        servicesRepository.findByIdWithUrls(id).map(ServicesMapper::toVO);
+    Optional<ServicesVO> servicesVO = servicesRepository.findByIdWithUrls(id).map(ServicesMapper::toVO);
 
     if (servicesVO.isEmpty()) {
       throw new ItemNotFoundException("Service with id " + id + " not found");

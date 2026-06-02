@@ -19,35 +19,35 @@ import java.util.stream.Collectors;
  */
 public class ReleaseMapper {
 
-  private ReleaseMapper() {}
+  private ReleaseMapper() {
+  }
 
   /**
    * Converts a release entity into a release value object.
    *
    * @param entity the release entity to convert
-   * @return the matching release value object, or {@code null} when the input is {@code null}
+   * @return the matching release value object, or {@code null} when the input is
+   *         {@code null}
    */
   public static com.az_qa.backend.vo.ReleaseVO toVO(com.az_qa.backend.entity.ReleaseEntity entity) {
     if (entity == null) {
       return null;
     }
 
-    List<com.az_qa.backend.vo.FeatureVO> features =
-        entity.getFeatures() == null
-            ? List.of()
-            : entity.getFeatures().stream()
-                .map(ReleasedFeaturesEntity::getFeature)
-                .filter(java.util.Objects::nonNull)
-                .map(com.az_qa.backend.mapper.FeatureMapper::toVO)
-                .toList();
+    List<com.az_qa.backend.vo.FeatureVO> features = entity.getFeatures() == null
+        ? List.of()
+        : entity.getFeatures().stream()
+            .map(ReleasedFeaturesEntity::getFeature)
+            .filter(java.util.Objects::nonNull)
+            .map(com.az_qa.backend.mapper.FeatureMapper::toVO)
+            .toList();
 
-    List<String> tags =
-        entity.getReleaseTags() == null
-            ? List.of()
-            : Arrays.stream(entity.getReleaseTags().split(","))
-                .map(String::trim)
-                .filter(tag -> !tag.isEmpty())
-                .toList();
+    List<String> tags = entity.getReleaseTags() == null
+        ? List.of()
+        : Arrays.stream(entity.getReleaseTags().split(","))
+            .map(String::trim)
+            .filter(tag -> !tag.isEmpty())
+            .toList();
 
     return new com.az_qa.backend.vo.ReleaseVO(
         entity.getReleaseId(),
@@ -58,6 +58,7 @@ public class ReleaseMapper {
         entity.getReleaseVersion(),
         tags,
         entity.getReleaseStatus(),
+        entity.getReleaseIsActive(),
         entity.getReleaseServices(),
         entity.getReleaseServiceIds().stream().findFirst().orElse(null),
         entity.getReleaseFeatureIds(),
@@ -68,7 +69,8 @@ public class ReleaseMapper {
    * Converts a release value object into a release entity.
    *
    * @param vo the release value object to convert
-   * @return the matching release entity, or {@code null} when the input is {@code null}
+   * @return the matching release entity, or {@code null} when the input is
+   *         {@code null}
    */
   public static com.az_qa.backend.entity.ReleaseEntity toEntity(com.az_qa.backend.vo.ReleaseVO vo) {
     if (vo == null) {
@@ -82,6 +84,7 @@ public class ReleaseMapper {
     entity.setReleaseCreationDate(vo.getReleaseCreationDate());
     entity.setReleaseLaunchDate(vo.getReleaseLaunchDate());
     entity.setReleaseVersion(vo.getReleaseVersion());
+    entity.setReleaseIsActive(vo.getReleaseIsActive());
     entity.setReleaseTags(
         vo.getReleaseTags() == null
             ? null

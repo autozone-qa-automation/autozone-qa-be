@@ -26,16 +26,15 @@ public class UserManagementConfig {
 
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
-    return web ->
-        web.ignoring()
-            .requestMatchers(
-                "/docs",
-                "/docs/**",
-                "/v3/api-docs",
-                "/v3/api-docs/**",
-                "/swagger-ui",
-                "/swagger-ui/**",
-                "/swagger-ui.html");
+    return web -> web.ignoring()
+        .requestMatchers(
+            "/docs",
+            "/docs/**",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-ui",
+            "/swagger-ui/**",
+            "/swagger-ui.html");
   }
 
   @Bean // frijol magico madre mia
@@ -49,23 +48,26 @@ public class UserManagementConfig {
     http.csrf(csrf -> csrf.disable());
 
     http.authorizeHttpRequests(
-            c ->
-                c.requestMatchers("/api/v1/authentify")
-                    .permitAll()
-                    // MODIFICAR CAMINOS Y PERMISOS SEGUN NECESIDAD
+        c -> c.requestMatchers("/api/v1/authentify")
+            .permitAll()
+            // MODIFICAR CAMINOS Y PERMISOS SEGUN NECESIDAD
 
-                    .requestMatchers("/api/v1/test-cases/1")
-                    .hasAuthority("ADMIN")
-                    .requestMatchers("/api/v1/test-cases")
-                    .hasAuthority("ADMIN")
-                    .requestMatchers("/api/v1/test-cases")
-                    .hasAuthority("READ_ONLY")
-                    .anyRequest()
-                    .authenticated())
-        // no queremos crear una sesion que se conserver entre una llamada a la api y otra, ergo:
+            .requestMatchers("/api/v1/test-cases/1")
+            .hasAuthority("ADMIN")
+            .requestMatchers("/api/v1/test-cases")
+            .hasAuthority("ADMIN")
+            .requestMatchers("/api/v1/test-cases")
+            .hasAuthority("READ_ONLY")
+            .requestMatchers("/api/v1/services/**")
+            .hasAuthority("ADMIN")
+            .anyRequest()
+            .authenticated())
+        // no queremos crear una sesion que se conserver entre una llamada a la api y
+        // otra, ergo:
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        // agregamos el filtro JwtFilter a la cadena de filtros de nuestras peticiones a la api!!!
+        // agregamos el filtro JwtFilter a la cadena de filtros de nuestras peticiones a
+        // la api!!!
         // Asi debes logearte afuerzas
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

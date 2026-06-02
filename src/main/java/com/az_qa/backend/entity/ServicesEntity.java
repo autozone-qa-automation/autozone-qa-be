@@ -50,16 +50,18 @@ public class ServicesEntity implements Serializable, Persistable<Long> {
   private String description;
 
   /** URLs associated with this service. */
-  @OneToMany(mappedBy = "servicio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "servicio", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<UrlEntity> urls;
 
   /** Entity new-state flag used by Spring Data persistence semantics. */
-  @Transient private boolean isNew = false;
+  @Transient
+  private boolean isNew = false;
 
   /**
    * Creates an empty service entity.
    */
-  public ServicesEntity() {}
+  public ServicesEntity() {
+  }
 
   /**
    * Creates a service entity with all supported fields.
@@ -175,13 +177,17 @@ public class ServicesEntity implements Serializable, Persistable<Long> {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
 
     ServicesEntity that = (ServicesEntity) o;
 
-    if (id != null ? !id.equals(that.id) : that.id != null) return false;
-    if (name != null ? !name.equals(that.name) : that.name != null) return false;
+    if (id != null ? !id.equals(that.id) : that.id != null)
+      return false;
+    if (name != null ? !name.equals(that.name) : that.name != null)
+      return false;
     return description != null ? description.equals(that.description) : that.description == null;
   }
 

@@ -71,9 +71,14 @@ public class ReleaseEntity {
   @Column(name = "release_status", nullable = false)
   private ReleaseStatus releaseStatus;
 
-  @Transient private boolean isNew;
+  @Column(name = "isActive", nullable = false)
+  private boolean isActive;
 
-  public ReleaseEntity() {}
+  @Transient
+  private boolean isNew;
+
+  public ReleaseEntity() {
+  }
 
   /**
    * Constructs a new {@code ReleaseEntity} with the specified values.
@@ -85,6 +90,7 @@ public class ReleaseEntity {
    * @param releaseVersion      the release version
    * @param releaseTags         optional release tags
    * @param releaseStatus       the release status
+   * @param isActive            indicates whether the release is active
    */
   public ReleaseEntity(
       String releaseName,
@@ -93,7 +99,8 @@ public class ReleaseEntity {
       LocalDate releaseLaunchDate,
       String releaseVersion,
       String releaseTags,
-      ReleaseStatus releaseStatus) {
+      ReleaseStatus releaseStatus,
+      boolean isActive) {
     this.releaseName = releaseName;
     this.releaseDescription = releaseDescription;
     this.releaseCreationDate = releaseCreationDate;
@@ -101,6 +108,7 @@ public class ReleaseEntity {
     this.releaseVersion = releaseVersion;
     this.releaseTags = releaseTags;
     this.releaseStatus = releaseStatus;
+    this.isActive = isActive;
   }
 
   public Long getReleaseId() {
@@ -189,6 +197,14 @@ public class ReleaseEntity {
     this.releaseStatus = releaseStatus;
   }
 
+  public boolean getReleaseIsActive() {
+    return isActive;
+  }
+
+  public void setReleaseIsActive(boolean isActive) {
+    this.isActive = isActive;
+  }
+
   public String getReleaseService() {
     if (features == null) {
       return null;
@@ -263,8 +279,10 @@ public class ReleaseEntity {
    */
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
     ReleaseEntity that = (ReleaseEntity) o;
     return Objects.equals(releaseId, that.releaseId)
         && Objects.equals(releaseName, that.releaseName)

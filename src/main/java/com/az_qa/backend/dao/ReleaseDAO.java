@@ -15,6 +15,7 @@ import com.az_qa.backend.vo.ReleaseVO;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -27,7 +28,8 @@ public class ReleaseDAO {
   /**
    * Repository dependency used for movie persistence operations.
    */
-  @Autowired private ReleaseRepository releaseRepository;
+  @Autowired
+  private ReleaseRepository releaseRepository;
 
   /**
    * Retrieves a release by its ID.
@@ -50,25 +52,35 @@ public class ReleaseDAO {
    * Finds releases based on filter criteria.
    *
    * @param releaseStatus the status to filter by
-   * @param releaseTags the tags to filter by
+   * @param releaseTags   the tags to filter by
    * @return a list of filtered releases
    */
   public List<ReleaseVO> findFiltered(String releaseStatus, String releaseTags) {
     return releaseRepository.findAll().stream()
         .filter(
             release -> {
-              boolean matchesStatus =
-                  (releaseStatus == null
-                      || release.getReleaseStatus().name().equalsIgnoreCase(releaseStatus));
-              boolean matchesTags =
-                  (releaseTags == null
-                      || release.getReleaseTags() != null
-                          && release
-                              .getReleaseTags()
-                              .toLowerCase()
-                              .contains(releaseTags.toLowerCase()));
-              return matchesStatus && matchesTags;
+              boolean matchesStatus = (releaseStatus == null
+                  || release.getReleaseStatus().name().equalsIgnoreCase(releaseStatus));
+              boolean matchesTags = (releaseTags == null
+                  || release.getReleaseTags() != null
+                      && release
+                          .getReleaseTags()
+                          .toLowerCase()
+                          .contains(releaseTags.toLowerCase()));
+              boolean isActive = release.getReleaseIsActive();
+              return matchesStatus && matchesTags && isActive;
             })
+        .map(ReleaseMapper::toVO)
+        .toList();
+  }
+
+  public List<ReleaseVO> findLast(Long serviceId) {
+    if (serviceId != null) {
+      return releaseRepository.findTop5ByServiceId(serviceId, PageRequest.of(0, 5)).stream()
+          .map(ReleaseMapper::toVO)
+          .toList();
+    }
+    return releaseRepository.findTop5ByOrderByReleaseCreationDateDesc().stream()
         .map(ReleaseMapper::toVO)
         .toList();
   }
@@ -104,7 +116,7 @@ public class ReleaseDAO {
    *
    * @param id the ID of the release to delete
    */
-  public void deleteById(Long id) {
-    releaseRepository.deleteById(id);
+  public void deleteReleaseById(Long id) {
+    releaseRepository.deleteReleaseById(id);
   }
 }

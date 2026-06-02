@@ -28,9 +28,11 @@ public class TestCasesDAO {
   /**
    * Repository dependency used for test case persistence operations.
    */
-  @Autowired private TestCasesRepository repository;
+  @Autowired
+  private TestCasesRepository repository;
 
-  @Autowired private FeaturesRepository featuresRepository;
+  @Autowired
+  private FeaturesRepository featuresRepository;
 
   // @Autowired private final TestCasesMapper mapper;
 
@@ -49,9 +51,8 @@ public class TestCasesDAO {
           featuresRepository
               .findById(testcaseVO.getFeatureId())
               .orElseThrow(
-                  () ->
-                      new ItemNotFoundException(
-                          "Feature with id {" + entity.getFeature().getId() + "} not found.")));
+                  () -> new ItemNotFoundException(
+                      "Feature with id {" + entity.getFeature().getId() + "} not found.")));
     }
 
     entity.setNew(true);
@@ -76,12 +77,11 @@ public class TestCasesDAO {
 
   @Transactional
   public void deactivate(Long id) {
-    TestCasesEntity entity =
-        repository
-            .findByIdAndIsActive(id, true)
-            .orElseThrow(() -> new ItemNotFoundException("TestCase not found with id: " + id));
-    entity.setIsActive(false);
-    repository.save(entity);
+    int updatedRows = repository.deactivateById(id);
+
+    if (updatedRows == 0) {
+      throw new ItemNotFoundException("TestCase not found with id: " + id);
+    }
   }
 
   public List<TestCaseVO> findByFeature(Long featureId) {
@@ -107,9 +107,8 @@ public class TestCasesDAO {
 
     List<Long> featureIds = entities.stream().map(e -> e.getFeature().getId()).distinct().toList();
 
-    Map<Long, String> featureNames =
-        featuresRepository.findAllById(featureIds).stream()
-            .collect(Collectors.toMap(f -> f.getId(), f -> f.getName()));
+    Map<Long, String> featureNames = featuresRepository.findAllById(featureIds).stream()
+        .collect(Collectors.toMap(f -> f.getId(), f -> f.getName()));
 
     return entities.stream()
         .map(
