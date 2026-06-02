@@ -15,7 +15,6 @@ import com.az_qa.backend.repository.FeaturesRepository;
 import com.az_qa.backend.repository.ServicesRepository;
 import com.az_qa.backend.vo.FeatureVO;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -33,12 +32,11 @@ public class FeatureDAO {
    * @return optional Feature representation.
    */
   public FeatureVO getFeatureById(Long id) {
-    Optional<FeatureVO> featureVO = featuresRepository.findById(id).map(FeatureMapper::toVO);
-
-    if (featureVO.isEmpty()) {
-      throw new ItemNotFoundException("Feature with id {" + id + "} not found.");
-    }
-    return featureVO.get();
+    return featuresRepository
+        .findById(id)
+        .filter(FeatureEntity::isActive)
+        .map(FeatureMapper::toVO)
+        .orElseThrow(() -> new ItemNotFoundException("Feature with id {" + id + "} not found."));
   }
 
   /**
@@ -50,6 +48,7 @@ public class FeatureDAO {
   public List<FeatureVO> getFeaturesByServiceId(Long id) {
     List<FeatureVO> featureVO =
         featuresRepository.findByServiceId(id).stream()
+            .filter(FeatureEntity::isActive)
             .map(FeatureMapper::toVO)
             .collect(Collectors.toList());
 
@@ -65,7 +64,10 @@ public class FeatureDAO {
    * @return list of all the features found.
    */
   public java.util.List<FeatureVO> getAllFeatures() {
-    return featuresRepository.findAll().stream().map(FeatureMapper::toVO).toList();
+    return featuresRepository.findAll().stream()
+        .filter(FeatureEntity::isActive)
+        .map(FeatureMapper::toVO)
+        .toList();
   }
 
   public FeatureVO createFeature(FeatureVO featureVO) {
