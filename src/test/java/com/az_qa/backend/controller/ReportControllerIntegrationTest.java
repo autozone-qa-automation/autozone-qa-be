@@ -180,14 +180,27 @@ public class ReportControllerIntegrationTest {
   @WithMockUser
   @DisplayName("GET /api/v1/reports/export - Debe retornar 200 y el archivo CSV en el body")
   public void exportReportsCsv_Returns200WithCsv() throws Exception {
+    // NOTA: Si esta clase usa @MockBean para el 'reportService', descomenta las
+    // siguientes 3 líneas:
+    // byte[] mockCsv = "Versión del release;Nombre del release\n1.0.0;Test
+    // Release".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    // Mockito.when(reportService.exportReportsCsvByIds(Mockito.anyList()))
+    // .thenReturn(mockCsv);
+
     mockMvc
-        .perform(get("/api/v1/reports/export"))
+        .perform(
+            get("/api/v1/reports/export")
+                .param(
+                    "releaseIds",
+                    "1,2,3")) // 1. ¡Arreglado! Enviamos los IDs requeridos por el endpoint
         .andExpect(status().isOk())
         .andExpect(
             header()
                 .string(
                     HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reportes_releases.csv"))
         .andExpect(header().string(HttpHeaders.CONTENT_TYPE, "text/csv; charset=UTF-8"))
+        // 2. Usamos string(containsString(...)) para evaluar el contenido sin problemas
+        // con el BOM
         .andExpect(content().string(containsString("Versión del release;Nombre del release")));
   }
 }

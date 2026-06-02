@@ -114,21 +114,25 @@ public class ReportService {
   }
 
   /**
-   * Genera el contenido de un archivo CSV basado en los reportes filtrados.
+   * Genera el contenido de un archivo CSV basado exclusivamente en una lista de
+   * IDs de releases.
    * Las columnas mapean directamente a las especificaciones del SRS (Página 15).
    *
-   * @param serviceId ID del servicio
-   * @param startDate Límite inferior para releaseLaunchDate
-   * @param endDate   Límite superior para releaseLaunchDate
-   * @param tagName   Tag a buscar
+   * @param releaseIds Lista de IDs de los releases a exportar
    * @return Un arreglo de bytes que representa el archivo CSV (codificado en
    *         UTF-8 con BOM)
    */
   @Transactional(readOnly = true)
-  public byte[] exportReportsCsv(
-      Long serviceId, LocalDate startDate, LocalDate endDate, String tagName) {
+  public byte[] exportReportsCsvByIds(List<Long> releaseIds) {
+    if (releaseIds == null || releaseIds.isEmpty()) {
+      return new byte[0]; // O podrías lanzar una excepción de negocio si lo prefieres
+    }
 
-    List<ReportReleaseVO> reports = getReports(serviceId, startDate, endDate, tagName);
+    // Obtenemos las entidades directamente por ID y las transformamos a VO usando
+    // la lógica existente
+    List<ReportReleaseVO> reports =
+        releaseRepository.findAllById(releaseIds).stream().map(this::toReportVO).toList();
+
     StringBuilder csv = new StringBuilder();
 
     // Headers exactos usando punto y coma (;)
@@ -199,7 +203,6 @@ public class ReportService {
     }
 
     // Añadir BOM (Byte Order Mark) para compatibilidad nativa con Excel
-    // (reconocimiento de acentos)
     byte[] utf8Bom = new byte[] {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
     byte[] csvBytes = csv.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8);
     byte[] result = new byte[utf8Bom.length + csvBytes.length];

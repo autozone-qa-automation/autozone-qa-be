@@ -64,19 +64,17 @@ public class ReportController {
   }
 
   /**
-   * Exporta la lista filtrada de releases en formato CSV.
+   * Exporta una lista específica de releases en formato CSV basada en sus IDs.
    * Basado en el requerimiento de descarga de reportes del SRS (Página 15).
    *
-   * @param serviceId ID del servicio para filtrar
-   * @param startDate Límite inferior para la fecha de lanzamiento (ISO-8601)
-   * @param endDate   Límite superior para la fecha de lanzamiento (ISO-8601)
-   * @param tagName   Subcadena para filtrar por tags del release
+   * @param releaseIds Lista de IDs de los releases a exportar
    * @return 200 OK con el archivo CSV adjunto para su descarga
    */
   @Operation(
-      summary = "Exportar reportes a CSV",
+      summary = "Exportar reportes a CSV por IDs",
       description =
-          "Genera y descarga un archivo CSV con los releases correspondientes a los filtros.")
+          "Genera y descarga un archivo CSV conteniendo exclusivamente los releases cuyos IDs son"
+              + " proporcionados.")
   @ApiResponses(
       value = {
         @ApiResponse(
@@ -85,15 +83,9 @@ public class ReportController {
             content = @Content(mediaType = "text/csv"))
       })
   @GetMapping(value = "/export", produces = "text/csv")
-  public ResponseEntity<byte[]> exportReportsCsv(
-      @RequestParam(required = false) Long serviceId,
-      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-          LocalDate startDate,
-      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-          LocalDate endDate,
-      @RequestParam(required = false) String tagName) {
+  public ResponseEntity<byte[]> exportReportsCsv(@RequestParam List<Long> releaseIds) {
 
-    byte[] csvData = reportService.exportReportsCsv(serviceId, startDate, endDate, tagName);
+    byte[] csvData = reportService.exportReportsCsvByIds(releaseIds);
 
     HttpHeaders headers = new HttpHeaders();
     headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reportes_releases.csv");
