@@ -27,7 +27,8 @@ import org.springframework.stereotype.Repository;
 public class ServicesDAO {
 
   /** Repository dependency used for service persistence operations. */
-  @Autowired private ServicesRepository servicesRepository;
+  @Autowired
+  private ServicesRepository servicesRepository;
 
   /**
    * Finds a service by id with its URLs.
@@ -36,8 +37,7 @@ public class ServicesDAO {
    * @return service representation with URLs
    */
   public ServicesVO findById(Long id) {
-    Optional<ServicesVO> servicesVO =
-        servicesRepository.findByIdWithUrls(id).map(ServicesMapper::toVO);
+    Optional<ServicesVO> servicesVO = servicesRepository.findByIdWithUrls(id).map(ServicesMapper::toVO);
 
     if (servicesVO.isEmpty()) {
       throw new ItemNotFoundException("Service with id " + id + " not found");
@@ -48,12 +48,12 @@ public class ServicesDAO {
 
   /**
    * Finds the service information by id.
+   * 
    * @param id Service id.
    * @return Service information.
    */
   public ServicesVO findServiceById(Long id) {
-    Optional<ServicesVO> servicesVO =
-        servicesRepository.findByIdAndIsActive(id, true).map(ServicesMapper::toVO);
+    Optional<ServicesVO> servicesVO = servicesRepository.findByIdAndIsActive(id, true).map(ServicesMapper::toVO);
 
     if (servicesVO.isEmpty()) {
       throw new ItemNotFoundException("Service with id " + id + " not found");
@@ -80,20 +80,27 @@ public class ServicesDAO {
     return ServicesMapper.toVO(servicesRepository.save(ServicesMapper.serviceToEntity(serviceVO)));
   }
 
+  /**
+   * Deletes a service by its identifier.
+   *
+   * @param id the identifier of the service to delete
+   */
+  public void deleteService(Long id) {
+    servicesRepository.deleteById(id);
+  }
+
   public void deactivate(Long id) {
-    ServicesEntity entity =
-        servicesRepository
-            .findByIdAndIsActive(id, true)
-            .orElseThrow(() -> new ResourceNotFoundException("Service not found with id: " + id));
+    ServicesEntity entity = servicesRepository
+        .findByIdAndIsActive(id, true)
+        .orElseThrow(() -> new ResourceNotFoundException("Service not found with id: " + id));
     entity.setIsActive(false);
     servicesRepository.save(entity);
   }
 
   public ServicesVO updateService(Long id, ServicesVO serviceVO) {
-    ServicesEntity existing =
-        servicesRepository
-            .findByIdWithUrls(id)
-            .orElseThrow(() -> new ItemNotFoundException("Service with id " + id + " not found"));
+    ServicesEntity existing = servicesRepository
+        .findByIdWithUrls(id)
+        .orElseThrow(() -> new ItemNotFoundException("Service with id " + id + " not found"));
 
     existing.setName(serviceVO.getName());
     existing.setDescription(serviceVO.getDescription());
@@ -111,14 +118,12 @@ public class ServicesDAO {
         // SI YA EXISTE -> UPDATE
         if (urlVO.getIdUrl() != null) {
 
-          UrlEntity existingUrl =
-              existing.getUrls().stream()
-                  .filter(u -> u.getIdUrl().equals(urlVO.getIdUrl()))
-                  .findFirst()
-                  .orElseThrow(
-                      () ->
-                          new ItemNotFoundException(
-                              "URL with id " + urlVO.getIdUrl() + " not found"));
+          UrlEntity existingUrl = existing.getUrls().stream()
+              .filter(u -> u.getIdUrl().equals(urlVO.getIdUrl()))
+              .findFirst()
+              .orElseThrow(
+                  () -> new ItemNotFoundException(
+                      "URL with id " + urlVO.getIdUrl() + " not found"));
 
           existingUrl.setNombre(urlVO.getNombre());
           existingUrl.setUrl(urlVO.getUrl());
