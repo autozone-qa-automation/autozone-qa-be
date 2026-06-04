@@ -30,9 +30,11 @@ import org.springframework.http.ResponseEntity;
 @ExtendWith(MockitoExtension.class)
 public class ServicesControllerTest {
 
-  @Mock private ServicesService servicesService;
+  @Mock
+  private ServicesService servicesService;
 
-  @InjectMocks private ServiceController servicesController;
+  @InjectMocks
+  private ServiceController servicesController;
 
   private ServicesVO serviceStub;
 
@@ -109,7 +111,7 @@ public class ServicesControllerTest {
   public void deleteService_ReturnsNotFound_WhenServiceMissing() {
     doThrow(new ResourceNotFoundException("Service not found"))
         .when(servicesService)
-        .deactivate(any(Long.class));
+        .deleteService(any(Long.class));
 
     ResponseEntity<Void> response = servicesController.deleteService(1L);
 
