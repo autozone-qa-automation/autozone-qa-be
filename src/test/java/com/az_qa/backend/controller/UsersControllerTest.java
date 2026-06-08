@@ -9,22 +9,22 @@ package com.az_qa.backend.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import com.az_qa.backend.service.UsersService;
 import com.az_qa.backend.vo.UpdateUserVO;
 import com.az_qa.backend.vo.UserVO;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
 public class UsersControllerTest {
@@ -59,8 +59,7 @@ public class UsersControllerTest {
     updatedUser.setLastName("Doe");
     updatedUser.setEmail("john.updated@example.com");
 
-    when(usersService.update(any(Long.class), any(UpdateUserVO.class)))
-        .thenReturn(updatedUser);
+    when(usersService.update(any(Long.class), any(UpdateUserVO.class))).thenReturn(updatedUser);
 
     ResponseEntity<UserVO> response = usersController.updates(1L, updateStub);
 
@@ -74,8 +73,7 @@ public class UsersControllerTest {
   @Test
   @DisplayName("updates: Must return 400 Bad Request when the service returns null")
   public void updates_ReturnsBadRequest() {
-    when(usersService.update(any(Long.class), any(UpdateUserVO.class)))
-        .thenReturn(null);
+    when(usersService.update(any(Long.class), any(UpdateUserVO.class))).thenReturn(null);
 
     ResponseEntity<UserVO> response = usersController.updates(1L, updateStub);
 
