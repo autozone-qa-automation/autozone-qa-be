@@ -30,11 +30,9 @@ import org.springframework.http.ResponseEntity;
 @ExtendWith(MockitoExtension.class)
 public class ServicesControllerTest {
 
-  @Mock
-  private ServicesService servicesService;
+  @Mock private ServicesService servicesService;
 
-  @InjectMocks
-  private ServiceController servicesController;
+  @InjectMocks private ServiceController servicesController;
 
   private ServicesVO serviceStub;
 
