@@ -91,4 +91,13 @@ public class ServicesService {
 
     return servicesDAO.updateService(id, serviceVO);
   }
+
+  /**
+   * Deactivates a service by marking it inactive.
+   *
+   * @param id service identifier
+   */
+  public void deleteService(Long id) {
+    servicesDAO.deleteService(id);
+  }
 }

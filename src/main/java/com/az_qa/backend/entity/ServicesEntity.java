@@ -49,6 +49,10 @@ public class ServicesEntity implements Serializable, Persistable<Long> {
   @Column(name = "description")
   private String description;
 
+  /** Indicates whether the service is active and should be shown in the frontend. */
+  @Column(name = "isActive", nullable = false)
+  private Boolean isActive = true;
+
   /** URLs associated with this service. */
   @OneToMany(
       mappedBy = "servicio",
@@ -160,6 +164,24 @@ public class ServicesEntity implements Serializable, Persistable<Long> {
   }
 
   /**
+   * Returns whether the service is active.
+   *
+   * @return active flag
+   */
+  public Boolean getIsActive() {
+    return isActive;
+  }
+
+  /**
+   * Sets the active flag for the service.
+   *
+   * @param isActive active flag
+   */
+  public void setIsActive(Boolean isActive) {
+    this.isActive = isActive;
+  }
+
+  /**
    * Returns the URLs associated with this service.
    *
    * @return list of URLs
@@ -186,7 +208,9 @@ public class ServicesEntity implements Serializable, Persistable<Long> {
 
     if (id != null ? !id.equals(that.id) : that.id != null) return false;
     if (name != null ? !name.equals(that.name) : that.name != null) return false;
-    return description != null ? description.equals(that.description) : that.description == null;
+    if (description != null ? !description.equals(that.description) : that.description != null)
+      return false;
+    return isActive != null ? isActive.equals(that.isActive) : that.isActive == null;
   }
 
   @Override
@@ -194,6 +218,7 @@ public class ServicesEntity implements Serializable, Persistable<Long> {
     int result = id != null ? id.hashCode() : 0;
     result = 31 * result + (name != null ? name.hashCode() : 0);
     result = 31 * result + (description != null ? description.hashCode() : 0);
+    result = 31 * result + (isActive != null ? isActive.hashCode() : 0);
     return result;
   }
 
@@ -208,6 +233,8 @@ public class ServicesEntity implements Serializable, Persistable<Long> {
         + ", description='"
         + description
         + '\''
+        + ", isActive="
+        + isActive
         + '}';
   }
 }
