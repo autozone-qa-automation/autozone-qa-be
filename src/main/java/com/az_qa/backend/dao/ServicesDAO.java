@@ -48,6 +48,7 @@ public class ServicesDAO {
 
   /**
    * Finds the service information by id.
+   *
    * @param id Service id.
    * @return Service information.
    */
@@ -80,12 +81,19 @@ public class ServicesDAO {
     return ServicesMapper.toVO(servicesRepository.save(ServicesMapper.serviceToEntity(serviceVO)));
   }
 
-  public void deactivate(Long id) {
+  /**
+   * Deletes a service by its identifier.
+   *
+   * @param id the identifier of the service to delete
+   */
+  public void deleteService(Long id) {
     ServicesEntity entity =
         servicesRepository
             .findByIdAndIsActive(id, true)
             .orElseThrow(() -> new ResourceNotFoundException("Service not found with id: " + id));
+
     entity.setIsActive(false);
+
     servicesRepository.save(entity);
   }
 

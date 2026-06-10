@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.az_qa.backend.exception.DuplicatedItemException;
@@ -100,6 +101,8 @@ public class ServicesControllerTest {
   public void deleteService_Success() {
     ResponseEntity<Void> response = servicesController.deleteService(1L);
 
+    verify(servicesService).deleteService(1L);
+
     assertNotNull(response);
     assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
   }
@@ -109,7 +112,7 @@ public class ServicesControllerTest {
   public void deleteService_ReturnsNotFound_WhenServiceMissing() {
     doThrow(new ResourceNotFoundException("Service not found"))
         .when(servicesService)
-        .deactivate(any(Long.class));
+        .deleteService(any(Long.class));
 
     ResponseEntity<Void> response = servicesController.deleteService(1L);
 

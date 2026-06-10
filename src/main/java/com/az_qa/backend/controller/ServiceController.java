@@ -104,7 +104,7 @@ public class ServiceController {
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteService(@PathVariable Long id) {
     try {
-      servicesService.deactivate(id);
+      servicesService.deleteService(id);
       return ResponseEntity.noContent().build();
     } catch (ResourceNotFoundException | ItemNotFoundException e) {
       return ResponseEntity.notFound().build();

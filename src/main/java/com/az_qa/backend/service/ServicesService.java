@@ -97,7 +97,7 @@ public class ServicesService {
    *
    * @param id service identifier
    */
-  public void deactivate(Long id) {
-    servicesDAO.deactivate(id);
+  public void deleteService(Long id) {
+    servicesDAO.deleteService(id);
   }
 }
