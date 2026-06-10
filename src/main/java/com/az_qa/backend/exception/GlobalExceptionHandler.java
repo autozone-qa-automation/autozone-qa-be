@@ -1,9 +1,8 @@
 package com.az_qa.backend.exception;
 
-import com.az_qa.backend.dto.response.ErrorResponse;
-import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
+
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import com.az_qa.backend.dto.response.ErrorResponse;
+
+import jakarta.validation.ConstraintViolationException;
 
 /**
  * Global exception handler for all controllers.
@@ -139,6 +142,19 @@ public class GlobalExceptionHandler {
     ErrorResponse error = new ErrorResponse(409, ex.getMessage(), LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
   }
+  
+  /**
+   * Handles {@link BadRequestException} used in services to indicate
+   * business-level bad requests (e.g., invalid state transitions).
+   *
+   * @param ex the bad request exception
+   * @return 400 with structured error body
+   */
+  @ExceptionHandler(BadRequestException.class)
+  public ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException ex) {
+    ErrorResponse error = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+  }
 
   /**
    * Fallback handler for any exception not explicitly handled above.
@@ -191,19 +207,6 @@ public class GlobalExceptionHandler {
     String message = "Invalid value '" + ex.getValue() + "' for parameter '" + ex.getName() + "'";
 
     ErrorResponse error = new ErrorResponse(400, message, LocalDateTime.now());
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-  }
-
-  /**
-   * Handles {@link org.apache.coyote.BadRequestException} used in services to indicate
-   * business-level bad requests (e.g., invalid state transitions).
-   *
-   * @param ex the bad request exception
-   * @return 400 with structured error body
-   */
-  @ExceptionHandler(org.apache.coyote.BadRequestException.class)
-  public ResponseEntity<ErrorResponse> handleBadRequest(org.apache.coyote.BadRequestException ex) {
-    ErrorResponse error = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
 }
