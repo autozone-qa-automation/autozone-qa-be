@@ -56,11 +56,9 @@ public class JPADetailsUser implements UserDetails {
 
   /**
    * Devuelve las autoridades y roles concedidos al usuario.
-   * Este método realiza un mapeo desde el rol y permiso de la entidad hacia objetos
-   * {@link SimpleGrantedAuthority}. Con el fin de maximizar la compatibilidad con
-   * las reglas de Spring Security, cada rol genera dos tipos de autoridades:
-   * El nombre del permiso tal cual (ej. {@code "ADMIN"}).
-   * El nombre del permiso con el prefijo requerido por Spring (ej. {@code "ROLE_ADMIN"}).
+   * Este método realiza un mapeo desde el rol y permiso de la entidad hacia un objeto
+   * {@link SimpleGrantedAuthority} con el prefijo {@code "ROLE_"} requerido por Spring Security,
+   * de forma que las reglas {@code hasRole()} / {@code hasAnyRole()} funcionen correctamente.
    * Si el usuario no tiene un rol o permiso asignado en la base de datos,
    * se devuelve una lista vacía de forma segura para evitar excepciones de puntero nulo.
    *
@@ -68,16 +66,12 @@ public class JPADetailsUser implements UserDetails {
    */
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    // Validación de seguridad por si el usuario no tiene rol asignado
     if (usuario.getRole() == null || usuario.getRole().getPermission() == null) {
       return List.of();
     }
 
     String roleString = usuario.getRole().getPermission().name();
 
-    return List.of(
-        new SimpleGrantedAuthority(roleString),
-        new SimpleGrantedAuthority("ROLE_" + roleString) // Prefijo para Spring Security
-        );
+    return List.of(new SimpleGrantedAuthority("ROLE_" + roleString));
   }
 }
