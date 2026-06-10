@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.az_qa.backend.exception.DuplicatedItemException;
@@ -30,11 +31,9 @@ import org.springframework.http.ResponseEntity;
 @ExtendWith(MockitoExtension.class)
 public class ServicesControllerTest {
 
-  @Mock
-  private ServicesService servicesService;
+  @Mock private ServicesService servicesService;
 
-  @InjectMocks
-  private ServiceController servicesController;
+  @InjectMocks private ServiceController servicesController;
 
   private ServicesVO serviceStub;
 
@@ -101,6 +100,8 @@ public class ServicesControllerTest {
   @DisplayName("deleteService: Debe retornar 204 No Content cuando la desactivación es exitosa")
   public void deleteService_Success() {
     ResponseEntity<Void> response = servicesController.deleteService(1L);
+
+    verify(servicesService).deleteService(1L);
 
     assertNotNull(response);
     assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
