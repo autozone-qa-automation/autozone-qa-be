@@ -1,9 +1,8 @@
 package com.az_qa.backend.config;
 
-import com.az_qa.backend.security.JwtFilter;
-import jakarta.servlet.http.HttpServletResponse;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,6 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.az_qa.backend.security.JwtFilter;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Clase de configuración para la seguridad y la gestión de accesos de la aplicación.
@@ -115,13 +118,13 @@ public class UserManagementConfig {
 
                     // DELETE - SOLO ADMIN
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/services/**")
-                    .hasRole("ADMIN")
+                    .hasAnyRole("ADMIN", "DEV")
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/test-cases/**")
-                    .hasRole("ADMIN")
+                    .hasAnyRole("ADMIN", "DEV")
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/features/**")
-                    .hasRole("ADMIN")
+                    .hasAnyRole("ADMIN", "DEV")
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/releases/**")
-                    .hasRole("ADMIN")
+                    .hasAnyRole("ADMIN", "DEV")
 
                     // USERS - SOLO ADMIN
                     .requestMatchers("/api/v1/users/**")
@@ -133,7 +136,7 @@ public class UserManagementConfig {
 
                     // REPORTES - SOLO ADMIN
                     .requestMatchers("/api/v1/reports/**")
-                    .hasRole("ADMIN")
+                    .hasAnyRole("ADMIN", "DEV") // DEV también puede acceder a los reportes
                     .anyRequest()
                     .authenticated())
         .exceptionHandling(
