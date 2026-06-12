@@ -149,12 +149,12 @@ public class UserManagementConfig {
                               .getWriter()
                               .write(
                                   """
-                  {
-                    "status": 401,
-                    "error": "Unauthorized",
-                    "message": "Token inválido o ausente."
-                  }
-                  """);
+                                  {
+                                    "status": 401,
+                                    "error": "Unauthorized",
+                                    "message": "Token inválido o ausente."
+                                  }
+                                  """);
                         })
                     .accessDeniedHandler(
                         (request, response, accessDeniedException) -> {
@@ -165,13 +165,13 @@ public class UserManagementConfig {
                           response
                               .getWriter()
                               .write(
-                                  """
-                  {
-                    "status": 403,
-                    "error": "Forbidden",
-                    "message": "No tienes permisos suficientes para acceder a este recurso."
-                  }
-                  """);
+"""
+{
+  "status": 403,
+  "error": "Forbidden",
+  "message": "No tienes permisos suficientes para acceder a este recurso."
+}
+""");
                         }))
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

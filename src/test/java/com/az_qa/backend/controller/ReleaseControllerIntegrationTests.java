@@ -46,7 +46,7 @@ public class ReleaseControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   @DisplayName(
       "GET /api/v1/releases/last - Integración completa (Controller -> Service -> DAO -> DB)")
   public void getLastReleases_IntegrationSuccess() throws Exception {
@@ -67,7 +67,7 @@ public class ReleaseControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("GET /api/v1/releases/last - Debe retornar lista vacía cuando no hay releases")
   public void getLastReleases_Empty() throws Exception {
     mockMvc

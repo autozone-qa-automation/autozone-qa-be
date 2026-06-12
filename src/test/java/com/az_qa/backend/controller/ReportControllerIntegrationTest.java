@@ -87,7 +87,7 @@ public class ReportControllerIntegrationTest {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("GET /api/reports - Debe retornar 200 con la lista de releases")
   public void getReports_NoFilter_Returns200WithReleases() throws Exception {
     mockMvc
@@ -100,7 +100,7 @@ public class ReportControllerIntegrationTest {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   @DisplayName(
       "GET /api/reports - Filtro por serviceId debe retornar solo los releases del servicio")
   public void getReports_FilterByServiceId_ReturnsMatchingReleases() throws Exception {
@@ -114,7 +114,7 @@ public class ReportControllerIntegrationTest {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("GET /api/reports - Filtro por serviceId inexistente debe retornar lista vacía")
   public void getReports_FilterByNonExistentServiceId_ReturnsEmptyList() throws Exception {
     mockMvc
@@ -125,7 +125,7 @@ public class ReportControllerIntegrationTest {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("GET /api/reports - Filtro por rango de fechas que incluye el release lanzado")
   public void getReports_FilterByDateRange_ReturnsMatchingReleases() throws Exception {
     mockMvc
@@ -137,7 +137,7 @@ public class ReportControllerIntegrationTest {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   @DisplayName(
       "GET /api/reports - Filtro por rango de fechas que excluye el release debe retornar lista"
           + " vacía")
@@ -151,7 +151,7 @@ public class ReportControllerIntegrationTest {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("GET /api/reports - Filtro por tagName que coincide debe retornar el release")
   public void getReports_FilterByTagName_ReturnsMatchingRelease() throws Exception {
     mockMvc
@@ -162,7 +162,7 @@ public class ReportControllerIntegrationTest {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("GET /api/reports - Filtro por tagName inexistente debe retornar lista vacía")
   public void getReports_FilterByNonExistentTag_ReturnsEmptyList() throws Exception {
     mockMvc

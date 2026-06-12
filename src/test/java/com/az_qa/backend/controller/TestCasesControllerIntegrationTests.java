@@ -75,7 +75,7 @@ public class TestCasesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser(authorities = "ADMIN")
+  @WithMockUser(roles = "ADMIN")
   @DisplayName(
       "PUT /api/v1/test-cases/{id} - Integracion completa para actualizar un test case existente")
   public void updateTestCase_IntegrationSuccess() throws Exception {
