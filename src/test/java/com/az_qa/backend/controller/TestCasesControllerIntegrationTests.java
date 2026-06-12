@@ -8,6 +8,7 @@
 package com.az_qa.backend.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -106,5 +107,46 @@ public class TestCasesControllerIntegrationTests {
     TestCasesEntity updatedTestCase =
         testCasesRepository.findById(existingTestCase.getId()).orElseThrow();
     assertNotNull(updatedTestCase);
+  }
+
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  @DisplayName("PUT /api/v1/test-cases/{id}/deactivate - Desactiva un test case activo")
+  public void deactivateTestCase_IntegrationSuccess() throws Exception {
+    TestCasesEntity existingTestCase = new TestCasesEntity();
+    existingTestCase.setTitle("Test Case a Desactivar");
+    existingTestCase.setSteps("Pasos del test case");
+    existingTestCase.setExpectedOutput("Resultado esperado");
+    existingTestCase.setFeature(featuresRepository.findById(validFeatureId).orElse(null));
+    existingTestCase.setType(com.az_qa.backend.enumeration.TestCaseType.ON_DEMAND);
+    existingTestCase.setNew(true);
+    existingTestCase = testCasesRepository.save(existingTestCase);
+
+    mockMvc
+        .perform(put("/api/v1/test-cases/{id}/deactivate", existingTestCase.getId()))
+        .andExpect(status().isNoContent());
+
+    assertTrue(testCasesRepository.findByIdAndIsActive(existingTestCase.getId(), true).isEmpty());
+    assertTrue(
+        testCasesRepository.findByIdAndIsActive(existingTestCase.getId(), false).isPresent());
+  }
+
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  @DisplayName("PUT /api/v1/test-cases/{id}/deactivate - Retorna 404 si no existe")
+  public void deactivateTestCase_NotFound() throws Exception {
+    mockMvc
+        .perform(put("/api/v1/test-cases/{id}/deactivate", 999L))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("TestCase not found with id: 999"));
+  }
+
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  @DisplayName("PUT /api/v1/test-cases/{id}/deactivate - Retorna 400 si el id no es positivo")
+  public void deactivateTestCase_InvalidId() throws Exception {
+    mockMvc
+        .perform(put("/api/v1/test-cases/{id}/deactivate", 0L))
+        .andExpect(status().isBadRequest());
   }
 }

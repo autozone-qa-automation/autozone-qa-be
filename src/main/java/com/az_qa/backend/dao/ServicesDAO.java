@@ -10,6 +10,7 @@ package com.az_qa.backend.dao;
 import com.az_qa.backend.entity.ServicesEntity;
 import com.az_qa.backend.entity.UrlEntity;
 import com.az_qa.backend.exception.ItemNotFoundException;
+import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.mapper.ServicesMapper;
 import com.az_qa.backend.repository.ServicesRepository;
 import com.az_qa.backend.vo.ServicesVO;
@@ -47,11 +48,13 @@ public class ServicesDAO {
 
   /**
    * Finds the service information by id.
+   *
    * @param id Service id.
    * @return Service information.
    */
   public ServicesVO findServiceById(Long id) {
-    Optional<ServicesVO> servicesVO = servicesRepository.findById(id).map(ServicesMapper::toVO);
+    Optional<ServicesVO> servicesVO =
+        servicesRepository.findByIdAndIsActive(id, true).map(ServicesMapper::toVO);
 
     if (servicesVO.isEmpty()) {
       throw new ItemNotFoundException("Service with id " + id + " not found");
@@ -76,6 +79,22 @@ public class ServicesDAO {
    */
   public ServicesVO createService(ServicesVO serviceVO) {
     return ServicesMapper.toVO(servicesRepository.save(ServicesMapper.serviceToEntity(serviceVO)));
+  }
+
+  /**
+   * Deletes a service by its identifier.
+   *
+   * @param id the identifier of the service to delete
+   */
+  public void deleteService(Long id) {
+    ServicesEntity entity =
+        servicesRepository
+            .findByIdAndIsActive(id, true)
+            .orElseThrow(() -> new ResourceNotFoundException("Service not found with id: " + id));
+
+    entity.setIsActive(false);
+
+    servicesRepository.save(entity);
   }
 
   public ServicesVO updateService(Long id, ServicesVO serviceVO) {

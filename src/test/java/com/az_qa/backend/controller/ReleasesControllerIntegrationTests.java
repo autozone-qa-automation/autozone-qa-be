@@ -222,7 +222,8 @@ class ReleasesControllerIntegrationTests {
             releaseLaunchDate,
             releaseVersion,
             releaseTags,
-            releaseStatus);
+            releaseStatus,
+            true);
     release.setNew(true);
     return releaseRepository.save(release);
   }

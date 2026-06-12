@@ -10,10 +10,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.az_qa.backend.entity.ServicesEntity;
 import com.az_qa.backend.exception.ItemNotFoundException;
+import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.repository.ServicesRepository;
 import com.az_qa.backend.vo.ServicesVO;
 import java.util.ArrayList;
@@ -90,5 +93,31 @@ public class ServicesDAOTests {
     when(servicesRepository.findByIdWithUrls(1L)).thenReturn(Optional.empty());
 
     assertThrows(ItemNotFoundException.class, () -> servicesDAO.updateService(1L, updateVO));
+  }
+
+  @Test
+  @DisplayName("DELETE: deleteService: Debe desactivar un servicio activo")
+  void deleteService_Success() {
+    servicesEntity.setIsActive(true);
+
+    when(servicesRepository.findByIdAndIsActive(1L, true)).thenReturn(Optional.of(servicesEntity));
+
+    servicesDAO.deleteService(1L);
+
+    assertEquals(false, servicesEntity.getIsActive());
+
+    verify(servicesRepository).save(servicesEntity);
+    verify(servicesRepository).findByIdAndIsActive(1L, true);
+  }
+
+  @Test
+  @DisplayName("DELETE: deleteService: Debe lanzar excepción cuando el servicio no existe")
+  void deleteService_ThrowsException_WhenServiceDoesNotExist() {
+
+    when(servicesRepository.findByIdAndIsActive(1L, true)).thenReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> servicesDAO.deleteService(1L));
+
+    verify(servicesRepository, times(1)).findByIdAndIsActive(1L, true);
   }
 }

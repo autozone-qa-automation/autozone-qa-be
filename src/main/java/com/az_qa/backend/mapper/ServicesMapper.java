@@ -40,7 +40,8 @@ public final class ServicesMapper {
             ? Collections.emptyList()
             : entity.getUrls().stream().map(ServicesMapper::urlToVO).toList();
 
-    return new ServicesVO(entity.getId(), entity.getName(), entity.getDescription(), urls);
+    return new ServicesVO(
+        entity.getId(), entity.getName(), entity.getDescription(), entity.getIsActive(), urls);
   }
 
   /**
@@ -70,6 +71,7 @@ public final class ServicesMapper {
     ServicesEntity serviceEntity = new ServicesEntity();
     serviceEntity.setName(servicesVO.getName());
     serviceEntity.setDescription(servicesVO.getDescription());
+    serviceEntity.setIsActive(servicesVO.getIsActive() == null ? true : servicesVO.getIsActive());
 
     if (servicesVO.getUrls() != null) {
       List<UrlEntity> urlEntities =

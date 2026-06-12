@@ -132,7 +132,7 @@ public class UserManagementConfig {
                     .hasRole("ADMIN")
 
                     // REPORTES - SOLO ADMIN
-                    .requestMatchers("/api/reports/**")
+                    .requestMatchers("/api/v1/reports/**")
                     .hasRole("ADMIN")
                     .anyRequest()
                     .authenticated())

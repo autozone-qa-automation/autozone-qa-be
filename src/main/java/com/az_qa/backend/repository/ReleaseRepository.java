@@ -10,7 +10,9 @@ package com.az_qa.backend.repository;
 import com.az_qa.backend.entity.ReleaseEntity;
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -40,6 +42,22 @@ public interface ReleaseRepository extends JpaRepository<ReleaseEntity, Long> {
   List<ReleaseEntity> findTop5ByOrderByReleaseCreationDateDesc();
 
   /**
+   * Finds the top 5 most recent releases that include a feature from the given service.
+   *
+   * @param serviceId the service identifier to filter by
+   * @param pageable  pagination information (use PageRequest.of(0, 5))
+   * @return a list of matching release entities ordered by creation date descending
+   */
+  @Query(
+      "SELECT DISTINCT r FROM ReleaseEntity r "
+          + "JOIN r.features rf "
+          + "JOIN rf.feature f "
+          + "JOIN f.service s "
+          + "WHERE s.id = :serviceId "
+          + "ORDER BY r.releaseCreationDate DESC")
+  List<ReleaseEntity> findTop5ByServiceId(@Param("serviceId") Long serviceId, Pageable pageable);
+
+  /**
    * Finds releases matching all provided filter criteria. Any {@code null} parameter is ignored,
    * making every filter optional.
    *
@@ -63,4 +81,13 @@ public interface ReleaseRepository extends JpaRepository<ReleaseEntity, Long> {
       @Param("startDate") LocalDate startDate,
       @Param("endDate") LocalDate endDate,
       @Param("tagName") String tagName);
+
+  /**
+   * Deactivates a release by its ID (soft delete).
+   * Performs an update setting the entity active flag to false.
+   * @param releaseId the release identifier
+   */
+  @Modifying
+  @Query("UPDATE ReleaseEntity r SET r.isActive = false WHERE r.releaseId = :releaseId")
+  void deleteReleaseById(@Param("releaseId") Long releaseId);
 }

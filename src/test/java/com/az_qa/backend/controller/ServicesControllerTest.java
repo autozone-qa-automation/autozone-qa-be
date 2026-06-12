@@ -10,9 +10,12 @@ package com.az_qa.backend.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.az_qa.backend.exception.DuplicatedItemException;
+import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.service.ServicesService;
 import com.az_qa.backend.vo.ServicesVO;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,5 +94,29 @@ public class ServicesControllerTest {
 
     assertNotNull(response);
     assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+  }
+
+  @Test
+  @DisplayName("deleteService: Debe retornar 204 No Content cuando la desactivación es exitosa")
+  public void deleteService_Success() {
+    ResponseEntity<Void> response = servicesController.deleteService(1L);
+
+    verify(servicesService).deleteService(1L);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+  }
+
+  @Test
+  @DisplayName("deleteService: Debe retornar 404 Not Found cuando el servicio no existe")
+  public void deleteService_ReturnsNotFound_WhenServiceMissing() {
+    doThrow(new ResourceNotFoundException("Service not found"))
+        .when(servicesService)
+        .deleteService(any(Long.class));
+
+    ResponseEntity<Void> response = servicesController.deleteService(1L);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 }
