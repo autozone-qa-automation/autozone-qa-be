@@ -17,11 +17,13 @@ import com.az_qa.backend.dao.ReleaseDAO;
 import com.az_qa.backend.entity.FeatureEntity;
 import com.az_qa.backend.entity.ReleaseEntity;
 import com.az_qa.backend.enumeration.ReleaseStatus;
+import com.az_qa.backend.exception.BadRequestException;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.repository.FeaturesRepository;
 import com.az_qa.backend.repository.ReleaseRepository;
 import com.az_qa.backend.repository.ReleasedFeaturesRepository;
+import com.az_qa.backend.repository.TestCasesRepository;
 import com.az_qa.backend.vo.ReleaseVO;
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +42,7 @@ public class ReleaseServiceTest {
   @Mock private ReleaseRepository releaseRepository;
   @Mock private FeaturesRepository featuresRepository;
   @Mock private ReleasedFeaturesRepository releasedFeaturesRepository;
+  @Mock private TestCasesRepository testCasesRepository;
 
   @InjectMocks private ReleaseService releaseService;
 
@@ -51,6 +54,18 @@ public class ReleaseServiceTest {
     releaseStub.setReleaseId(1L);
     releaseStub.setReleaseName("Service Test Release");
     releaseStub.setReleaseStatus(ReleaseStatus.Draft);
+
+    ReleaseVO releaseActive = new ReleaseVO();
+    releaseActive.setReleaseId(2L);
+    releaseActive.setReleaseName("Service Test Active Release");
+    releaseActive.setReleaseStatus(ReleaseStatus.Active);
+    releaseActive.setReleaseIsActive(true);
+
+    ReleaseVO releaseInactive = new ReleaseVO();
+    releaseInactive.setReleaseId(3L);
+    releaseInactive.setReleaseName("Service Test Inactive Release");
+    releaseInactive.setReleaseStatus(ReleaseStatus.Active);
+    releaseInactive.setReleaseIsActive(false);
   }
 
   @Test
@@ -168,5 +183,79 @@ public class ReleaseServiceTest {
     ReleaseVO result = releaseService.updateReleaseStatus(1L, ReleaseStatus.Progress);
 
     assertNotNull(result);
+  }
+
+  @Test
+  @DisplayName(
+      "DELETE: Debe hacer soft delete correctamente cuando el status es Draft y está activo")
+  public void deleteRelease_Success() {
+    ReleaseVO releaseDraft = new ReleaseVO();
+    releaseDraft.setReleaseId(4L);
+    releaseDraft.setReleaseStatus(ReleaseStatus.Draft);
+    releaseDraft.setReleaseIsActive(true);
+
+    when(releaseDAO.findById(4L)).thenReturn(releaseDraft);
+    when(releaseRepository.findNombresServiciosByReleaseId(4L)).thenReturn(Collections.emptyList());
+    when(releasedFeaturesRepository.findByRelease_ReleaseId(4L))
+        .thenReturn(Collections.emptyList());
+    when(testCasesRepository.findByRelease_ReleaseId(4L)).thenReturn(Collections.emptyList());
+
+    ReleaseEntity mockEntity = new ReleaseEntity();
+    mockEntity.setReleaseIsActive(true);
+    when(releaseRepository.getReferenceById(4L)).thenReturn(mockEntity);
+
+    releaseService.deleteReleaseById(4L);
+
+    // Verify soft delete
+    org.junit.jupiter.api.Assertions.assertFalse(mockEntity.getReleaseIsActive());
+    org.mockito.Mockito.verify(releaseRepository).save(mockEntity);
+  }
+
+  @Test
+  @DisplayName("DELETE: Debe lanzar BadRequestException cuando el estado no es Draft")
+  public void deleteRelease_ThrowsBadRequestException_WhenNotDraft() {
+    ReleaseVO releaseProgress = new ReleaseVO();
+    releaseProgress.setReleaseId(2L);
+    releaseProgress.setReleaseStatus(ReleaseStatus.Progress);
+    releaseProgress.setReleaseIsActive(true);
+
+    when(releaseDAO.findById(2L)).thenReturn(releaseProgress);
+    when(releaseRepository.findNombresServiciosByReleaseId(2L)).thenReturn(Collections.emptyList());
+
+    assertThrows(
+        BadRequestException.class,
+        () -> {
+          releaseService.deleteReleaseById(2L);
+        });
+  }
+
+  @Test
+  @DisplayName("DELETE: Debe lanzar BadRequestException cuando el release no está activo")
+  public void deleteRelease_ThrowsBadRequestException_WhenNotActive() {
+    ReleaseVO releaseDraftInactive = new ReleaseVO();
+    releaseDraftInactive.setReleaseId(3L);
+    releaseDraftInactive.setReleaseStatus(ReleaseStatus.Draft);
+    releaseDraftInactive.setReleaseIsActive(false);
+
+    when(releaseDAO.findById(3L)).thenReturn(releaseDraftInactive);
+    when(releaseRepository.findNombresServiciosByReleaseId(3L)).thenReturn(Collections.emptyList());
+
+    assertThrows(
+        BadRequestException.class,
+        () -> {
+          releaseService.deleteReleaseById(3L);
+        });
+  }
+
+  @Test
+  @DisplayName("DELETE: Debe lanzar ResourceNotFoundException cuando el ID no existe")
+  public void deleteRelease_ThrowsResourceNotFoundException_WhenIdNotFound() {
+    when(releaseDAO.findById(99L)).thenThrow(new ItemNotFoundException("Not found"));
+
+    assertThrows(
+        ResourceNotFoundException.class,
+        () -> {
+          releaseService.deleteReleaseById(99L);
+        });
   }
 }

@@ -11,9 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import com.az_qa.backend.enumeration.ReleaseStatus;
+import com.az_qa.backend.exception.BadRequestException;
 import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.service.ReleaseService;
 import com.az_qa.backend.vo.ReleaseVO;
@@ -148,5 +150,41 @@ public class ReleaseControllerTest {
 
     assertNotNull(response);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+  }
+
+  @Test
+  @DisplayName(
+      "deleteReleaseById: Debe retornar 204 No Content cuando se borra un release exitosamente")
+  public void deleteReleaseById_Success() throws Exception {
+    ResponseEntity<?> response = releaseController.deleteReleaseById(1L);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+  }
+
+  @Test
+  @DisplayName("deleteReleaseById: Debe retornar 400 Bad Request si el release no está en Draft")
+  public void deleteReleaseById_BadRequest() throws Exception {
+    doThrow(new BadRequestException("Only releases in DRAFT status can be deleted."))
+        .when(releaseService)
+        .deleteReleaseById(2L);
+
+    ResponseEntity<?> response = releaseController.deleteReleaseById(2L);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+  }
+
+  @Test
+  @DisplayName("deleteReleaseById: Debe retornar 404 Not Found cuando el release no existe")
+  public void deleteReleaseById_NotFound() throws Exception {
+    doThrow(new ResourceNotFoundException("Release not found"))
+        .when(releaseService)
+        .deleteReleaseById(99L);
+
+    ResponseEntity<?> response = releaseController.deleteReleaseById(99L);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 }

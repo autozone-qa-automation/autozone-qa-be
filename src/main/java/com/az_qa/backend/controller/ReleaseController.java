@@ -126,22 +126,23 @@ public class ReleaseController {
   @Operation(summary = "Deletes a release by its ID if it is in DRAFT status and active.")
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "200", description = "Release deleted successfully"),
+        @ApiResponse(responseCode = "204", description = "Release deleted successfully"),
         @ApiResponse(responseCode = "400", description = "Invalid request"),
+        @ApiResponse(responseCode = "404", description = "Release not found"),
         @ApiResponse(
             responseCode = "403",
             description = "User does not have permission to delete the release"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
       })
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteReleaseById(@PathVariable Long id) throws BadRequestException {
+  public ResponseEntity<?> deleteReleaseById(@PathVariable Long id) throws BadRequestException {
     try {
       releaseService.deleteReleaseById(id);
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } catch (BadRequestException e) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     } catch (ResourceNotFoundException e) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
   }
 }

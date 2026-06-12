@@ -42,6 +42,7 @@ public class ReleasesMapperTests {
     entity.setReleaseVersion("1.0.0");
     entity.setReleaseTags("qa, backend, , smoke ");
     entity.setReleaseStatus(ReleaseStatus.Draft);
+    entity.setReleaseIsActive(true);
     entity.setFeatures(List.of(new ReleasedFeaturesEntity(entity, feature)));
 
     ReleaseVO vo = ReleaseMapper.toVO(entity);
@@ -55,6 +56,7 @@ public class ReleasesMapperTests {
     assertEquals(entity.getReleaseVersion(), vo.getReleaseVersion());
     assertEquals(List.of("qa", "backend", "smoke"), vo.getReleaseTags());
     assertEquals(entity.getReleaseStatus(), vo.getReleaseStatus());
+    assertEquals(entity.getReleaseIsActive(), vo.getReleaseIsActive());
 
     assertEquals(List.of("Inventory Service"), vo.getReleaseServices());
     assertEquals(10L, vo.getReleaseServiceId());
@@ -81,6 +83,7 @@ public class ReleasesMapperTests {
     entity.setReleaseTags(null);
     entity.setReleaseStatus(ReleaseStatus.Progress);
     entity.setFeatures(null);
+    entity.setReleaseIsActive(true);
 
     ReleaseVO vo = ReleaseMapper.toVO(entity);
 
@@ -90,6 +93,7 @@ public class ReleasesMapperTests {
     assertNull(vo.getReleaseServiceId());
     assertTrue(vo.getReleaseFeatureIds().isEmpty());
     assertTrue(vo.getReleaseFeatures().isEmpty());
+    assertEquals(entity.getReleaseIsActive(), vo.getReleaseIsActive());
   }
 
   @Test
@@ -110,6 +114,7 @@ public class ReleasesMapperTests {
     vo.setReleaseVersion("3.1.0");
     vo.setReleaseTags(List.of("qa", "regression", "backend"));
     vo.setReleaseStatus(ReleaseStatus.Active);
+    vo.setReleaseIsActive(false);
     vo.setReleaseServiceId(10L);
     vo.setReleaseFeatureIds(List.of(20L, 21L));
 
@@ -124,6 +129,7 @@ public class ReleasesMapperTests {
     assertEquals(vo.getReleaseVersion(), entity.getReleaseVersion());
     assertEquals("qa,regression,backend", entity.getReleaseTags());
     assertEquals(vo.getReleaseStatus(), entity.getReleaseStatus());
+    assertEquals(vo.getReleaseIsActive(), entity.getReleaseIsActive());
   }
 
   @Test
