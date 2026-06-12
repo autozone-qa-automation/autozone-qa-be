@@ -6,8 +6,15 @@ Autozone QA Automation
 */
 package com.az_qa.backend.controller;
 
+import com.az_qa.backend.exception.BadRequestException;
+import com.az_qa.backend.exception.ResourceNotFoundException;
+import com.az_qa.backend.service.ReleaseService;
+import com.az_qa.backend.vo.ReleaseVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,16 +26,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.az_qa.backend.exception.BadRequestException;
-import com.az_qa.backend.exception.ResourceNotFoundException;
-import com.az_qa.backend.service.ReleaseService;
-import com.az_qa.backend.vo.ReleaseVO;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/releases")
@@ -127,12 +124,15 @@ public class ReleaseController {
    * @throws BadRequestException
    */
   @Operation(summary = "Deletes a release by its ID if it is in DRAFT status and active.")
-  @ApiResponses(value = {
-        @ApiResponse(responseCode = "200",description = "Release deleted successfully"),
-        @ApiResponse(responseCode = "400",description = "Invalid request"),
-        @ApiResponse(responseCode = "403",description = "User does not have permission to delete the release"),
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Release deleted successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid request"),
+        @ApiResponse(
+            responseCode = "403",
+            description = "User does not have permission to delete the release"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
+      })
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteReleaseById(@PathVariable Long id) throws BadRequestException {
     try {
@@ -143,7 +143,5 @@ public class ReleaseController {
     } catch (ResourceNotFoundException e) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-    
   }
 }
