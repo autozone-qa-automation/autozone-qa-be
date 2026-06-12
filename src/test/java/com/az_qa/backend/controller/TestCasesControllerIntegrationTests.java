@@ -76,7 +76,7 @@ public class TestCasesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser(authorities = "ADMIN")
+  @WithMockUser(roles = "ADMIN")
   @DisplayName(
       "PUT /api/v1/test-cases/{id} - Integracion completa para actualizar un test case existente")
   public void updateTestCase_IntegrationSuccess() throws Exception {
@@ -110,7 +110,7 @@ public class TestCasesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser(authorities = "ADMIN")
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("PUT /api/v1/test-cases/{id}/deactivate - Desactiva un test case activo")
   public void deactivateTestCase_IntegrationSuccess() throws Exception {
     TestCasesEntity existingTestCase = new TestCasesEntity();
@@ -132,7 +132,7 @@ public class TestCasesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser(authorities = "ADMIN")
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("PUT /api/v1/test-cases/{id}/deactivate - Retorna 404 si no existe")
   public void deactivateTestCase_NotFound() throws Exception {
     mockMvc
@@ -142,7 +142,7 @@ public class TestCasesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser(authorities = "ADMIN")
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("PUT /api/v1/test-cases/{id}/deactivate - Retorna 400 si el id no es positivo")
   public void deactivateTestCase_InvalidId() throws Exception {
     mockMvc

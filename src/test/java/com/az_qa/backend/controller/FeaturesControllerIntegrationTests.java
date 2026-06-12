@@ -75,7 +75,7 @@ public class FeaturesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("POST /api/v1/features - Integración completa (Controller -> Service -> DAO -> DB)")
   public void createFeature_IntegrationSuccess() throws Exception {
 
@@ -93,7 +93,7 @@ public class FeaturesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("PUT /api/v1/features/{id} - Integración completa para actualizar feature")
   public void updateFeature_IntegrationSuccess() throws Exception {
 
