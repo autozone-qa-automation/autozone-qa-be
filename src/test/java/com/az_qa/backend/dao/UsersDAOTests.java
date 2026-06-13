@@ -4,9 +4,11 @@ Desarrollo e Implantación de Sistemas de Software
 TC3005B GPO500 - 2026
 Autozone QA Automation
 */
+
 package com.az_qa.backend.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,6 +20,7 @@ import static org.mockito.Mockito.when;
 import com.az_qa.backend.entity.RoleEntity;
 import com.az_qa.backend.entity.UserEntity;
 import com.az_qa.backend.exception.ItemNotFoundException;
+import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.repository.RolesRepository;
 import com.az_qa.backend.repository.UsersRepository;
 import com.az_qa.backend.vo.UserVO;
@@ -41,6 +44,7 @@ public class UsersDAOTests {
 
   private UserVO userVO;
   private UserEntity userEntity;
+  private UserEntity activeUser;
 
   @BeforeEach
   void setUp() {
@@ -64,6 +68,13 @@ public class UsersDAOTests {
     userEntity.setPassword("secret");
     userEntity.setIsActive(true);
     userEntity.setRole(roleEntity);
+
+    activeUser = new UserEntity();
+    activeUser.setId(1L);
+    activeUser.setName("John");
+    activeUser.setLastName("Doe");
+    activeUser.setEmail("john.doe@example.com");
+    activeUser.setIsActive(true);
   }
 
   @Test
@@ -140,5 +151,26 @@ public class UsersDAOTests {
         assertThrows(ItemNotFoundException.class, () -> usersDAO.add(userWithoutMappedRole));
 
     assertEquals("Role with id {0} not found.", exception.getMessage());
+  }
+
+  @Test
+  @DisplayName("deactivate: Must set isActive to false and save when user is found and active")
+  public void deactivate_Success() {
+    when(usersRepository.findByIdAndIsActive(1L, true)).thenReturn(Optional.of(activeUser));
+    when(usersRepository.save(any(UserEntity.class))).thenReturn(activeUser);
+
+    usersDAO.deactivate(1L);
+
+    assertFalse(activeUser.getIsActive());
+    verify(usersRepository).save(activeUser);
+  }
+
+  @Test
+  @DisplayName(
+      "deactivate: Must throw ResourceNotFoundException when user is not found or not active")
+  public void deactivate_ThrowsResourceNotFoundException() {
+    when(usersRepository.findByIdAndIsActive(1L, true)).thenReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> usersDAO.deactivate(1L));
   }
 }

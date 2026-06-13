@@ -11,6 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,6 +21,7 @@ import com.az_qa.backend.dao.UsersDAO;
 import com.az_qa.backend.exception.DuplicatedItemException;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.MissingRequiredFieldException;
+import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.vo.UserVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -128,5 +131,25 @@ public class UsersServiceTests {
         assertThrows(MissingRequiredFieldException.class, () -> usersService.add(userInput));
 
     assertEquals("Last name is required for user creation.", exception.getMessage());
+  }
+
+  @Test
+  @DisplayName("deactivate: Must deactivate user successfully when DAO succeeds")
+  public void deactivate_Success() {
+    doNothing().when(usersDAO).deactivate(1L);
+
+    usersService.deactivate(1L);
+
+    verify(usersDAO).deactivate(1L);
+  }
+
+  @Test
+  @DisplayName("deactivate: Must propagate ResourceNotFoundException when user does not exist")
+  public void deactivate_ThrowsResourceNotFoundException() {
+    doThrow(new ResourceNotFoundException("User not found with id: 1"))
+        .when(usersDAO)
+        .deactivate(1L);
+
+    assertThrows(ResourceNotFoundException.class, () -> usersService.deactivate(1L));
   }
 }
