@@ -24,6 +24,7 @@ import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.repository.RolesRepository;
 import com.az_qa.backend.repository.UsersRepository;
 import com.az_qa.backend.vo.UserVO;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -172,5 +173,65 @@ public class UsersDAOTests {
     when(usersRepository.findByIdAndIsActive(1L, true)).thenReturn(Optional.empty());
 
     assertThrows(ResourceNotFoundException.class, () -> usersDAO.deactivate(1L));
+  }
+
+  @Test
+  @DisplayName("findById(Long): Must return VO when user exists")
+  void findById_ReturnsVO_WhenUserExists() {
+    Long id = 1L;
+    when(usersRepository.findById(id)).thenReturn(Optional.of(userEntity));
+
+    UserVO result = usersDAO.findById(id);
+
+    assertNotNull(result);
+    assertEquals(1L, result.getId());
+    assertEquals("john.doe@example.com", result.getEmail());
+  }
+
+  @Test
+  @DisplayName("findById(Long): Must throw ItemNotFoundException when user does not exist")
+  void findById_ThrowsItemNotFoundException_WhenUserNotFound() {
+    Long id = 99L;
+    when(usersRepository.findById(id)).thenReturn(Optional.empty());
+
+    ItemNotFoundException exception =
+        assertThrows(ItemNotFoundException.class, () -> usersDAO.findById(id));
+
+    assertEquals("User with id {99} not found.", exception.getMessage());
+  }
+
+  @Test
+  @DisplayName("findAll: Must return list of mapped VOs when users exist")
+  void findAll_ReturnsMappedList_WhenUsersExist() {
+    RoleEntity roleEntity = new RoleEntity();
+    roleEntity.setId(1L);
+
+    UserEntity second = new UserEntity();
+    second.setId(2L);
+    second.setName("Jane");
+    second.setLastName("Doe");
+    second.setEmail("jane.doe@example.com");
+    second.setIsActive(true);
+    second.setRole(roleEntity);
+
+    when(usersRepository.findAll()).thenReturn(List.of(userEntity, second));
+
+    List<UserVO> result = usersDAO.findAll();
+
+    assertNotNull(result);
+    assertEquals(2, result.size());
+    assertEquals("john.doe@example.com", result.get(0).getEmail());
+    assertEquals("jane.doe@example.com", result.get(1).getEmail());
+  }
+
+  @Test
+  @DisplayName("findAll: Must return empty list when no users exist")
+  void findAll_ReturnsEmptyList_WhenNoUsersExist() {
+    when(usersRepository.findAll()).thenReturn(List.of());
+
+    List<UserVO> result = usersDAO.findAll();
+
+    assertNotNull(result);
+    assertEquals(0, result.size());
   }
 }

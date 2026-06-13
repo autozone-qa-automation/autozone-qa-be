@@ -23,6 +23,7 @@ import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.MissingRequiredFieldException;
 import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.vo.UserVO;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -151,5 +152,60 @@ public class UsersServiceTests {
         .deactivate(1L);
 
     assertThrows(ResourceNotFoundException.class, () -> usersService.deactivate(1L));
+  }
+
+  @Test
+  @DisplayName("findById: Must return user VO when found")
+  void findById_ReturnsUser_WhenFound() {
+    Long id = 1L;
+    when(usersDAO.findById(id)).thenReturn(userInput);
+
+    UserVO result = usersService.findById(id);
+
+    assertNotNull(result);
+    assertEquals(1L, result.getId());
+    assertEquals("john.doe@example.com", result.getEmail());
+    verify(usersDAO).findById(id);
+  }
+
+  @Test
+  @DisplayName("findById: Must propagate ItemNotFoundException when user does not exist")
+  void findById_PropagatesItemNotFoundException_WhenNotFound() {
+    Long id = 99L;
+    when(usersDAO.findById(id))
+        .thenThrow(new ItemNotFoundException("User with id {99} not found."));
+
+    assertThrows(ItemNotFoundException.class, () -> usersService.findById(id));
+  }
+
+  @Test
+  @DisplayName("findAll: Must return list of all users")
+  void findAll_ReturnsList_WhenUsersExist() {
+    UserVO second = new UserVO();
+    second.setId(2L);
+    second.setName("Jane");
+    second.setLastName("Doe");
+    second.setEmail("jane.doe@example.com");
+    second.setIsActive(true);
+
+    when(usersDAO.findAll()).thenReturn(List.of(userInput, second));
+
+    List<UserVO> result = usersService.findAll();
+
+    assertNotNull(result);
+    assertEquals(2, result.size());
+    verify(usersDAO).findAll();
+  }
+
+  @Test
+  @DisplayName("findAll: Must return empty list when no users exist")
+  void findAll_ReturnsEmptyList_WhenNoUsers() {
+    when(usersDAO.findAll()).thenReturn(List.of());
+
+    List<UserVO> result = usersService.findAll();
+
+    assertNotNull(result);
+    assertEquals(0, result.size());
+    verify(usersDAO).findAll();
   }
 }
