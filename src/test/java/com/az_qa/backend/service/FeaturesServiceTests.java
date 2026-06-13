@@ -9,11 +9,14 @@ package com.az_qa.backend.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.az_qa.backend.dao.FeatureDAO;
+import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.vo.FeatureVO;
 import com.az_qa.backend.vo.TestCaseVO;
 import java.util.Collections;
@@ -42,6 +45,76 @@ public class FeaturesServiceTests {
     featureStub.setId(10L);
     featureStub.setFeatureName("Unit Test Feature");
     featureStub.setIdService(1L);
+  }
+
+  @Test
+  @DisplayName("GET: Debe retornar la feature cuando el DAO responde correctamente")
+  public void getFeatureById_ReturnsFeature() {
+    when(featureDAO.getFeatureById(10L)).thenReturn(featureStub);
+
+    FeatureVO result = featuresService.getFeatureById(10L);
+
+    assertNotNull(result);
+    assertEquals(10L, result.getId());
+    assertEquals("Unit Test Feature", result.getFeatureName());
+  }
+
+  @Test
+  @DisplayName("GET: Debe propagar ItemNotFoundException cuando el DAO no encuentra la feature")
+  public void getFeatureById_ThrowsItemNotFoundException() {
+    when(featureDAO.getFeatureById(99L))
+        .thenThrow(new ItemNotFoundException("Feature with id {99} not found."));
+
+    assertThrows(ItemNotFoundException.class, () -> featuresService.getFeatureById(99L));
+  }
+
+  @Test
+  @DisplayName(
+      "GET: Debe retornar la lista de features del servicio cuando el DAO responde correctamente")
+  public void getFeaturesByServiceId_ReturnsList() {
+    List<FeatureVO> featureList = List.of(featureStub);
+    when(featureDAO.getFeaturesByServiceId(1L)).thenReturn(featureList);
+
+    List<FeatureVO> result = featuresService.getFeaturesByServiceId(1L);
+
+    assertNotNull(result);
+    assertEquals(1, result.size());
+    assertEquals("Unit Test Feature", result.get(0).getFeatureName());
+  }
+
+  @Test
+  @DisplayName("GET: Debe retornar lista vacía cuando no hay features para el servicio")
+  public void getFeaturesByServiceId_ReturnsEmptyList() {
+    when(featureDAO.getFeaturesByServiceId(99L)).thenReturn(Collections.emptyList());
+
+    List<FeatureVO> result = featuresService.getFeaturesByServiceId(99L);
+
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
+  }
+
+  @Test
+  @DisplayName("GET: Debe retornar todas las features cuando el DAO responde correctamente")
+  public void getAllFeatures_ReturnsList() {
+    List<FeatureVO> featureList = List.of(featureStub);
+    when(featureDAO.getAllFeatures()).thenReturn(featureList);
+
+    List<FeatureVO> result = featuresService.getAllFeatures();
+
+    assertNotNull(result);
+    assertEquals(1, result.size());
+    assertEquals("Unit Test Feature", result.get(0).getFeatureName());
+  }
+
+  @Test
+  @DisplayName("GET: Debe retornar lista vacía cuando no hay features en el DAO")
+  public void getAllFeatures_ReturnsEmptyList() {
+    when(featureDAO.getAllFeatures()).thenReturn(Collections.emptyList());
+
+    List<FeatureVO> result = featuresService.getAllFeatures();
+
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
   }
 
   @Test

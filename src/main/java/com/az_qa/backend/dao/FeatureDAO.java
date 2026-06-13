@@ -46,16 +46,10 @@ public class FeatureDAO {
    * @return Features.
    */
   public List<FeatureVO> getFeaturesByServiceId(Long id) {
-    List<FeatureVO> featureVO =
-        featuresRepository.findByServiceId(id).stream()
-            .filter(FeatureEntity::isActive)
-            .map(FeatureMapper::toVO)
-            .collect(Collectors.toList());
-
-    if (featureVO.isEmpty()) {
-      throw new ItemNotFoundException("No feature found for service identifier {" + id + "}.");
-    }
-    return featureVO;
+    return featuresRepository.findByServiceId(id).stream()
+        .filter(FeatureEntity::isActive)
+        .map(FeatureMapper::toVO)
+        .collect(Collectors.toList());
   }
 
   /**
