@@ -9,10 +9,13 @@ package com.az_qa.backend.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.service.UsersService;
 import com.az_qa.backend.vo.UpdateUserVO;
 import com.az_qa.backend.vo.UserVO;
@@ -102,5 +105,15 @@ public class UsersControllerTest {
 
     assertNotNull(response);
     assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+  }
+
+  @Test
+  @DisplayName("deactivate: Must throw ResourceNotFoundException when the user does not exist")
+  public void deactivate_NotFound() {
+    doThrow(new ResourceNotFoundException("User not found with id: 1"))
+        .when(usersService)
+        .deactivate(any(Long.class));
+
+    assertThrows(ResourceNotFoundException.class, () -> usersController.deactivate(1L));
   }
 }
