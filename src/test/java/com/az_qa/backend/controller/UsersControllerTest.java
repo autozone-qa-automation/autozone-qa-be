@@ -15,10 +15,12 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.service.UsersService;
 import com.az_qa.backend.vo.UpdateUserVO;
 import com.az_qa.backend.vo.UserVO;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -126,5 +128,60 @@ public class UsersControllerTest {
         .deactivate(any(Long.class));
 
     assertThrows(ResourceNotFoundException.class, () -> usersController.deactivate(1L));
+  }
+
+  @Test
+  @DisplayName("getById: Must return 200 OK with user body when found")
+  public void getById_ReturnsOk_WhenUserFound() {
+    when(usersService.findById(1L)).thenReturn(userStub);
+
+    ResponseEntity<UserVO> response = usersController.getById(1L);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals(1L, response.getBody().getId());
+    assertEquals("John", response.getBody().getName());
+  }
+
+  @Test
+  @DisplayName("getById: Must propagate ItemNotFoundException when user does not exist")
+  public void getById_PropagatesItemNotFoundException_WhenUserNotFound() {
+    when(usersService.findById(99L))
+        .thenThrow(new ItemNotFoundException("User with id {99} not found."));
+
+    assertThrows(ItemNotFoundException.class, () -> usersController.getById(99L));
+  }
+
+  @Test
+  @DisplayName("getAll: Must return 200 OK with list of users")
+  public void getAll_ReturnsOkWithUserList() {
+    UserVO second = new UserVO();
+    second.setId(2L);
+    second.setName("Jane");
+    second.setLastName("Doe");
+    second.setEmail("jane.doe@example.com");
+
+    when(usersService.findAll()).thenReturn(List.of(userStub, second));
+
+    ResponseEntity<List<UserVO>> response = usersController.getAll();
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals(2, response.getBody().size());
+  }
+
+  @Test
+  @DisplayName("getAll: Must return 200 OK with empty list when no users exist")
+  public void getAll_ReturnsOkWithEmptyList_WhenNoUsers() {
+    when(usersService.findAll()).thenReturn(List.of());
+
+    ResponseEntity<List<UserVO>> response = usersController.getAll();
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals(0, response.getBody().size());
   }
 }
