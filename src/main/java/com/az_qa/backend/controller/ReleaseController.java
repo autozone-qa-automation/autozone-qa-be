@@ -6,12 +6,15 @@ Autozone QA Automation
 */
 package com.az_qa.backend.controller;
 
+import com.az_qa.backend.exception.BadRequestException;
 import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.service.ReleaseService;
 import com.az_qa.backend.vo.ReleaseVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.util.List;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -120,9 +123,26 @@ public class ReleaseController {
    * @return an HTTP response indicating the result of the operation.
    * @throws BadRequestException
    */
+  @Operation(summary = "Deletes a release by its ID if it is in DRAFT status and active.")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "Release deleted successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid request"),
+        @ApiResponse(responseCode = "404", description = "Release not found"),
+        @ApiResponse(
+            responseCode = "403",
+            description = "User does not have permission to delete the release"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+      })
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteReleaseById(@PathVariable Long id) throws BadRequestException {
-    releaseService.deleteReleaseById(id);
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  public ResponseEntity<?> deleteReleaseById(@PathVariable Long id) throws BadRequestException {
+    try {
+      releaseService.deleteReleaseById(id);
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    } catch (BadRequestException e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    } catch (ResourceNotFoundException e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
   }
 }

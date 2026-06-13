@@ -70,7 +70,7 @@ class ReleasesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   void getReleaseById_returnsExpectedRelease() throws Exception {
     mockMvc
         .perform(get("/api/v1/releases/{id}", releaseId))
@@ -89,13 +89,13 @@ class ReleasesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   void getReleaseById_notExistingRelease() throws Exception {
     mockMvc.perform(get("/api/v1/releases/999999")).andExpect(status().isNotFound());
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   void getAllReleases_withStatusFilter_returnsMatchingReleases() throws Exception {
     createRelease(
         "Draft Search Release",
@@ -115,7 +115,7 @@ class ReleasesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   void getAllReleases_withTagsFilter_returnsMatchingReleases() throws Exception {
     createRelease(
         "Search QA Release",
@@ -136,7 +136,7 @@ class ReleasesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   void addRelease_withoutFeatureIds_returnsCreatedAndPersistsRelease() throws Exception {
     mockMvc
         .perform(
@@ -144,17 +144,17 @@ class ReleasesControllerIntegrationTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     """
-                        {
-                          "releaseName": "Inventory QA Release",
-                          "releaseDescription": "Release for inventory QA automation.",
-                          "releaseCreationDate": "2026-05-04",
-                          "releaseLaunchDate": "2026-05-30",
-                          "releaseVersion": "2.0.0",
-                          "releaseTags": ["inventory", "qa"],
-                          "releaseStatus": "Draft",
-                          "releaseServiceId": 1
-                        }
-                        """))
+                    {
+                      "releaseName": "Inventory QA Release",
+                      "releaseDescription": "Release for inventory QA automation.",
+                      "releaseCreationDate": "2026-05-04",
+                      "releaseLaunchDate": "2026-05-30",
+                      "releaseVersion": "2.0.0",
+                      "releaseTags": ["inventory", "qa"],
+                      "releaseStatus": "Draft",
+                      "releaseServiceId": 1
+                    }
+                    """))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.releaseId").isNumber())
         .andExpect(jsonPath("$.releaseName").value("Inventory QA Release"))
@@ -164,7 +164,7 @@ class ReleasesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   void addRelease_withFeatureIds_returnsCreatedAndPersistsAssociation() throws Exception {
     mockMvc
         .perform(
@@ -173,18 +173,18 @@ class ReleasesControllerIntegrationTests {
                 .content(
                     String.format(
                         """
-                            {
-                              "releaseName": "Orders QA Release",
-                              "releaseDescription": "Release with a linked feature.",
-                              "releaseCreationDate": "2026-05-05",
-                              "releaseLaunchDate": "2026-06-01",
-                              "releaseVersion": "3.0.0",
-                              "releaseTags": ["orders", "qa"],
-                              "releaseStatus": "Progress",
-                              "releaseServiceId": 1,
-                              "releaseFeatureIds": [%d]
-                            }
-                            """,
+                        {
+                          "releaseName": "Orders QA Release",
+                          "releaseDescription": "Release with a linked feature.",
+                          "releaseCreationDate": "2026-05-05",
+                          "releaseLaunchDate": "2026-06-01",
+                          "releaseVersion": "3.0.0",
+                          "releaseTags": ["orders", "qa"],
+                          "releaseStatus": "Progress",
+                          "releaseServiceId": 1,
+                          "releaseFeatureIds": [%d]
+                        }
+                        """,
                         featureId)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.releaseId").isNumber())

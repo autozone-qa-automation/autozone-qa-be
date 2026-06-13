@@ -61,7 +61,7 @@ public class ServicesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser(authorities = "ADMIN")
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("POST /api/v1/services - Integración completa (Controller -> Service -> DAO -> DB)")
   public void createService_IntegrationSuccess() throws Exception {
 
@@ -80,7 +80,7 @@ public class ServicesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser(authorities = "ADMIN")
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("POST /api/v1/services - Error por duplicado (Integración con Exception Handler)")
   public void createService_IntegrationConflict() throws Exception {
 
@@ -100,7 +100,7 @@ public class ServicesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser(authorities = "ADMIN")
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("DELETE /api/v1/services/{id} - Debe desactivar el servicio y devolver 204")
   public void deleteService_IntegrationSuccess() throws Exception {
     ServicesEntity testService = new ServicesEntity();
@@ -117,7 +117,7 @@ public class ServicesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser(authorities = "ADMIN")
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("PUT /api/v1/services/{id} - Integración completa para actualizar servicio")
   public void updateService_IntegrationSuccess() throws Exception {
     ServicesEntity testService = new ServicesEntity();
@@ -141,7 +141,7 @@ public class ServicesControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser(authorities = "ADMIN")
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("PUT /api/v1/services/{id} - Debe retornar 409 cuando el nombre está duplicado")
   public void updateService_ReturnsConflict_WhenNameDuplicated() throws Exception {
     ServicesEntity service1 = new ServicesEntity();
