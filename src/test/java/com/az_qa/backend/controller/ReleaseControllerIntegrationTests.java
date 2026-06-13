@@ -123,4 +123,55 @@ public class ReleaseControllerIntegrationTests {
         releaseRepository.findById(release.getReleaseId()).orElseThrow();
     assertTrue(unchangedRelease.getReleaseIsActive(), "Release should still be active");
   }
+
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  @DisplayName("DELETE /api/v1/releases/{id} - Falla si ya esta borrado (inactivo)")
+  public void deleteRelease_BadRequest_AlreadyDeleted() throws Exception {
+    ReleaseEntity release = new ReleaseEntity();
+    release.setReleaseName("Active Release");
+    release.setReleaseDescription("Active release desc");
+    release.setReleaseCreationDate(LocalDate.now());
+    release.setReleaseVersion("v1.0.0");
+    release.setReleaseStatus(ReleaseStatus.Active);
+    release.setReleaseIsActive(false);
+    release = releaseRepository.save(release);
+
+    mockMvc
+        .perform(delete("/api/v1/releases/" + release.getReleaseId()))
+        .andExpect(status().isBadRequest());
+
+    ReleaseEntity unchangedRelease =
+        releaseRepository.findById(release.getReleaseId()).orElseThrow();
+    assertFalse(unchangedRelease.getReleaseIsActive(), "Release should still be inactive");
+  }
+
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  @DisplayName("DELETE /api/v1/releases/{id} - Falla si el release no existe")
+  public void deleteRelease_BadRequest_Notfound() throws Exception {
+    mockMvc.perform(delete("/api/v1/releases/999")).andExpect(status().isNotFound());
+  }
+
+  @Test
+  @WithMockUser(roles = "READ_ONLY")
+  @DisplayName("DELETE /api/v1/releases/{id} - Falla si no tiene permisos de ADMIN")
+  public void deleteRelease_BadRequest_NotAdmin() throws Exception {
+    ReleaseEntity release = new ReleaseEntity();
+    release.setReleaseName("Active Release");
+    release.setReleaseDescription("Active release desc");
+    release.setReleaseCreationDate(LocalDate.now());
+    release.setReleaseVersion("v1.0.0");
+    release.setReleaseStatus(ReleaseStatus.Active);
+    release.setReleaseIsActive(true);
+    release = releaseRepository.save(release);
+
+    mockMvc
+        .perform(delete("/api/v1/releases/" + release.getReleaseId()))
+        .andExpect(status().isForbidden());
+
+    ReleaseEntity unchangedRelease =
+        releaseRepository.findById(release.getReleaseId()).orElseThrow();
+    assertTrue(unchangedRelease.getReleaseIsActive(), "Release should still be active");
+  }
 }
