@@ -48,6 +48,6 @@ public class JPADetailsUserTest {
 
     String authority = details.getAuthorities().iterator().next().getAuthority();
 
-    assertEquals("ADMIN", authority);
+    assertEquals("ROLE_ADMIN", authority);
   }
 }
