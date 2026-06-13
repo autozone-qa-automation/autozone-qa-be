@@ -38,125 +38,122 @@ import org.springframework.web.context.WebApplicationContext;
 @Transactional
 public class UsersControllerIntegrationTests {
 
-    @Autowired
-    private WebApplicationContext context;
+  @Autowired private WebApplicationContext context;
 
-    @Autowired
-    private UsersRepository usersRepository;
+  @Autowired private UsersRepository usersRepository;
 
-    @Autowired
-    private RolesRepository rolesRepository;
+  @Autowired private RolesRepository rolesRepository;
 
-    private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+  private ObjectMapper objectMapper = new ObjectMapper();
 
-    private Map<String, Object> userPayload;
+  private Map<String, Object> userPayload;
 
-    private Long validRoleId;
+  private Long validRoleId;
 
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+  @BeforeEach
+  void setUp() {
+    mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
 
-        usersRepository.deleteAll();
-        rolesRepository.deleteAll();
+    usersRepository.deleteAll();
+    rolesRepository.deleteAll();
 
-        RoleEntity role = new RoleEntity();
-        role.setPermission(UserRole.DEV);
-        role = rolesRepository.save(role);
-        validRoleId = role.getId();
+    RoleEntity role = new RoleEntity();
+    role.setPermission(UserRole.DEV);
+    role = rolesRepository.save(role);
+    validRoleId = role.getId();
 
-        userPayload = new LinkedHashMap<>();
-        userPayload.put("name", "John");
-        userPayload.put("lastName", "Doe");
-        userPayload.put("email", "john.doe@example.com");
-        userPayload.put("password", "secret123");
-        userPayload.put("isActive", true);
-        userPayload.put("roleId", validRoleId);
-    }
+    userPayload = new LinkedHashMap<>();
+    userPayload.put("name", "John");
+    userPayload.put("lastName", "Doe");
+    userPayload.put("email", "john.doe@example.com");
+    userPayload.put("password", "secret123");
+    userPayload.put("isActive", true);
+    userPayload.put("roleId", validRoleId);
+  }
 
-    @Test
-    @WithMockUser(roles = "ADMIN")
-    @DisplayName("POST /api/v1/users - Integración completa (Controller -> Service -> DAO -> DB)")
-    public void createUser_IntegrationSuccess() throws Exception {
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  @DisplayName("POST /api/v1/users - Integración completa (Controller -> Service -> DAO -> DB)")
+  public void createUser_IntegrationSuccess() throws Exception {
 
-        mockMvc
-                .perform(
-                        post("/api/v1/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(userPayload)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.name").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+    mockMvc
+        .perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userPayload)))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.id").exists())
+        .andExpect(jsonPath("$.name").value("John"))
+        .andExpect(jsonPath("$.lastName").value("Doe"))
+        .andExpect(jsonPath("$.email").value("john.doe@example.com"));
 
-        assertNotNull(usersRepository.findByEmail("john.doe@example.com").orElse(null));
-    }
+    assertNotNull(usersRepository.findByEmail("john.doe@example.com").orElse(null));
+  }
 
-    @Test
-    @WithMockUser(roles = "ADMIN")
-    @DisplayName("POST /api/v1/users - Error por email duplicado (409 Conflict)")
-    public void createUser_IntegrationConflict_WhenEmailAlreadyExists() throws Exception {
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  @DisplayName("POST /api/v1/users - Error por email duplicado (409 Conflict)")
+  public void createUser_IntegrationConflict_WhenEmailAlreadyExists() throws Exception {
 
-        mockMvc
-                .perform(
-                        post("/api/v1/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(userPayload)))
-                .andExpect(status().isCreated());
+    mockMvc
+        .perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userPayload)))
+        .andExpect(status().isCreated());
 
-        mockMvc
-                .perform(
-                        post("/api/v1/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(userPayload)))
-                .andExpect(status().isConflict());
-    }
+    mockMvc
+        .perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userPayload)))
+        .andExpect(status().isConflict());
+  }
 
-    @Test
-    @WithMockUser(roles = "ADMIN")
-    @DisplayName("POST /api/v1/users - Error por campo name vacío (400 Bad Request)")
-    public void createUser_IntegrationBadRequest_WhenNameIsBlank() throws Exception {
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  @DisplayName("POST /api/v1/users - Error por campo name vacío (400 Bad Request)")
+  public void createUser_IntegrationBadRequest_WhenNameIsBlank() throws Exception {
 
-        userPayload.put("name", "");
+    userPayload.put("name", "");
 
-        mockMvc
-                .perform(
-                        post("/api/v1/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(userPayload)))
-                .andExpect(status().isBadRequest());
-    }
+    mockMvc
+        .perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userPayload)))
+        .andExpect(status().isBadRequest());
+  }
 
-    @Test
-    @WithMockUser(roles = "ADMIN")
-    @DisplayName("POST /api/v1/users - Error por email vacío (400 Bad Request)")
-    public void createUser_IntegrationBadRequest_WhenEmailIsBlank() throws Exception {
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  @DisplayName("POST /api/v1/users - Error por email vacío (400 Bad Request)")
+  public void createUser_IntegrationBadRequest_WhenEmailIsBlank() throws Exception {
 
-        userPayload.put("email", "");
+    userPayload.put("email", "");
 
-        mockMvc
-                .perform(
-                        post("/api/v1/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(userPayload)))
-                .andExpect(status().isBadRequest());
-    }
+    mockMvc
+        .perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userPayload)))
+        .andExpect(status().isBadRequest());
+  }
 
-    @Test
-    @WithMockUser(roles = "ADMIN")
-    @DisplayName("POST /api/v1/users - Error por password vacío (400 Bad Request)")
-    public void createUser_IntegrationBadRequest_WhenPasswordIsBlank() throws Exception {
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  @DisplayName("POST /api/v1/users - Error por password vacío (400 Bad Request)")
+  public void createUser_IntegrationBadRequest_WhenPasswordIsBlank() throws Exception {
 
-        userPayload.put("password", "");
+    userPayload.put("password", "");
 
-        mockMvc
-                .perform(
-                        post("/api/v1/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(userPayload)))
-                .andExpect(status().isBadRequest());
-    }
+    mockMvc
+        .perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userPayload)))
+        .andExpect(status().isBadRequest());
+  }
 }
