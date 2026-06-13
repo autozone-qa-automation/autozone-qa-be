@@ -81,7 +81,7 @@ public class ReleaseControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("DELETE /api/v1/releases/{id} - Éxito al borrar un release en Draft")
   public void deleteRelease_Success() throws Exception {
     ReleaseEntity release = new ReleaseEntity();
@@ -103,7 +103,7 @@ public class ReleaseControllerIntegrationTests {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("DELETE /api/v1/releases/{id} - Falla si no está en Draft")
   public void deleteRelease_BadRequest_NotDraft() throws Exception {
     ReleaseEntity release = new ReleaseEntity();
