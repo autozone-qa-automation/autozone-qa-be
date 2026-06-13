@@ -77,8 +77,7 @@ public class TestCasesControllerIntegrationTests {
 
   @Test
   @WithMockUser(roles = "ADMIN")
-  @DisplayName(
-      "PUT /api/v1/test-cases/{id} - Integracion completa para actualizar un test case existente")
+  @DisplayName("PUT /api/v1/test-cases/{id} - Full integration update for an existing test case")
   public void updateTestCase_IntegrationSuccess() throws Exception {
 
     TestCasesEntity existingTestCase = new TestCasesEntity();
@@ -107,6 +106,95 @@ public class TestCasesControllerIntegrationTests {
     TestCasesEntity updatedTestCase =
         testCasesRepository.findById(existingTestCase.getId()).orElseThrow();
     assertNotNull(updatedTestCase);
+  }
+
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  @DisplayName("PUT /api/v1/test-cases/{id} - Returns 400 when the body id does not match")
+  public void updateTestCase_IdMismatch_ReturnsBadRequest() throws Exception {
+    TestCasesEntity existingTestCase = new TestCasesEntity();
+    existingTestCase.setTitle("Test Case Base");
+    existingTestCase.setSteps("Pasos base");
+    existingTestCase.setExpectedOutput("Resultado base");
+    existingTestCase.setFeature(featuresRepository.findById(validFeatureId).orElse(null));
+    existingTestCase.setType(com.az_qa.backend.enumeration.TestCaseType.ON_DEMAND);
+    existingTestCase.setNew(true);
+    existingTestCase = testCasesRepository.save(existingTestCase);
+
+    testCaseVO.setId(existingTestCase.getId() + 1);
+
+    mockMvc
+        .perform(
+            put("/api/v1/test-cases/{id}", existingTestCase.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(testCaseVO)))
+        .andExpect(status().isBadRequest())
+        .andExpect(
+            jsonPath("$.message")
+                .value(
+                    "Path id {"
+                        + existingTestCase.getId()
+                        + "} does not match test case id {"
+                        + (existingTestCase.getId() + 1)
+                        + "}."));
+  }
+
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  @DisplayName("PUT /api/v1/test-cases/{id} - Returns 400 when the payload is invalid")
+  public void updateTestCase_InvalidPayload_ReturnsBadRequest() throws Exception {
+    TestCasesEntity existingTestCase = new TestCasesEntity();
+    existingTestCase.setTitle("Test Case Invalido");
+    existingTestCase.setSteps("Pasos base");
+    existingTestCase.setExpectedOutput("Resultado base");
+    existingTestCase.setFeature(featuresRepository.findById(validFeatureId).orElse(null));
+    existingTestCase.setType(com.az_qa.backend.enumeration.TestCaseType.ON_DEMAND);
+    existingTestCase.setNew(true);
+    existingTestCase = testCasesRepository.save(existingTestCase);
+
+    testCaseVO.setTitle(" ");
+
+    mockMvc
+        .perform(
+            put("/api/v1/test-cases/{id}", existingTestCase.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(testCaseVO)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("title: must not be blank"));
+  }
+
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  @DisplayName("PUT /api/v1/test-cases/{id} - Returns 409 when the title is duplicated")
+  public void updateTestCase_DuplicatedTitle_ReturnsConflict() throws Exception {
+    TestCasesEntity existingTestCase = new TestCasesEntity();
+    existingTestCase.setTitle("Test Case a Actualizar");
+    existingTestCase.setSteps("Pasos iniciales");
+    existingTestCase.setExpectedOutput("Resultado inicial");
+    existingTestCase.setFeature(featuresRepository.findById(validFeatureId).orElse(null));
+    existingTestCase.setType(com.az_qa.backend.enumeration.TestCaseType.ON_DEMAND);
+    existingTestCase.setNew(true);
+    existingTestCase = testCasesRepository.save(existingTestCase);
+
+    TestCasesEntity duplicateTestCase = new TestCasesEntity();
+    duplicateTestCase.setTitle("Titulo Duplicado");
+    duplicateTestCase.setSteps("Pasos duplicados");
+    duplicateTestCase.setExpectedOutput("Resultado duplicado");
+    duplicateTestCase.setFeature(featuresRepository.findById(validFeatureId).orElse(null));
+    duplicateTestCase.setType(com.az_qa.backend.enumeration.TestCaseType.ON_DEMAND);
+    duplicateTestCase.setNew(true);
+    testCasesRepository.save(duplicateTestCase);
+
+    testCaseVO.setTitle("Titulo Duplicado");
+
+    mockMvc
+        .perform(
+            put("/api/v1/test-cases/{id}", existingTestCase.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(testCaseVO)))
+        .andExpect(status().isConflict())
+        .andExpect(
+            jsonPath("$.message").value("Test case with title {Titulo Duplicado} already exists."));
   }
 
   @Test
