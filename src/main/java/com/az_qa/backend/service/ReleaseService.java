@@ -12,6 +12,7 @@ import com.az_qa.backend.entity.FeatureEntity;
 import com.az_qa.backend.entity.ReleaseEntity;
 import com.az_qa.backend.entity.ReleasedFeaturesEntity;
 import com.az_qa.backend.entity.TestCasesEntity;
+import com.az_qa.backend.exception.BadRequestException;
 import com.az_qa.backend.exception.ItemNotFoundException;
 import com.az_qa.backend.exception.ResourceNotFoundException;
 import com.az_qa.backend.repository.FeaturesRepository;
@@ -21,7 +22,6 @@ import com.az_qa.backend.repository.TestCasesRepository;
 import com.az_qa.backend.vo.ReleaseVO;
 import java.time.LocalDate;
 import java.util.List;
-import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

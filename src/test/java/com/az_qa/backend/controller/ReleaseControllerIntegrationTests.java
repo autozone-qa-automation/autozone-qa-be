@@ -6,7 +6,10 @@ Autozone QA Automation
 */
 package com.az_qa.backend.controller;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,6 +59,7 @@ public class ReleaseControllerIntegrationTests {
     release.setReleaseCreationDate(LocalDate.of(2026, 5, 25));
     release.setReleaseVersion("v2.0.0");
     release.setReleaseStatus(ReleaseStatus.Active);
+    release.setReleaseIsActive(true);
     releaseRepository.save(release);
 
     mockMvc
@@ -74,5 +78,49 @@ public class ReleaseControllerIntegrationTests {
         .perform(get("/api/v1/releases/last"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isEmpty());
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("DELETE /api/v1/releases/{id} - Éxito al borrar un release en Draft")
+  public void deleteRelease_Success() throws Exception {
+    ReleaseEntity release = new ReleaseEntity();
+    release.setReleaseName("Draft Release to Delete");
+    release.setReleaseDescription("Draft release desc");
+    release.setReleaseCreationDate(LocalDate.now());
+    release.setReleaseVersion("v1.0.0-draft");
+    release.setReleaseStatus(ReleaseStatus.Draft);
+    release.setReleaseIsActive(true);
+    release = releaseRepository.save(release);
+
+    mockMvc
+        .perform(delete("/api/v1/releases/" + release.getReleaseId()))
+        .andExpect(status().isNoContent());
+
+    ReleaseEntity updatedRelease = releaseRepository.findById(release.getReleaseId()).orElseThrow();
+    assertFalse(
+        updatedRelease.getReleaseIsActive(), "Release should be marked as inactive (soft deleted)");
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("DELETE /api/v1/releases/{id} - Falla si no está en Draft")
+  public void deleteRelease_BadRequest_NotDraft() throws Exception {
+    ReleaseEntity release = new ReleaseEntity();
+    release.setReleaseName("Active Release");
+    release.setReleaseDescription("Active release desc");
+    release.setReleaseCreationDate(LocalDate.now());
+    release.setReleaseVersion("v1.0.0");
+    release.setReleaseStatus(ReleaseStatus.Active);
+    release.setReleaseIsActive(true);
+    release = releaseRepository.save(release);
+
+    mockMvc
+        .perform(delete("/api/v1/releases/" + release.getReleaseId()))
+        .andExpect(status().isBadRequest());
+
+    ReleaseEntity unchangedRelease =
+        releaseRepository.findById(release.getReleaseId()).orElseThrow();
+    assertTrue(unchangedRelease.getReleaseIsActive(), "Release should still be active");
   }
 }

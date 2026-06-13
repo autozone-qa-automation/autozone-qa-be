@@ -141,6 +141,19 @@ public class GlobalExceptionHandler {
   }
 
   /**
+   * Handles {@link BadRequestException} used in services to indicate
+   * business-level bad requests (e.g., invalid state transitions).
+   *
+   * @param ex the bad request exception
+   * @return 400 with structured error body
+   */
+  @ExceptionHandler(BadRequestException.class)
+  public ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException ex) {
+    ErrorResponse error = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+  }
+
+  /**
    * Fallback handler for any exception not explicitly handled above.
    *
    * <p>Prevents internal error details from leaking to the client.</p>
@@ -191,19 +204,6 @@ public class GlobalExceptionHandler {
     String message = "Invalid value '" + ex.getValue() + "' for parameter '" + ex.getName() + "'";
 
     ErrorResponse error = new ErrorResponse(400, message, LocalDateTime.now());
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-  }
-
-  /**
-   * Handles {@link org.apache.coyote.BadRequestException} used in services to indicate
-   * business-level bad requests (e.g., invalid state transitions).
-   *
-   * @param ex the bad request exception
-   * @return 400 with structured error body
-   */
-  @ExceptionHandler(org.apache.coyote.BadRequestException.class)
-  public ResponseEntity<ErrorResponse> handleBadRequest(org.apache.coyote.BadRequestException ex) {
-    ErrorResponse error = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
 }
