@@ -94,6 +94,17 @@ public class UsersControllerTest {
   }
 
   @Test
+  @DisplayName("addNew: Must return 400 Bad Request when the service returns null")
+  public void addNew_ReturnsBadRequest() {
+    when(usersService.add(any(UserVO.class))).thenReturn(null);
+
+    ResponseEntity<UserVO> response = usersController.addNew(new UserVO());
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+  }
+
+  @Test
   @DisplayName("deactivate: Must return 204 No Content when the user is deactivated")
   public void deactivate_Success() {
     doNothing().when(usersService).deactivate(any(Long.class));
